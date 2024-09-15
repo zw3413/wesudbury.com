@@ -1,5 +1,6 @@
 import { useTranslation } from '@/lib/i18n'
 import RideRequestForm from '@/components/RideRequestForm'
+import BackButton from '@/components/BackButton'
 
 export default async function RequestRide({ params: { lang } }: { params: { lang: string } }) {
   const { t } = await useTranslation(lang, 'common')
@@ -17,7 +18,8 @@ export default async function RequestRide({ params: { lang } }: { params: { lang
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-[rgb(250,252,255)]">
+    <div className="container mx-auto px-4 py-8 bg-[rgb(250,252,255)] relative">
+      <BackButton lang={lang} />
       <h1 className="text-4xl font-bold mb-8 text-[rgb(54,89,108)] text-center">{translations['requestRide']}</h1>
       <RideRequestForm translations={translations} />
     </div>

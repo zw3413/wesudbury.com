@@ -1,15 +1,16 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Loader } from '@googlemaps/js-api-loader'
 
 type RideOfferFormProps = {
   translations: {
     [key: string]: string;
   };
+  lang: string;
 }
 
-export default function RideOfferForm({ translations }: RideOfferFormProps) {
+export default function RideOfferForm({ translations, lang }: RideOfferFormProps) {
   const [formData, setFormData] = useState({
     from: '',
     to: '',
@@ -22,6 +23,8 @@ export default function RideOfferForm({ translations }: RideOfferFormProps) {
     frequency: '',
     notes: '',
   })
+
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
 
   const autocompleteFromRef = useRef<google.maps.places.Autocomplete | null>(null)
   const autocompleteToRef = useRef<google.maps.places.Autocomplete | null>(null)
@@ -65,10 +68,29 @@ export default function RideOfferForm({ translations }: RideOfferFormProps) {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
+  const validateForm = () => {
+    let newErrors: {[key: string]: string} = {}
+    if (!formData.from) newErrors.from = 'From location is required'
+    if (!formData.to) newErrors.to = 'To location is required'
+    if (!formData.date) newErrors.date = 'Date is required'
+    if (!formData.time) newErrors.time = 'Time is required'
+    if (!formData.vehicleType) newErrors.vehicleType = 'Vehicle type is required'
+    if (formData.seats < 1 || formData.seats > 8) newErrors.seats = 'Seats must be between 1 and 8'
+    if (Number(formData.price) < 0) newErrors.price = 'Price must be 0 or greater'
+    if (formData.routine === 'recurring' && !formData.frequency) newErrors.frequency = 'Frequency is required for recurring rides'
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Submit form data to backend
-    console.log(formData)
+    if (validateForm()) {
+      // TODO: Submit form data to backend
+      console.log(formData)
+    } else {
+      console.log('Form has errors', errors)
+    }
   }
 
   const commonLocations = [

@@ -1,5 +1,76 @@
 'use client'
 
+import { useState, useEffect, useRef } from 'react'
+import { Loader } from '@googlemaps/js-api-loader'
+
+type RideRequestFormProps = {
+  translations: {
+    [key: string]: string;
+  };
+}
+
+export default function RideRequestForm({ translations }: RideRequestFormProps) {
+  const [formData, setFormData] = useState({
+    from: '',
+    to: '',
+    date: '',
+    time: '',
+    seats: 1,
+    maxPrice: '',
+    notes: '',
+  })
+
+  const autocompleteFromRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const autocompleteToRef = useRef<google.maps.places.Autocomplete | null>(null)
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+      version: 'weekly',
+      libraries: ['places']
+    })
+
+    loader.load().then(() => {
+      const options = {
+        componentRestrictions: { country: 'ca' },
+        fields: ['address_components', 'geometry', 'name'],
+        types: ['geocode']
+      }
+
+      const fromInput = document.getElementById('from') as HTMLInputElement
+      const toInput = document.getElementById('to') as HTMLInputElement
+
+      autocompleteFromRef.current = new google.maps.places.Autocomplete(fromInput, options)
+      autocompleteToRef.current = new google.maps.places.Autocomplete(toInput, options)
+
+      autocompleteFromRef.current.addListener('place_changed', () => handlePlaceSelect('from'))
+      autocompleteToRef.current.addListener('place_changed', () => handlePlaceSelect('to'))
+    })
+  }, [])
+
+  const handlePlaceSelect = (field: 'from' | 'to') => {
+    const autocomplete = field === 'from' ? autocompleteFromRef.current : autocompleteToRef.current
+    const place = autocomplete?.getPlace()
+
+    if (place && place.name) {
+      setFormData(prev => ({ ...prev, [field]: place.name }))
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    // TODO: Submit form data to backend
+    console.log(formData)
+  }
+
+  return (
+'use client'
+
 import { useState } from 'react'
 
 type RideRequestFormProps = {

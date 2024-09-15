@@ -90,5 +90,11 @@
       "title": "Emergency Services",
       "url": "https://www.greatersudbury.ca/live/emergency-services/"
     }
+  },
+  "nav": {
+    "home": "Home",
+    "lifestyle": "Lifestyle",
+    "map": "Map",
+    "rideshare": "Rideshare"
   }
 }
