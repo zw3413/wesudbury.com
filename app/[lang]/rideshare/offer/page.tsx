@@ -28,13 +28,50 @@ export default async function OfferRide({ params: { lang } }: { params: { lang: 
     'daily': t('rideshare.form.daily'),
     'weekly': t('rideshare.form.weekly'),
     'weekdays': t('rideshare.form.weekdays'),
+    'driverInfo': t('rideshare.form.driverInfo'),
+    'driverName': t('rideshare.form.driverName'),
+    'driverPhoneNumber': t('rideshare.form.driverPhoneNumber'),
+    'driverEmail': t('rideshare.form.driverEmail'),
+    'driverPassword': t('rideshare.form.driverPassword'),
+    'confirmPassword': t('rideshare.form.confirmPassword'),
+    'licenseVerified': t('rideshare.form.licenseVerified'),
+    'languages': t('rideshare.form.languages'),
+    'languagesPlaceholder': t('rideshare.form.languagesPlaceholder'),
+    'profilePicture': t('rideshare.form.profilePicture'),
+    'vehicleInfo': t('rideshare.form.vehicleInfo'),
+    'vehicleMake': t('rideshare.form.vehicleMake'),
+    'vehicleModel': t('rideshare.form.vehicleModel'),
+    'selectMake': t('rideshare.form.selectMake'),
+    'selectModel': t('rideshare.form.selectModel'),
+    'vehiclePicture': t('rideshare.form.vehiclePicture'),
+    'vehicleYearMakeModel': t('rideshare.form.vehicleYearMakeModel'),
+    'vehicleColor': t('rideshare.form.vehicleColor'),
+    'vehicleLicensePlate': t('rideshare.form.vehicleLicensePlate'),
+    'vehicleInsurance': t('rideshare.form.vehicleInsurance'),
+    'vehicleInspection': t('rideshare.form.vehicleInspection'),
+    'vehicleRegistration': t('rideshare.form.vehicleRegistration'),
+    'vehicleDocuments': t('rideshare.form.vehicleDocuments'),
+    'vehicleDocumentsPlaceholder': t('rideshare.form.vehicleDocumentsPlaceholder'),
+    'vehicleDocumentsUpload': t('rideshare.form.vehicleDocumentsUpload'),
+    'vehicleDocumentsUploadPlaceholder': t('rideshare.form.vehicleDocumentsUploadPlaceholder'),
+    'vehicleDocumentsUploadButton': t('rideshare.form.vehicleDocumentsUploadButton'),
+    'vehicleDocumentsUploadSuccess': t('rideshare.form.vehicleDocumentsUploadSuccess'),
+    'vehicleDocumentsUploadError': t('rideshare.form.vehicleDocumentsUploadError'),
+    'vehicleDocumentsUploadCancel': t('rideshare.form.vehicleDocumentsUploadCancel'),
+    'vehicleDocumentsUploadRemove': t('rideshare.form.vehicleDocumentsUploadRemove'),
+    'vehicleDocumentsUploadRemoveConfirm': t('rideshare.form.vehicleDocumentsUploadRemoveConfirm'),
+    'vehicleDocumentsUploadRemoveCancel': t('rideshare.form.vehicleDocumentsUploadRemoveCancel'),
+    'vehicleDocumentsUploadRemoveSuccess': t('rideshare.form.vehicleDocumentsUploadRemoveSuccess'),
+    'vehicleDocumentsUploadRemoveError': t('rideshare.form.vehicleDocumentsUploadRemoveError'),
+    'passwordMismatch': t('rideshare.form.passwordMismatch'),
+    'vehiclePicture': t('rideshare.form.vehiclePicture'),
   }
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[rgb(250,252,255)] relative">
       <BackButton lang={lang} />
       <h1 className="text-4xl font-bold mb-8 text-[rgb(54,89,108)] text-center">{translations['offerRide']}</h1>
-      <RideOfferForm translations={translations} lang={lang} />
+      <RideOfferForm translations={translations} isLoggedIn={false} />
     </div>
   )
 }
