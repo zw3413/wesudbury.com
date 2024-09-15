@@ -48,3 +48,21 @@ export interface RideOfferFormProps {
   driverInfo?: DriverInfo;
   vehicleInfo?: VehicleInfo;
 }
+
+// New Ride type
+export type Ride = {
+  id: string;
+  from: string;
+  to: string;
+  date: string;
+  time: string;
+  price: string;
+  seats: number;
+  driverId: string;
+  vehicleInfo: {
+    make: string;
+    model: string;
+    color: string;
+  };
+  ridePreferences: RidePreferences;
+}

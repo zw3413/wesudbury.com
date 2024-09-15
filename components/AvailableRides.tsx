@@ -1,27 +1,15 @@
 import React from 'react'
+import { Ride } from '../types'
 import Link from 'next/link'
-
-type Ride = {
-  id: string
-  from: string
-  to: string
-  date: string
-  time: string
-  seats: number
-  price: number
+interface Props {
+  rides: Ride[];
+  t: (key: string) => string; // Change this line
+  lang: string;
 }
 
-type AvailableRidesProps = {
-  rides: Ride[]
-  translations: {
-    [key: string]: string
-  }
-  lang: string
-}
-
-export default function AvailableRides({ rides, translations, lang }: AvailableRidesProps) {
+export default function AvailableRides({ rides, t, lang }: Props) {
   if (rides.length === 0) {
-    return <p className="text-center text-[rgb(33,41,49)]">{translations['noRidesAvailable']}</p>
+    return <p className="text-center text-[rgb(33,41,49)]">{t('noRidesAvailable')}</p>
   }
 
   return (
@@ -34,10 +22,10 @@ export default function AvailableRides({ rides, translations, lang }: AvailableR
           </div>
           <div className="text-sm text-[rgb(33,41,49)]">
             <p>{ride.date} at {ride.time}</p>
-            <p>{ride.seats} {translations['seatsAvailable']}</p>
+            <p>{ride.seats} {t('seatsAvailable')}</p>
           </div>
           <Link href={`/${lang}/rideshare/ride/${ride.id}`} className="mt-2 inline-block text-[rgb(54,89,108)] hover:text-[rgb(255,183,77)]">
-            {translations['viewDetails']}
+            {t('viewDetails')}
           </Link>
         </div>
       ))}
