@@ -1,6 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { DriverInfo, VehicleInfo } from '../types'
+
+const commonVehicleColors = [
+  'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Brown', 'Green', 
+  'Beige', 'Orange', 'Gold', 'Yellow', 'Purple', 'Pink'
+];
 
 interface Props {
   initialDriverInfo: DriverInfo;
@@ -25,24 +30,68 @@ const carModels: { [key: string]: string[] } = {
   Hyundai: ['Elantra', 'Sonata', 'Tucson', 'Santa Fe'],
 };
 
+
 export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicleInfo, onSubmit, translations }: Props) {
   const [driverInfo, setDriverInfo] = useState(initialDriverInfo)
   const [vehicleInfo, setVehicleInfo] = useState(initialVehicleInfo)
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [licenseFile, setLicenseFile] = useState<File | null>(null)
+  const [vehiclePictureFile, setVehiclePictureFile] = useState<File | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (driverInfo.password !== confirmPassword) {
-      alert(translations['passwordMismatch'] || 'Passwords do not match')
-      return
+  useEffect(() => {
+    // Check if we have a saved email in localStorage
+    const savedEmail = localStorage.getItem('userEmail')
+    if (savedEmail) {
+      // If we have a saved email, fetch the driver's info from the API
+      fetchDriverInfo(savedEmail)
     }
-    onSubmit(driverInfo, vehicleInfo)
-    // TODO: Save driver's info to database
-    console.log('Saving driver info to database:', driverInfo)
+  }, [])
+
+  const fetchDriverInfo = async (email: string) => {
+    try {
+      const response = await fetch(`/api/driver?email=${email}`)
+      if (response.ok) {
+        const data = await response.json()
+        setDriverInfo(data.driver_info)
+        setVehicleInfo(data.vehicle_info)
+      }
+    } catch (error) {
+      console.error('Error fetching driver info:', error)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const formData = new FormData()
+      formData.append('driverInfo', JSON.stringify(driverInfo))
+      formData.append('vehicleInfo', JSON.stringify(vehicleInfo))
+      
+      if (licenseFile) {
+        formData.append('licenseFile', licenseFile)
+      }
+      
+      if (vehiclePictureFile) {
+        formData.append('vehiclePicture', vehiclePictureFile)
+      }
+
+      const response = await fetch('/api/driver', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (response.ok) {
+        localStorage.setItem('userEmail', driverInfo.email)
+        onSubmit(driverInfo, vehicleInfo)
+      } else {
+        throw new Error('Failed to save driver info')
+      }
+    } catch (error) {
+      console.error('Error saving driver info:', error)
+      alert('Failed to save driver information. Please try again.')
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    console.log(e.target)
     const { name, value, type } = e.target
     if (name.startsWith('driver')) {
       const field = name.replace('driver', '').toLowerCase()
@@ -51,21 +100,31 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         [field]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
       }))
     } else if (name.startsWith('vehicle')) {
-        console.log(name)
-        console.log(value)
       const field = name.replace('vehicle', '').toLowerCase()
-      console.log('field', field)
-      console.log('value', value)
-      setVehicleInfo(prev => ({ ...prev, [field]: value }))
-    } else if (name === 'confirmPassword') {
-      setConfirmPassword(value)
+      setVehicleInfo(prev => {
+        if (field === 'color') {
+          if (value === 'other') {
+            return { ...prev, color: value, colorOther: '' };
+          } else {
+            //eslint-disable-next-line
+            const { colorOther, ...rest } = prev;
+            return { ...rest, color: value };
+          }
+        }
+        return { ...prev, [field]: value };
+      })
     }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setVehicleInfo(prev => ({ ...prev, picture: file }))
+      if (e.target.name === 'driverLicense') {
+        setLicenseFile(file)
+      } else if (e.target.name === 'vehiclePicture') {
+        setVehiclePictureFile(file)
+        setVehicleInfo(prev => ({ ...prev, picture: file }))
+      }
     }
   }
 
@@ -117,38 +176,16 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             />
           </div>
           <div>
-            <label htmlFor="driverPassword" className="block text-sm font-medium text-gray-700">{translations['driverPassword'] || 'Password'}</label>
-            <input
-              type="password"
-              id="driverPassword"
-              name="driverPassword"
-              value={driverInfo.password}
-              onChange={handleChange}
-              required
-              className={inputClassName}
-            />
-          </div>
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">{translations['confirmPassword'] || 'Confirm Password'}</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={handleChange}
-              required
-              className={inputClassName}
-            />
-          </div>
-          <div>
             <label htmlFor="driverLicense" className="block text-sm font-medium text-gray-700">{translations['driverLicense'] || 'Driver License'}</label>
             <input
               type="file"
               id="driverLicense"
               name="driverLicense"
               onChange={handleFileChange}
+              accept="image/*,.pdf"
               className={fileInputClassName}
             />
+            {licenseFile && <p className="mt-1 text-sm text-gray-500">{licenseFile.name}</p>}
           </div>
           <div>
             <label className="flex items-center">
@@ -170,7 +207,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         <h2 className="text-xl font-semibold mb-4 text-[rgb(54,89,108)]">{translations['vehicleInfo'] || 'Vehicle Information'}</h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="vehicleMake" className="block text-sm font-medium text-gray-700">{translations['vehicleMake'] || 'Make'}</label>
+            <label htmlFor="vehicleMake" className="block text-sm font-medium text-gray-700">{translations['make'] || 'Make'}</label>
             <select
               id="vehicleMake"
               name="vehicleMake"
@@ -186,7 +223,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             </select>
           </div>
           <div>
-            <label htmlFor="vehicleModel" className="block text-sm font-medium text-gray-700">{translations['vehicleModel'] || 'Model'}</label>
+            <label htmlFor="vehicleModel" className="block text-sm font-medium text-gray-700">{translations['model'] || 'Model'}</label>
             <select
               id="vehicleModel"
               name="vehicleModel"
@@ -202,19 +239,38 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             </select>
           </div>
           <div>
-            <label htmlFor="vehicleColor" className="block text-sm font-medium text-gray-700">{translations['vehicleColor'] || 'Color'}</label>
-            <input
-              type="text"
+            <label htmlFor="vehicleColor" className="block text-sm font-medium text-gray-700">{translations['color'] || 'Color'}</label>
+            <select
               id="vehicleColor"
               name="vehicleColor"
               value={vehicleInfo.color}
               onChange={handleChange}
               required
-              className={inputClassName}
-            />
+              className={selectClassName}
+            >
+              <option value="">{translations['selectColor'] || 'Select Color'}</option>
+              {commonVehicleColors.map(color => (
+                <option key={color} value={color}>{translations[color.toLowerCase()] || color}</option>
+              ))}
+              <option value="other">{translations['otherColor'] || 'Other'}</option>
+            </select>
           </div>
+          {vehicleInfo.color === 'other' && (
+            <div>
+              <label htmlFor="vehicleColorOther" className="block text-sm font-medium text-gray-700">{translations['specifyColor'] || 'Specify Color'}</label>
+              <input
+                type="text"
+                id="vehicleColorOther"
+                name="vehicleColorOther"
+                value={vehicleInfo.colorOther || ''}
+                onChange={handleChange}
+                required
+                className={inputClassName}
+              />
+            </div>
+          )}
           <div>
-            <label htmlFor="vehiclePicture" className="block text-sm font-medium text-gray-700">{translations['vehiclePicture'] || 'Vehicle Picture'}</label>
+            <label htmlFor="vehiclePicture" className="block text-sm font-medium text-gray-700">{translations['picture'] || 'Vehicle Picture'}</label>
             <input
               type="file"
               id="vehiclePicture"
@@ -223,6 +279,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
               accept="image/*"
               className={fileInputClassName}
             />
+            {vehiclePictureFile && <p className="mt-1 text-sm text-gray-500">{vehiclePictureFile.name}</p>}
           </div>
         </div>
       </section>

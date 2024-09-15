@@ -19,7 +19,7 @@ export default function RideOfferForm({ translations, isLoggedIn, driverInfo, ve
       make: '',
       model: '',
       color: '',
-      picture: undefined,
+      picture: null,
     },
     ridePreferences: {
       smoking: false,

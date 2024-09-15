@@ -11,7 +11,8 @@ export type VehicleInfo = {
     make: string;
     model: string;
     color: string;
-    picture?: File;
+    colorOther?: string;
+    picture: File | string | null;
 }
 
 export type RidePreferences = {
@@ -59,10 +60,6 @@ export type Ride = {
   price: string;
   seats: number;
   driverId: string;
-  vehicleInfo: {
-    make: string;
-    model: string;
-    color: string;
-  };
+  vehicleInfo: VehicleInfo;
   ridePreferences: RidePreferences;
 }
