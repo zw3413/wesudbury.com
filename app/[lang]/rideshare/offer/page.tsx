@@ -64,7 +64,12 @@ export default async function OfferRide({ params: { lang } }: { params: { lang: 
     'vehicleDocumentsUploadRemoveSuccess': t('rideshare.form.vehicleDocumentsUploadRemoveSuccess'),
     'vehicleDocumentsUploadRemoveError': t('rideshare.form.vehicleDocumentsUploadRemoveError'),
     'passwordMismatch': t('rideshare.form.passwordMismatch'),
-    'vehiclePicture': t('rideshare.form.vehiclePicture'),
+    'rideDetails': t('rideshare.form.rideDetails'),
+    'ridePreferences': t('rideshare.form.ridePreferences'),
+    'smoking': t('rideshare.form.smoking'),
+    'petFriendly': t('rideshare.form.petFriendly'),
+    'preferredPassengerGender': t('rideshare.form.preferredPassengerGender'),
+    'maxDetourDistance': t('rideshare.form.maxDetourDistance'),
   }
 
   return (
