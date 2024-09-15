@@ -1,0 +1,93 @@
+{
+  "welcome": "Welcome to WeSudbury",
+  "description": "Your comprehensive guide to life in Sudbury",
+  "lifestyle": {
+    "title": "Lifestyle",
+    "shopping": "Local Shopping Guide",
+    "dining": "Restaurant Reviews",
+    "housing": "Housing Information"
+  },
+  "rideshare": {
+    "title": "Rideshare",
+    "description": "Share rides, save money, and reduce traffic. Join our ridesharing community today!",
+    "cta": "Start Ridesharing",
+    "offerRide": "Offer a Ride",
+    "requestRide": "Request a Ride",
+    "offerDescription": "Are you driving somewhere? Offer a ride and share the costs!",
+    "requestDescription": "Need a ride? Find drivers heading your way!",
+    "offer": "Offer a Ride",
+    "request": "Request a Ride",
+    "availableRides": "Available Rides",
+    "noRidesAvailable": "No rides are currently available. Check back later or post a ride request!",
+    "form": {
+      "from": "From",
+      "to": "To",
+      "date": "Date",
+      "time": "Time",
+      "vehicleType": "Vehicle Type",
+      "seats": "Available Seats",
+      "price": "Price per Seat",
+      "routine": "Ride Routine",
+      "frequency": "Frequency",
+      "notes": "Additional Notes",
+      "submit": "Offer Ride",
+      "selectVehicle": "Select Vehicle Type",
+      "car": "Car",
+      "suv": "SUV",
+      "van": "Van",
+      "oneTime": "One-time",
+      "recurring": "Recurring",
+      "selectFrequency": "Select Frequency",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "weekdays": "Weekdays"
+    }
+  },
+  "newcomer": {
+    "title": "Newcomer's Guide",
+    "essentials": "Essential Information",
+    "culture": "Local Culture & Customs",
+    "weather": "Weather Preparedness"
+  },
+  "featuredContent": {
+    "title": "Featured Content",
+    "image1Alt": "Featured image 1",
+    "title1": "Best Coffee Shops in Sudbury",
+    "description1": "Discover the top spots for your caffeine fix",
+    "image2Alt": "Featured image 2",
+    "title2": "Hiking Trails Around the City",
+    "description2": "Explore nature just minutes from downtown"
+  },
+  "cta": {
+    "title": "Join Our Community",
+    "description": "Sign up to get personalized recommendations and connect with other Sudbury residents",
+    "button": "Sign Up Now"
+  },
+  "usefulLinks": {
+    "title": "Useful Links",
+    "cityWebsite": {
+      "title": "City of Sudbury Official Website",
+      "url": "https://www.greatersudbury.ca/"
+    },
+    "publicTransport": {
+      "title": "Sudbury Transit",
+      "url": "https://www.greatersudbury.ca/live/transit/"
+    },
+    "healthServices": {
+      "title": "Health Sciences North",
+      "url": "https://hsnsudbury.ca/"
+    },
+    "localNews": {
+      "title": "Sudbury.com",
+      "url": "https://www.sudbury.com/"
+    },
+    "events": {
+      "title": "Sudbury Events",
+      "url": "https://www.sudburyevents.ca/"
+    },
+    "emergencyServices": {
+      "title": "Emergency Services",
+      "url": "https://www.greatersudbury.ca/live/emergency-services/"
+    }
+  }
+}

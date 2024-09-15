@@ -1,0 +1,10 @@
+{
+  "welcome": "Bienvenue à WeSudbury",
+  "description": "Votre guide pour la vie à Sudbury",
+  "nav": {
+    "home": "Accueil",
+    "lifestyle": "Mode de vie",
+    "map": "Carte",
+    "rideshare": "Covoiturage"
+  }
+}

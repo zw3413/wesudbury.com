@@ -1,0 +1,16 @@
+{
+  "title": "Rideshare",
+  "form": {
+    "type": "Ride Type",
+    "offer": "Offer a Ride",
+    "request": "Request a Ride",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "time": "Time",
+    "seats": "Available Seats",
+    "price": "Price per Seat ($)",
+    "description": "Additional Information",
+    "submit": "Submit"
+  }
+}
