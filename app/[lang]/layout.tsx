@@ -8,7 +8,7 @@ export default async function LangLayout({
   children: React.ReactNode
   params: { lang: string }
 }) {
-  const { t } = await useTranslation(lang)
+  const { t } = await useTranslation(lang, 'common')
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Loader } from '@googlemaps/js-api-loader'
 
 type RideOfferFormProps = {
   translations: {
@@ -22,6 +23,43 @@ export default function RideOfferForm({ translations }: RideOfferFormProps) {
     notes: '',
   })
 
+  const autocompleteFromRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const autocompleteToRef = useRef<google.maps.places.Autocomplete | null>(null)
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+      version: 'weekly',
+      libraries: ['places']
+    })
+
+    loader.load().then(() => {
+      const options = {
+        componentRestrictions: { country: 'ca' },
+        fields: ['address_components', 'geometry', 'name'],
+        types: ['geocode']
+      }
+
+      const fromInput = document.getElementById('from') as HTMLInputElement
+      const toInput = document.getElementById('to') as HTMLInputElement
+
+      autocompleteFromRef.current = new google.maps.places.Autocomplete(fromInput, options)
+      autocompleteToRef.current = new google.maps.places.Autocomplete(toInput, options)
+
+      autocompleteFromRef.current.addListener('place_changed', () => handlePlaceSelect('from'))
+      autocompleteToRef.current.addListener('place_changed', () => handlePlaceSelect('to'))
+    })
+  }, [])
+
+  const handlePlaceSelect = (field: 'from' | 'to') => {
+    const autocomplete = field === 'from' ? autocompleteFromRef.current : autocompleteToRef.current
+    const place = autocomplete?.getPlace()
+
+    if (place && place.name) {
+      setFormData(prev => ({ ...prev, [field]: place.name }))
+    }
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -33,16 +71,50 @@ export default function RideOfferForm({ translations }: RideOfferFormProps) {
     console.log(formData)
   }
 
+  const commonLocations = [
+    { name: 'Laurentian University', address: '935 Ramsey Lake Rd, Sudbury, ON P3E 2C6' },
+    { name: 'Science North', address: '100 Ramsey Lake Rd, Sudbury, ON P3E 5S9' },
+    { name: 'New Sudbury Centre', address: '1349 Lasalle Blvd, Sudbury, ON P3A 1Z2' },
+  ]
+
+  const setCommonLocation = (address: string, field: 'from' | 'to') => {
+    setFormData(prev => ({ ...prev, [field]: address }))
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-[rgb(245,247,250)] p-8 rounded-lg shadow-md">
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="from" className="block text-sm font-medium text-[rgb(54,89,108)]">{translations['from']}</label>
           <input type="text" id="from" name="from" value={formData.from} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 text-[rgb(33,41,49)]" />
+          <div className="mt-2 flex flex-wrap gap-2">
+            {commonLocations.map((location, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setCommonLocation(location.address, 'from')}
+                className="text-xs bg-[rgb(255,183,77)] text-[rgb(33,41,49)] px-2 py-1 rounded"
+              >
+                {location.name}
+              </button>
+            ))}
+          </div>
         </div>
         <div>
           <label htmlFor="to" className="block text-sm font-medium text-[rgb(54,89,108)]">{translations['to']}</label>
           <input type="text" id="to" name="to" value={formData.to} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 text-[rgb(33,41,49)]" />
+          <div className="mt-2 flex flex-wrap gap-2">
+            {commonLocations.map((location, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setCommonLocation(location.address, 'to')}
+                className="text-xs bg-[rgb(255,183,77)] text-[rgb(33,41,49)] px-2 py-1 rounded"
+              >
+                {location.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

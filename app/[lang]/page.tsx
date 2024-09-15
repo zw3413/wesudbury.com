@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export default async function Home({ params: { lang } }: { params: { lang: string } }) {
-  const { t } = await useTranslation(lang)
+  const { t } = await useTranslation(lang, 'common')
 
   return (
     <div className="container mx-auto px-4 py-8 flex flex-col min-h-screen bg-[rgb(250,252,255)]">

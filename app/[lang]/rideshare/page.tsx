@@ -2,7 +2,7 @@ import { useTranslation } from '@/lib/i18n'
 import Link from 'next/link'
 
 export default async function Rideshare({ params: { lang } }: { params: { lang: string } }) {
-  const { t } = await useTranslation(lang)
+  const { t } = await useTranslation(lang, 'common')
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[rgb(250,252,255)]">

@@ -40,7 +40,8 @@
       "selectFrequency": "Select Frequency",
       "daily": "Daily",
       "weekly": "Weekly",
-      "weekdays": "Weekdays"
+      "weekdays": "Weekdays",
+      "maxPrice": "Maximum Price per Seat"
     }
   },
   "newcomer": {

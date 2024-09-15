@@ -2,7 +2,7 @@ import { useTranslation } from '@/lib/i18n'
 import RideOfferForm from '@/components/RideOfferForm'
 
 export default async function OfferRide({ params: { lang } }: { params: { lang: string } }) {
-  const { t } = await useTranslation(lang)
+  const { t } = await useTranslation(lang, 'common')
 
   const translations = {
     'offerRide': t('rideshare.offerRide'),
