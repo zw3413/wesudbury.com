@@ -53,14 +53,22 @@ export interface RideOfferFormProps {
 
 // New Ride type
 export type Ride = {
-  id: string;
-  from: string;
-  to: string;
+  key: string;
+  from_location: string;
+  to_location: string;
   date: string;
   time: string;
-  price: string;
+  estimated_travel_time: string;
+  flexible_departure: boolean;
+  max_detour_distance: number;
   seats: number;
-  driverId: string;
-  vehicleInfo: VehicleInfo;
-  ridePreferences: RidePreferences;
+  user_email: string;
+  price: string;
+  routine: string;
+  frequency: string;
+  notes: string;
+  smoking: boolean;
+  pet_friendly: boolean;
+  preferred_passenger_gender: string;
+  created_at: string;
 }

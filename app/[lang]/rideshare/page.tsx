@@ -1,10 +1,24 @@
 import { useTranslation } from '@/lib/i18n'
-import AvailableRides from '@/components/AvailableRides'
-import { mockRides } from '@/mockData/rides'
 import BackButton from '@/components/BackButton'
+import dynamic from 'next/dynamic'
+
+const AvailableRides = dynamic(() => import('@/components/AvailableRides'), { ssr: false })
 
 export default async function Rideshare({ params: { lang } }: { params: { lang: string } }) {
   const { t } = await useTranslation(lang, 'common')
+
+  // Create an array of translations that the client component might need
+  const translations = [
+    'date',
+    'time',
+    'price',
+    'availableSeats',
+    'viewDetails',
+    // Add any other translation keys used in AvailableRides
+  ].reduce((acc, key) => {
+    acc[key] = t(key)
+    return acc
+  }, {} as Record<string, string>)
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -23,7 +37,7 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
 
       <section className="bg-[rgb(245,247,250)] rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-6 text-[rgb(54,89,108)] text-center">{t('rideshare.availableRides')}</h2>
-        <AvailableRides rides={mockRides} t={t} lang={lang} />
+        <AvailableRides translations={translations} lang={lang} />
       </section>
     </div>
   )

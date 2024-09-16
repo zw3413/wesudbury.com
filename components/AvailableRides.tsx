@@ -1,34 +1,59 @@
-import React from 'react'
-import { Ride } from '../types'
-import Link from 'next/link'
-interface Props {
-  rides: Ride[];
-  t: (key: string) => string; // Change this line
-  lang: string;
+'use client';
+
+import { useState, useEffect, useCallback } from 'react'
+import { Ride } from '@/types'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
+interface AvailableRidesProps {
+  translations: Record<string, string>
+  lang: string
 }
 
-export default function AvailableRides({ rides, t, lang }: Props) {
-  if (rides.length === 0) {
-    return <p className="text-center text-[rgb(33,41,49)]">{t('noRidesAvailable')}</p>
-  }
+export default function AvailableRides({ translations, lang }: AvailableRidesProps) {
+  const [rides, setRides] = useState<Ride[]>([])
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+
+  const fetchRides = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/rides?page=${page}&limit=10`)
+      const data = await response.json()
+
+      if (data.rides.length === 0) {
+        setHasMore(false)
+      } else {
+        setRides(prevRides => [...prevRides, ...data.rides])
+        setPage(prevPage => prevPage + 1)
+      }
+    } catch (error) {
+      console.error('Error fetching rides:', error)
+    }
+  }, [page])
+
+  useEffect(() => {
+    console.log('first time loading rides')
+    fetchRides()
+  }, [fetchRides])
 
   return (
-    <div className="space-y-4">
+    <InfiniteScroll
+      dataLength={rides.length}
+      next={fetchRides}
+      hasMore={hasMore}
+      loader={<h4>Loading...</h4>}
+    >
       {rides.map((ride) => (
-        <div key={ride.id} className="bg-white p-4 rounded-lg shadow">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-[rgb(54,89,108)]">{ride.from} → {ride.to}</h3>
-            <span className="text-[rgb(255,183,77)] font-bold">${ride.price}</span>
-          </div>
-          <div className="text-sm text-[rgb(33,41,49)]">
-            <p>{ride.date} at {ride.time}</p>
-            <p>{ride.seats} {t('seatsAvailable')}</p>
-          </div>
-          <Link href={`/${lang}/rideshare/ride/${ride.id}`} className="mt-2 inline-block text-[rgb(54,89,108)] hover:text-[rgb(255,183,77)]">
-            {t('viewDetails')}
-          </Link>
+        <div key={ride.key} className="bg-white rounded-lg shadow-md p-4 mb-4">
+          <h3 className="text-xl font-semibold mb-2">{ride.from_location} to {ride.to_location}</h3>
+          <p>{translations['date']}: {ride.date}</p>
+          <p>{translations['time']}: {ride.time}</p>
+          <p>{translations['price']}: ${ride.price}</p>
+          <p>{translations['availableSeats']}: {ride.seats}</p>
+          <a href={`/${lang}/rideshare/ride/${ride.key}`} className="text-blue-500 hover:underline">
+            {translations['viewDetails']}
+          </a>
         </div>
       ))}
-    </div>
+    </InfiniteScroll>
   )
 }
