@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { RideDetails, RidePreferences } from '../types'
+import { Loader } from '@googlemaps/js-api-loader'
 
 interface Props {
   initialRideDetails: RideDetails;
@@ -10,9 +11,104 @@ interface Props {
   };
 }
 
+const frequentlyUsedAddresses = [
+  "Laurentian University, Sudbury, ON",
+  "Science North, Sudbury, ON",
+  "New Sudbury Centre, Sudbury, ON",
+  "Health Sciences North, Sudbury, ON",
+  "Cambrian College, Sudbury, ON"
+];
+
 export default function RideDetailsForm({ initialRideDetails, initialRidePreferences, onSubmit, translations }: Props) {
   const [rideDetails, setRideDetails] = useState(initialRideDetails)
   const [ridePreferences, setRidePreferences] = useState(initialRidePreferences)
+  const [showMap, setShowMap] = useState(false)
+  const [currentField, setCurrentField] = useState<'from' | 'to' | null>(null)
+
+  const mapRef = useRef<google.maps.Map | null>(null)
+  const fromAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const toAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+      version: "weekly",
+      libraries: ["places"]
+    });
+
+    loader.load().then(() => {
+      initializeAutocomplete('from')
+      initializeAutocomplete('to')
+      initializeMap()
+    });
+  }, []);
+
+  const initializeAutocomplete = (field: 'from' | 'to') => {
+    const input = document.getElementById(`${field}-input`) as HTMLInputElement
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ['geocode'],
+      componentRestrictions: { country: 'ca' },
+    })
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      if (place.geometry) {
+        setRideDetails(prev => ({
+          ...prev,
+          [field]: place.formatted_address || '',
+        }))
+      }
+    })
+
+    if (field === 'from') fromAutocompleteRef.current = autocomplete
+    else toAutocompleteRef.current = autocomplete
+  }
+
+  const initializeMap = () => {
+    const mapElement = document.getElementById('map')
+    if (mapElement) {
+      mapRef.current = new google.maps.Map(mapElement, {
+        center: { lat: 46.4917, lng: -80.9930 }, // Sudbury coordinates
+        zoom: 12,
+      })
+    }
+  }
+
+  const handleAddressSelect = (address: string, field: 'from' | 'to') => {
+    setRideDetails(prev => ({ ...prev, [field]: address }))
+    const input = document.getElementById(`${field}-input`) as HTMLInputElement
+    input.value = address
+    const autocomplete = field === 'from' ? fromAutocompleteRef.current : toAutocompleteRef.current
+    if (autocomplete) {
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === 'OK' && results && results[0]) {
+          const place = results[0]
+          autocomplete.set('place', place)
+          if (mapRef.current && place.geometry?.location) {
+            mapRef.current.setCenter(place.geometry.location)
+            new google.maps.Marker({
+              map: mapRef.current,
+              position: place.geometry.location,
+            })
+          }
+        }
+      })
+    }
+  }
+
+  const handleMapClick = (event: google.maps.MapMouseEvent) => {
+    if (event.latLng && currentField) {
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode({ location: event.latLng }, (results, status) => {
+        if (status === 'OK' && results && results[0]) {
+          setRideDetails(prev => ({ ...prev, [currentField]: results[0].formatted_address }))
+          const input = document.getElementById(`${currentField}-input`) as HTMLInputElement
+          input.value = results[0].formatted_address || ''
+        }
+      })
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,30 +141,48 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
       <section>
         <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['rideDetails']}</h2>
         <div className="space-y-4">
-          <div>
-            <label htmlFor="from" className="block text-sm font-medium text-gray-200">{translations['from']}</label>
-            <input
-              type="text"
-              id="from"
-              name="from"
-              value={rideDetails.from}
-              onChange={handleRideDetailsChange}
-              required
-              className={inputClassName}
-            />
-          </div>
-          <div>
-            <label htmlFor="to" className="block text-sm font-medium text-gray-200">{translations['to']}</label>
-            <input
-              type="text"
-              id="to"
-              name="to"
-              value={rideDetails.to}
-              onChange={handleRideDetailsChange}
-              required
-              className={inputClassName}
-            />
-          </div>
+          {['from', 'to'].map((field) => (
+            <div key={field}>
+              <label htmlFor={`${field}-input`} className="block text-sm font-medium text-gray-200">
+                {translations[field]}
+              </label>
+              <input
+                type="text"
+                id={`${field}-input`}
+                name={field}
+                value={rideDetails[field as 'from' | 'to']}
+                onChange={handleRideDetailsChange}
+                required
+                className={inputClassName}
+                placeholder={`Enter ${field} address`}
+                onFocus={() => setCurrentField(field as 'from' | 'to')}
+              />
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMap(true)}
+                  className="text-sm text-[rgb(255,183,77)] hover:text-[rgb(255,163,57)]"
+                >
+                  Select on map
+                </button>
+              </div>
+              <div className="mt-2">
+                <p className="text-sm text-gray-300 mb-1">Frequently used:</p>
+                <div className="flex flex-wrap gap-2">
+                  {frequentlyUsedAddresses.map((address) => (
+                    <button
+                      key={address}
+                      type="button"
+                      onClick={() => handleAddressSelect(address, field as 'from' | 'to')}
+                      className="text-xs bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600"
+                    >
+                      {address}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
           <div>
             <label htmlFor="date" className="block text-sm font-medium text-gray-200">{translations['date']}</label>
             <input
@@ -182,6 +296,21 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
           </div>
         </div>
       </section>
+
+      {showMap && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg w-full max-w-3xl">
+            <div id="map" style={{ height: '400px', width: '100%' }}></div>
+            <button
+              type="button"
+              onClick={() => setShowMap(false)}
+              className="mt-4 bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-2 px-4 rounded"
+            >
+              Close Map
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Ride Preferences Section */}
       <section>
