@@ -2,7 +2,7 @@ import { useTranslation } from '@/lib/i18n'
 import { createClient } from '@supabase/supabase-js'
 import BackButton from '@/components/BackButton'
 import ShareButton from '@/components/ShareButton'
-import { FaCar, FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaRoute, FaSmoking, FaDog, FaVenusMars, FaRulerHorizontal } from 'react-icons/fa'
+import {  FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars, FaRulerHorizontal } from 'react-icons/fa'
 import { QRCodeSVG } from 'qrcode.react';
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,7 +46,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
             <div className="container mx-auto px-4 py-8">
                 <BackButton url={`/${lang}/rideshare`} />
-                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div id="ride-details-card" className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
                     <div className="bg-[rgb(54,89,108)] text-white p-6">
                         <h1 className="text-3xl font-bold mb-2">{t('rideshare.form.rideDetails')}</h1>
                         <p className="text-xl">{rideDetails.from_location} → {rideDetails.to_location}</p>
@@ -81,7 +81,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                             <a href={`/${lang}/rideshare/book/${ride_id}`} className="block w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] text-center py-3 rounded-lg font-semibold transition duration-300">
                                 {t('rideshare.form.bookRide')}
                             </a>
-                            <ShareButton  title={shareTitle} text={shareText} url={shareUrl} />
+                            <ShareButton title={shareTitle} text={shareText} url={shareUrl} cardId="ride-details-card" />
                         </div>
                         <div className="w-1/2 flex justify-end">
 
