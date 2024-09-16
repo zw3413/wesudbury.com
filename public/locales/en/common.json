@@ -36,7 +36,9 @@
         "male": "Male",
         "female": "Female"
       }
-    }
+    },
+    "shareTitle": "Ride Share on WeSudbury",
+    "shareText": "Check out this ride from"
   },
   "newcomer": {
     "title": "Newcomer's Guide",

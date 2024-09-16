@@ -18,7 +18,9 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
     try {
       const response = await fetch(`/api/rides?page=${page}&limit=10`)
       const data = await response.json()
-
+      if(!data || !data.rides) {
+        return
+      }
       if (data.rides.length === 0) {
         setHasMore(false)
       } else {
