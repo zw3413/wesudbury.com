@@ -2,8 +2,10 @@ import { useTranslation } from '@/lib/i18n'
 import { createClient } from '@supabase/supabase-js'
 import BackButton from '@/components/BackButton'
 import ShareButton from '@/components/ShareButton'
-import {  FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars, FaRulerHorizontal } from 'react-icons/fa'
+import BookButton from '@/components/BookButton'
+import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars } from 'react-icons/fa'
 import { QRCodeSVG } from 'qrcode.react';
+
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -13,7 +15,7 @@ async function getRideDetails(rideId: string) {
     const decodedKey = decodeURIComponent(rideId);
     const { data, error } = await supabase
         .from('rides')
-        .select('*')
+        .select('key, rideinfo, created_at')
         .eq('key', decodedKey)
         .single()
 
@@ -21,13 +23,21 @@ async function getRideDetails(rideId: string) {
         console.error('Error fetching ride details:', error)
         return null
     }
-    return data
+
+    // Combine the top-level fields with the rideinfo contents
+    return {
+        key: data.key,
+        created_at: data.created_at,
+        ...data.rideinfo
+    }
 }
 
 export default async function RideDetailsPage({ params: { lang, ride_id } }: { params: { lang: string, ride_id: string } }) {
     const { t } = await useTranslation(lang, 'common')
     const rideDetails = await getRideDetails(ride_id)
-
+    const translations = {
+        bookRide: t('rideshare.form.bookRide'),
+    }
     if (!rideDetails) {
         return (
             <div className="min-h-screen bg-[rgb(250,252,255)] flex items-center justify-center">
@@ -46,48 +56,59 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
             <div className="container mx-auto px-4 py-8">
                 <BackButton url={`/${lang}/rideshare`} />
-                <div id="ride-details-card" className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div className="bg-[rgb(54,89,108)] text-white p-6">
-                        <h1 className="text-3xl font-bold mb-2">{t('rideshare.form.rideDetails')}</h1>
-                        <p className="text-xl">{rideDetails.from_location} → {rideDetails.to_location}</p>
-                    </div>
-                    <div className="p-6 space-y-6">
-                        <div className="grid grid-cols-2 gap-4">
-                            <DetailItem icon={<FaCalendarAlt />} label={t('rideshare.form.date')} value={rideDetails.date} />
-                            <DetailItem icon={<FaClock />} label={t('rideshare.form.time')} value={rideDetails.time} />
-                            <DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />
-                            <DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />
-                            {/* <DetailItem icon={<FaRoute />} label={t('rideshare.form.estimatedTravelTime')} value={rideDetails.estimated_travel_time} />
-                            <DetailItem icon={<FaCar />} label={t('rideshare.form.flexibleDeparture')} value={rideDetails.flexible_departure ? t('yes') : t('no')} /> */}
+                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div id="ride-details-card">
+                        <div className="bg-[rgb(54,89,108)] text-white p-6 justify-around space-x-2 flex">
+                            <div className=" ">
+                                <h1 className="text-3xl font-bold mb-2">{t('rideshare.form.rideDetails')}</h1>
+                                <p className="text-xl">{rideDetails.from_city} → {rideDetails.to_city}</p>
+                            </div>
+                            <div className="flex justify-end place-content-center items-center">
+                                <QRCodeSVG value={shareUrl} size={100} />
+                            </div>
                         </div>
-                        <div className="border-t pt-4">
-                            <h2 className="text-xl font-semibold mb-3 text-[rgb(54,89,108)]">{t('rideshare.form.preferences')}</h2>
+                        <div className="p-6 space-y-6">
                             <div className="grid grid-cols-2 gap-4">
-                                <DetailItem icon={<FaSmoking />} label={t('rideshare.form.smokingAllowed')} value={rideDetails.smoking ? t('yes') : t('no')} />
-                                <DetailItem icon={<FaDog />} label={t('rideshare.form.petFriendly')} value={rideDetails.pet_friendly ? t('yes') : t('no')} />
-                                <DetailItem icon={<FaVenusMars />} label={t('rideshare.form.preferredPassengerGender')} value={t(`rideshare.form.gender.${rideDetails.preferred_passenger_gender}`)} />
-                                <DetailItem icon={<FaRulerHorizontal />} label={t('rideshare.form.maxDetourDistance')} value={`${rideDetails.max_detour_distance} km`} />
+                                <DetailItem icon={<FaCalendarAlt />} label={t('rideshare.form.date')} value={rideDetails.date} />
+                                <DetailItem icon={<FaClock />} label={t('rideshare.form.time')} value={rideDetails.time} />
+                                
+                                {rideDetails.seats >0 && (<DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />)}
+                                
+                                {rideDetails.price && (
+                                    <DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />
+                                )}
+
                             </div>
                         </div>
-                        {rideDetails.notes && (
-                            <div className="border-t pt-4">
-                                <h2 className="text-xl font-semibold mb-2 text-[rgb(54,89,108)]">{t('rideshare.form.notes')}</h2>
-                                <p className="text-[rgb(33,41,49)]">{rideDetails.notes}</p>
-                            </div>
-                        )}
                     </div>
-                    <div className="bg-[rgb(245,247,250)] p-6 justify-around space-x-2 flex ">
-                        <div className="w-1/2 flex flex-col space-y-2 place-content-around">
-                            <a href={`/${lang}/rideshare/book/${ride_id}`} className="block w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] text-center py-3 rounded-lg font-semibold transition duration-300">
-                                {t('rideshare.form.bookRide')}
-                            </a>
-                            <ShareButton title={shareTitle} text={shareText} url={shareUrl} cardId="ride-details-card" />
+                    <div className="border-t pt-4 p-6">
+                        <h2 className="text-xl font-semibold mb-3 text-[rgb(54,89,108)]">{t('rideshare.form.preferences')}</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailItem icon={<FaSmoking />} label={t('rideshare.form.smokingAllowed')} value={rideDetails.smoking ? t('yes') : t('no')} />
+                            <DetailItem icon={<FaDog />} label={t('rideshare.form.petFriendly')} value={rideDetails.pet_friendly ? t('yes') : t('no')} />
+                            <DetailItem icon={<FaVenusMars />} label={t('rideshare.form.preferredPassengerGender')} value={t(`rideshare.form.gender.${rideDetails.preferred_passenger_gender}`)} />
+                            {/* <DetailItem icon={<FaRulerHorizontal />} label={t('rideshare.form.maxDetourDistance')} value={`${rideDetails.max_detour_distance} km`} /> */}
                         </div>
-                        <div className="w-1/2 flex justify-end">
-
-                            <QRCodeSVG value={shareUrl} size={128} />
-
+                    </div>
+                    {rideDetails.notes && (
+                        <div className="border-t pt-4 p-6">
+                            <h2 className="text-xl font-semibold mb-2 text-[rgb(54,89,108)]">{t('rideshare.form.notes')}</h2>
+                            <p className="text-[rgb(33,41,49)]">{rideDetails.notes}</p>
                         </div>
+                    )}
+
+
+                </div>
+
+                <div className=" p-6 justify-around space-x-2 flex ">
+                    <div className="w-1/2 flex flex-col space-y-2 place-content-around">
+                       <BookButton rideId={ride_id} translations={translations} lang={lang}/>
+
+                    </div>
+                    <div className="w-1/2 flex justify-end">
+
+                        <ShareButton title={shareTitle} text={shareText} url={shareUrl} cardId="ride-details-card" />
+
                     </div>
                 </div>
             </div>

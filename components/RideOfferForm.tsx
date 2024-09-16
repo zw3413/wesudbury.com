@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { FormData, RideOfferFormProps } from '../types'
 import DriverVehicleInfoForm from './DriverVehicleInfoForm'
 import RideDetailsForm from './RideDetailsForm'
-import { RideDetails, RidePreferences } from '../types'
+import { RideDetails, RidePreferences, DriverInfo, VehicleInfo } from '../types'
 import { useRouter } from 'next/navigation'
 
 
@@ -19,31 +19,31 @@ export default function RideOfferForm({ lang,translations, isLoggedIn, driverInf
       email: '',
       licenseVerified: false,
       password: '',
-    },
+    } as DriverInfo,
     vehicleInfo: vehicleInfo || {
       make: '',
       model: '',
       color: '',
       picture: null,
-    },
+    } as VehicleInfo,
     ridePreferences: {
       smoking: false,
       petFriendly: false,
       preferredPassengerGender: 'any',
       maxDetourDistance: 0,
-    },
+    } as RidePreferences,
     rideDetails: {
-      from: '',
-      to: '',
+      from_city: 'Sudbury',
+      to_city: 'Toronto',
       date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow's date
       time: '08:00', // Set to 8:00 AM
       estimatedTravelTime: '',
       flexibleDeparture: false,
-      seats: 1,
+      seats: 0,
       price: '',
       routine: 'oneTime',
       notes: '',
-    },
+    } as RideDetails,
   })
 
   const handleDriverVehicleInfoSubmit = (driverInfo: FormData['driverInfo'], vehicleInfo: FormData['vehicleInfo']) => {

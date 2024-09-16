@@ -106,17 +106,17 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
     }
   }
 
-  const inputClassName = "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
-  const selectClassName = "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+  const inputClassName = "mt-1 block w-full rounded-md border-gray-600  shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+  const selectClassName = "mt-1 block w-full rounded-md border-gray-600  shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-[rgb(54,89,108)] p-8 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto ] p-8 rounded-lg shadow-md">
       {/* Driver Information Section */}
       <section>
         <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['driverInfo'] || 'Driver Information'}</h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="driverName" className="block text-sm font-medium text-gray-200">{translations['driverName'] || 'Name'}</label>
+            <label htmlFor="driverName" className="block text-sm font-medium text-gray-300">{translations['driverName'] || 'Name'}</label>
             <input
               type="text"
               id="driverName"
@@ -128,7 +128,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             />
           </div>
           <div>
-            <label htmlFor="driverPhoneNumber" className="block text-sm font-medium text-gray-200">* {translations['driverPhoneNumber'] || 'Phone Number'}</label>
+            <label htmlFor="driverPhoneNumber" className="block text-sm font-medium text-gray-300">* {translations['driverPhoneNumber'] || 'Phone Number'}</label>
             <input
               type="tel"
               id="driverPhoneNumber"
@@ -140,7 +140,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             />
           </div>
           <div>
-            <label htmlFor="driverEmail" className="block text-sm font-medium text-gray-200">* {translations['driverEmail'] || 'Email'}</label>
+            <label htmlFor="driverEmail" className="block text-sm font-medium text-gray-300">* {translations['driverEmail'] || 'Email'}</label>
             <input
               type="email"
               id="driverEmail"
@@ -159,7 +159,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['vehicleInfo'] || 'Vehicle Information'}</h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="vehicleMake" className="block text-sm font-medium text-gray-200">{translations['make'] || 'Make'}</label>
+            <label htmlFor="vehicleMake" className="block text-sm font-medium text-gray-300">{translations['make'] || 'Make'}</label>
             <select
               id="vehicleMake"
               name="vehicleMake"
@@ -175,7 +175,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             </select>
           </div>
           <div>
-            <label htmlFor="vehicleModel" className="block text-sm font-medium text-gray-200">{translations['model'] || 'Model'}</label>
+            <label htmlFor="vehicleModel" className="block text-sm font-medium text-gray-300">{translations['model'] || 'Model'}</label>
             <select
               id="vehicleModel"
               name="vehicleModel"
@@ -191,7 +191,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             </select>
           </div>
           <div>
-            <label htmlFor="vehicleColor" className="block text-sm font-medium text-gray-200">{translations['color'] || 'Color'}</label>
+            <label htmlFor="vehicleColor" className="block text-sm font-medium text-gray-300">{translations['color'] || 'Color'}</label>
             <select
               id="vehicleColor"
               name="vehicleColor"
@@ -209,7 +209,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
           </div>
           {vehicleInfo.color === 'other' && (
             <div>
-              <label htmlFor="vehicleColorOther" className="block text-sm font-medium text-gray-200">{translations['specifyColor'] || 'Specify Color'}</label>
+              <label htmlFor="vehicleColorOther" className="block text-sm font-medium text-gray-300">{translations['specifyColor'] || 'Specify Color'}</label>
               <input
                 type="text"
                 id="vehicleColorOther"

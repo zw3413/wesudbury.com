@@ -18,8 +18,8 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
     try {
       const response = await fetch(`/api/rides?page=${page}&limit=10`)
       const data = await response.json()
-      if(!data || !data.rides) {
-        return
+      if (!data || !data.rides) {
+        return []
       }
       if (data.rides.length === 0) {
         setHasMore(false)
@@ -28,7 +28,8 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
         setPage(prevPage => prevPage + 1)
       }
     } catch (error) {
-      console.error('Error fetching rides:', error)
+      console.log('Error fetching rides:', error)
+      return []
     }
   }, [page])
 
@@ -43,7 +44,7 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
       next={fetchRides}
       hasMore={hasMore}
       loader={<h4>Loading...</h4>}
-    >
+      endMessage={<p>No more rides to load.</p>}>
       {rides.map((ride) => (
         <div key={ride.key} className="bg-white rounded-lg shadow-md p-4 mb-4">
           <h3 className="text-xl font-semibold mb-2">{ride.from_location} to {ride.to_location}</h3>

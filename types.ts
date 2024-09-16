@@ -23,8 +23,18 @@ export type RidePreferences = {
 }
 
 export type RideDetails = {
-  from: string;
-  to: string;
+  from_city: string;
+  to_city: string;
+  from_address: string;
+  to_address: string;
+  from_coordinates: {
+    lat: number;
+    lng: number;
+  };
+  to_coordinates: {
+    lat: number;
+    lng: number;
+  };
   date: string;
   time: string;
   estimatedTravelTime: string;
@@ -33,6 +43,7 @@ export type RideDetails = {
   price: string;
   routine: 'oneTime' | 'recurring';
   frequency?: string;
+  daysOfWeek?: string[];
   notes: string;
 }
 

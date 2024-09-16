@@ -53,7 +53,7 @@ export default function ShareButton({ title, text, url, cardId }: ShareButtonPro
     <div className="w-full">
       <button
         onClick={captureAndShare}
-        className="w-full flex items-center justify-center px-4 py-2 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
+        className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
       >
         <FaShare className="mr-2" />
         {isShared ? 'Shared!' : 'Share'}

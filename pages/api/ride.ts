@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const rideData = req.body
 
         // Validate the required fields
-        if (!rideData.key || !rideData.userEmail || !rideData.from || !rideData.to || !rideData.date || !rideData.time) {
+        if (!rideData.key || !rideData.userEmail || !rideData.from_city || !rideData.to_city || !rideData.date || !rideData.time) {
             return res.status(400).json({ error: 'Missing required fields' })
         }
 
@@ -21,23 +21,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 .from('rides')
                 .upsert({
                     key: rideData.key,
-                    user_email: rideData.userEmail,
-                    from_location: rideData.from,
-                    to_location: rideData.to,
-                    date: rideData.date,
-                    time: rideData.time,
-                    estimated_travel_time: rideData.estimatedTravelTime,
-                    flexible_departure: rideData.flexibleDeparture,
-                    seats: rideData.seats,
-                    price: rideData.price,
-                    routine: rideData.routine,
-                    frequency: rideData.frequency,
-                    notes: rideData.notes,
-                    smoking: rideData.smoking,
-                    pet_friendly: rideData.petFriendly,
-                    preferred_passenger_gender: rideData.preferredPassengerGender,
-                    max_detour_distance: rideData.maxDetourDistance,
-                    created_at: rideData.createdAt,
+                    rideinfo: {
+                        user_email: rideData.user_email,
+                        from_city: rideData.from_city,
+                        to_city: rideData.to_city,
+                        from_address: rideData.from_address,
+                        to_address: rideData.to_address,
+                        from_coordinates: rideData.from_coordinates,
+                        to_coordinates: rideData.to_coordinates,
+                        date: rideData.date,
+                        time: rideData.time,
+                        estimated_travel_time: rideData.estimatedTravelTime,
+                        flexible_departure: rideData.flexibleDeparture,
+                        seats: rideData.seats,
+                        price: rideData.price,
+                        routine: rideData.routine,
+                        frequency: rideData.frequency,
+                        days_of_week: rideData.daysOfWeek,
+                        notes: rideData.notes,
+                        smoking: rideData.smoking,
+                        pet_friendly: rideData.petFriendly,
+                        preferred_passenger_gender: rideData.preferredPassengerGender,
+                        max_detour_distance: rideData.maxDetourDistance,
+                        created_at: new Date().toISOString(),
+                    }
                 })
                 .select()
 
