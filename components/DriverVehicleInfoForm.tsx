@@ -34,8 +34,6 @@ const carModels: { [key: string]: string[] } = {
 export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicleInfo, onSubmit, translations }: Props) {
   const [driverInfo, setDriverInfo] = useState(initialDriverInfo)
   const [vehicleInfo, setVehicleInfo] = useState(initialVehicleInfo)
-  const [licenseFile, setLicenseFile] = useState<File | null>(null)
-  const [vehiclePictureFile, setVehiclePictureFile] = useState<File | null>(null)
 
   useEffect(() => {
     // Check if we have a saved email in localStorage
@@ -53,6 +51,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         const data = await response.json()
         setDriverInfo(data.driver_info)
         setVehicleInfo(data.vehicle_info)
+        console.log(data)
       }
     } catch (error) {
       console.error('Error fetching driver info:', error)
@@ -62,21 +61,12 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const formData = new FormData()
-      formData.append('driverInfo', JSON.stringify(driverInfo))
-      formData.append('vehicleInfo', JSON.stringify(vehicleInfo))
-      
-      if (licenseFile) {
-        formData.append('licenseFile', licenseFile)
-      }
-      
-      if (vehiclePictureFile) {
-        formData.append('vehiclePicture', vehiclePictureFile)
-      }
-
       const response = await fetch('/api/driver', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ driverInfo, vehicleInfo }),
       })
 
       if (response.ok) {
@@ -116,43 +106,29 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
     }
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (e.target.name === 'driverLicense') {
-        setLicenseFile(file)
-      } else if (e.target.name === 'vehiclePicture') {
-        setVehiclePictureFile(file)
-        setVehicleInfo(prev => ({ ...prev, picture: file }))
-      }
-    }
-  }
-
-  const inputClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 text-[rgb(33,41,49)] bg-white"
-  const selectClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 text-[rgb(33,41,49)] bg-white"
-  const checkboxClassName = "rounded border-gray-300 text-[rgb(54,89,108)] shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-offset-0 focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
-  const fileInputClassName = "mt-1 block w-full text-sm text-[rgb(33,41,49)] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[rgb(245,247,250)] file:text-[rgb(54,89,108)] hover:file:bg-[rgb(255,183,77)] hover:file:text-[rgb(33,41,49)]"
+  const inputClassName = "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+  const selectClassName = "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-[rgb(250,252,255)] p-8 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-[rgb(54,89,108)] p-8 rounded-lg shadow-md">
       {/* Driver Information Section */}
       <section>
-        <h2 className="text-xl font-semibold mb-4 text-[rgb(54,89,108)]">{translations['driverInfo'] || 'Driver Information'}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['driverInfo'] || 'Driver Information'}</h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="driverName" className="block text-sm font-medium text-gray-700">{translations['driverName'] || 'Name'}</label>
+            <label htmlFor="driverName" className="block text-sm font-medium text-gray-200">{translations['driverName'] || 'Name'}</label>
             <input
               type="text"
               id="driverName"
               name="driverName"
               value={driverInfo.name}
               onChange={handleChange}
-              required
+
               className={inputClassName}
             />
           </div>
           <div>
-            <label htmlFor="driverPhoneNumber" className="block text-sm font-medium text-gray-700">{translations['driverPhoneNumber'] || 'Phone Number'}</label>
+            <label htmlFor="driverPhoneNumber" className="block text-sm font-medium text-gray-200">* {translations['driverPhoneNumber'] || 'Phone Number'}</label>
             <input
               type="tel"
               id="driverPhoneNumber"
@@ -164,7 +140,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             />
           </div>
           <div>
-            <label htmlFor="driverEmail" className="block text-sm font-medium text-gray-700">{translations['driverEmail'] || 'Email'}</label>
+            <label htmlFor="driverEmail" className="block text-sm font-medium text-gray-200">* {translations['driverEmail'] || 'Email'}</label>
             <input
               type="email"
               id="driverEmail"
@@ -175,45 +151,21 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
               className={inputClassName}
             />
           </div>
-          <div>
-            <label htmlFor="driverLicense" className="block text-sm font-medium text-gray-700">{translations['driverLicense'] || 'Driver License'}</label>
-            <input
-              type="file"
-              id="driverLicense"
-              name="driverLicense"
-              onChange={handleFileChange}
-              accept="image/*,.pdf"
-              className={fileInputClassName}
-            />
-            {licenseFile && <p className="mt-1 text-sm text-gray-500">{licenseFile.name}</p>}
-          </div>
-          <div>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="driverLicenseVerified"
-                checked={driverInfo.licenseVerified}
-                onChange={handleChange}
-                className={checkboxClassName}
-              />
-              <span className="ml-2 text-sm text-gray-700">{translations['licenseVerified'] || 'License Verified'}</span>
-            </label>
-          </div>
         </div>
       </section>
 
       {/* Vehicle Information Section */}
       <section>
-        <h2 className="text-xl font-semibold mb-4 text-[rgb(54,89,108)]">{translations['vehicleInfo'] || 'Vehicle Information'}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['vehicleInfo'] || 'Vehicle Information'}</h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="vehicleMake" className="block text-sm font-medium text-gray-700">{translations['make'] || 'Make'}</label>
+            <label htmlFor="vehicleMake" className="block text-sm font-medium text-gray-200">{translations['make'] || 'Make'}</label>
             <select
               id="vehicleMake"
               name="vehicleMake"
               value={vehicleInfo.make}
               onChange={handleChange}
-              required
+              
               className={selectClassName}
             >
               <option value="">{translations['selectMake'] || 'Select Make'}</option>
@@ -223,13 +175,13 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             </select>
           </div>
           <div>
-            <label htmlFor="vehicleModel" className="block text-sm font-medium text-gray-700">{translations['model'] || 'Model'}</label>
+            <label htmlFor="vehicleModel" className="block text-sm font-medium text-gray-200">{translations['model'] || 'Model'}</label>
             <select
               id="vehicleModel"
               name="vehicleModel"
               value={vehicleInfo.model}
               onChange={handleChange}
-              required
+              
               className={selectClassName}
             >
               <option value="">{translations['selectModel'] || 'Select Model'}</option>
@@ -239,13 +191,13 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
             </select>
           </div>
           <div>
-            <label htmlFor="vehicleColor" className="block text-sm font-medium text-gray-700">{translations['color'] || 'Color'}</label>
+            <label htmlFor="vehicleColor" className="block text-sm font-medium text-gray-200">{translations['color'] || 'Color'}</label>
             <select
               id="vehicleColor"
               name="vehicleColor"
               value={vehicleInfo.color}
               onChange={handleChange}
-              required
+              
               className={selectClassName}
             >
               <option value="">{translations['selectColor'] || 'Select Color'}</option>
@@ -257,30 +209,18 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
           </div>
           {vehicleInfo.color === 'other' && (
             <div>
-              <label htmlFor="vehicleColorOther" className="block text-sm font-medium text-gray-700">{translations['specifyColor'] || 'Specify Color'}</label>
+              <label htmlFor="vehicleColorOther" className="block text-sm font-medium text-gray-200">{translations['specifyColor'] || 'Specify Color'}</label>
               <input
                 type="text"
                 id="vehicleColorOther"
                 name="vehicleColorOther"
                 value={vehicleInfo.colorOther || ''}
                 onChange={handleChange}
-                required
+                
                 className={inputClassName}
               />
             </div>
           )}
-          <div>
-            <label htmlFor="vehiclePicture" className="block text-sm font-medium text-gray-700">{translations['picture'] || 'Vehicle Picture'}</label>
-            <input
-              type="file"
-              id="vehiclePicture"
-              name="vehiclePicture"
-              onChange={handleFileChange}
-              accept="image/*"
-              className={fileInputClassName}
-            />
-            {vehiclePictureFile && <p className="mt-1 text-sm text-gray-500">{vehiclePictureFile.name}</p>}
-          </div>
         </div>
       </section>
 

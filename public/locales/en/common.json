@@ -8,7 +8,7 @@
     "housing": "Housing Information"
   },
   "rideshare": {
-    "title": "Rideshare",
+    "title": "Ride Share",
     "description": "Share rides, save money, and reduce traffic. Join our ridesharing community today!",
     "cta": "Start Ridesharing",
     "offerRide": "Offer a Ride",
@@ -75,7 +75,19 @@
       "purple": "Purple",
       "pink": "Pink",
       "selectMake": "Select Make",
-      "selectModel": "Select Model"
+      "selectModel": "Select Model",
+      "rideDetails": "Ride Details",
+      "ridePreferences": "Ride Preferences",
+      "smoking": "Smoking",
+      "petFriendly": "Pet Friendly",
+      "preferredPassengerGender": "Preferred Passenger Gender",
+      "maxDetourDistance": "Maximum Detour Distance",
+      "estimatedTravelTime": "Estimated Travel Time",
+      "flexibleDeparture": "Flexible Departure",
+      "smokingAllowed": "Smoking Allowed",
+      "any": "Any",
+      "male": "Male",
+      "female": "Female"
     }
   },
   "newcomer": {

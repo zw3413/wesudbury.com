@@ -1,12 +1,14 @@
 import { useTranslation } from '@/lib/i18n'
 import AvailableRides from '@/components/AvailableRides'
 import { mockRides } from '@/mockData/rides'
+import BackButton from '@/components/BackButton'
 
 export default async function Rideshare({ params: { lang } }: { params: { lang: string } }) {
   const { t } = await useTranslation(lang, 'common')
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <BackButton url={`/${lang}/`}/>
       <h1 className="text-4xl font-bold mb-8 text-[rgb(54,89,108)] text-center">{t('rideshare.title')}</h1>
       <p className="text-lg mb-8 text-center">{t('rideshare.description')}</p>
       

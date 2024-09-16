@@ -35,18 +35,18 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
     }))
   }
 
-  const inputClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 text-[rgb(33,41,49)] bg-white"
-  const selectClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 text-[rgb(33,41,49)] bg-white"
-  const checkboxClassName = "rounded border-gray-300 text-[rgb(54,89,108)] shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-offset-0 focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+  const inputClassName = "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+  const selectClassName = "mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+  const checkboxClassName = "rounded border-gray-600 text-[rgb(255,183,77)] bg-gray-700 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-offset-0 focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-[rgb(250,252,255)] p-8 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-[rgb(54,89,108)] p-8 rounded-lg shadow-md">
       {/* Ride Details Section */}
       <section>
-        <h2 className="text-xl font-semibold mb-4 text-[rgb(54,89,108)]">{translations['rideDetails'] || 'Ride Details'}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['rideDetails']}</h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="from" className="block text-sm font-medium text-gray-700">{translations['from'] || 'From'}</label>
+            <label htmlFor="from" className="block text-sm font-medium text-gray-200">{translations['from']}</label>
             <input
               type="text"
               id="from"
@@ -58,7 +58,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="to" className="block text-sm font-medium text-gray-700">{translations['to'] || 'To'}</label>
+            <label htmlFor="to" className="block text-sm font-medium text-gray-200">{translations['to']}</label>
             <input
               type="text"
               id="to"
@@ -70,7 +70,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">{translations['date'] || 'Date'}</label>
+            <label htmlFor="date" className="block text-sm font-medium text-gray-200">{translations['date']}</label>
             <input
               type="date"
               id="date"
@@ -82,7 +82,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="time" className="block text-sm font-medium text-gray-700">{translations['time'] || 'Time'}</label>
+            <label htmlFor="time" className="block text-sm font-medium text-gray-200">{translations['time']}</label>
             <input
               type="time"
               id="time"
@@ -94,7 +94,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="estimatedTravelTime" className="block text-sm font-medium text-gray-700">{translations['estimatedTravelTime'] || 'Estimated Travel Time'}</label>
+            <label htmlFor="estimatedTravelTime" className="block text-sm font-medium text-gray-200">{translations['estimatedTravelTime']}</label>
             <input
               type="text"
               id="estimatedTravelTime"
@@ -114,11 +114,11 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                 onChange={handleRideDetailsChange}
                 className={checkboxClassName}
               />
-              <span className="ml-2 text-sm text-gray-700">{translations['flexibleDeparture'] || 'Flexible Departure Time'}</span>
+              <span className="ml-2 text-sm text-gray-200">{translations['flexibleDeparture']}</span>
             </label>
           </div>
           <div>
-            <label htmlFor="seats" className="block text-sm font-medium text-gray-700">{translations['seats'] || 'Available Seats'}</label>
+            <label htmlFor="seats" className="block text-sm font-medium text-gray-200">{translations['seats']}</label>
             <input
               type="number"
               id="seats"
@@ -131,7 +131,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700">{translations['price'] || 'Price per Seat'}</label>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-200">{translations['price']}</label>
             <input
               type="text"
               id="price"
@@ -143,7 +143,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="routine" className="block text-sm font-medium text-gray-700">{translations['routine'] || 'Ride Routine'}</label>
+            <label htmlFor="routine" className="block text-sm font-medium text-gray-200">{translations['routine']}</label>
             <select
               id="routine"
               name="routine"
@@ -152,13 +152,13 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
               required
               className={selectClassName}
             >
-              <option value="oneTime">{translations['oneTime'] || 'One-time'}</option>
-              <option value="recurring">{translations['recurring'] || 'Recurring'}</option>
+              <option value="oneTime">{translations['oneTime']}</option>
+              <option value="recurring">{translations['recurring']}</option>
             </select>
           </div>
           {rideDetails.routine === 'recurring' && (
             <div>
-              <label htmlFor="frequency" className="block text-sm font-medium text-gray-700">{translations['frequency'] || 'Frequency'}</label>
+              <label htmlFor="frequency" className="block text-sm font-medium text-gray-200">{translations['frequency']}</label>
               <input
                 type="text"
                 id="frequency"
@@ -170,7 +170,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             </div>
           )}
           <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-gray-700">{translations['notes'] || 'Additional Notes'}</label>
+            <label htmlFor="notes" className="block text-sm font-medium text-gray-200">{translations['notes']}</label>
             <textarea
               id="notes"
               name="notes"
@@ -185,7 +185,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
 
       {/* Ride Preferences Section */}
       <section>
-        <h2 className="text-xl font-semibold mb-4 text-[rgb(54,89,108)]">{translations['ridePreferences'] || 'Ride Preferences'}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['ridePreferences']}</h2>
         <div className="space-y-4">
           <div>
             <label className="flex items-center">
@@ -196,7 +196,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                 onChange={handleRidePreferencesChange}
                 className={checkboxClassName}
               />
-              <span className="ml-2 text-sm text-gray-700">{translations['smokingAllowed'] || 'Smoking Allowed'}</span>
+              <span className="ml-2 text-sm text-gray-200">{translations['smokingAllowed']}</span>
             </label>
           </div>
           <div>
@@ -208,11 +208,11 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                 onChange={handleRidePreferencesChange}
                 className={checkboxClassName}
               />
-              <span className="ml-2 text-sm text-gray-700">{translations['petFriendly'] || 'Pet Friendly'}</span>
+              <span className="ml-2 text-sm text-gray-200">{translations['petFriendly']}</span>
             </label>
           </div>
           <div>
-            <label htmlFor="preferredPassengerGender" className="block text-sm font-medium text-gray-700">{translations['preferredPassengerGender'] || 'Preferred Passenger Gender'}</label>
+            <label htmlFor="preferredPassengerGender" className="block text-sm font-medium text-gray-200">{translations['preferredPassengerGender']}</label>
             <select
               id="preferredPassengerGender"
               name="preferredPassengerGender"
@@ -220,13 +220,13 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
               onChange={handleRidePreferencesChange}
               className={selectClassName}
             >
-              <option value="any">{translations['any'] || 'Any'}</option>
-              <option value="male">{translations['male'] || 'Male'}</option>
-              <option value="female">{translations['female'] || 'Female'}</option>
+              <option value="any">{translations['any']}</option>
+              <option value="male">{translations['male']}</option>
+              <option value="female">{translations['female']}</option>
             </select>
           </div>
           <div>
-            <label htmlFor="maxDetourDistance" className="block text-sm font-medium text-gray-700">{translations['maxDetourDistance'] || 'Maximum Detour Distance (km)'}</label>
+            <label htmlFor="maxDetourDistance" className="block text-sm font-medium text-gray-200">{translations['maxDetourDistance']}</label>
             <input
               type="number"
               id="maxDetourDistance"
@@ -242,7 +242,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
       </section>
 
       <button type="submit" className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-3 px-6 rounded-full transition-colors">
-        {translations['submit'] || 'Submit'}
+        {translations['submit']}
       </button>
     </form>
   )

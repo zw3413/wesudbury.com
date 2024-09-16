@@ -3,14 +3,14 @@
 import { useRouter } from 'next/navigation'
 
 type BackButtonProps = {
-  lang: string
+  url: string
 }
 
-export default function BackButton({ lang }: BackButtonProps) {
+export default function BackButton({ url }: BackButtonProps) {
   const router = useRouter()
 
   const handleBack = () => {
-    router.push(`/${lang}/rideshare`)
+    router.push(url)
   }
 
   return (
