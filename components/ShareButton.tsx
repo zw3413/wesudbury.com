@@ -12,6 +12,7 @@ interface ShareButtonProps {
 }
 
 export default function ShareButton({ title, text, url, cardId }: ShareButtonProps) {
+    console.log(title, text, url, cardId)
   const [isShared, setIsShared] = useState(false);
   const captureAndShare = async () => {
     const cardElement = document.getElementById(cardId);
@@ -26,15 +27,12 @@ export default function ShareButton({ title, text, url, cardId }: ShareButtonPro
         canvas.toBlob((blob) => resolve(blob!), 'image/png')
       );
 
-       const filesArray = [
+      const filesArray = [
         new File([imageBlob], 'ride_details.png', { type: 'image/png' })
       ];
 
       if (navigator.share && navigator.canShare({ files: filesArray })) {
         await navigator.share({
-          title,
-          text,
-          url,
           files: filesArray,
         });
         setIsShared(true);
