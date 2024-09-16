@@ -57,8 +57,8 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                             <DetailItem icon={<FaClock />} label={t('rideshare.form.time')} value={rideDetails.time} />
                             <DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />
                             <DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />
-                            <DetailItem icon={<FaRoute />} label={t('rideshare.form.estimatedTravelTime')} value={rideDetails.estimated_travel_time} />
-                            <DetailItem icon={<FaCar />} label={t('rideshare.form.flexibleDeparture')} value={rideDetails.flexible_departure ? t('yes') : t('no')} />
+                            {/* <DetailItem icon={<FaRoute />} label={t('rideshare.form.estimatedTravelTime')} value={rideDetails.estimated_travel_time} />
+                            <DetailItem icon={<FaCar />} label={t('rideshare.form.flexibleDeparture')} value={rideDetails.flexible_departure ? t('yes') : t('no')} /> */}
                         </div>
                         <div className="border-t pt-4">
                             <h2 className="text-xl font-semibold mb-3 text-[rgb(54,89,108)]">{t('rideshare.form.preferences')}</h2>
