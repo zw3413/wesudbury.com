@@ -24,10 +24,11 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
   const [ridePreferences, setRidePreferences] = useState(initialRidePreferences)
   const [showMap, setShowMap] = useState(false)
   const [currentField, setCurrentField] = useState<'from' | 'to' | null>(null)
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null)
 
   const mapRef = useRef<google.maps.Map | null>(null)
-  const fromAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
-  const toAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const markerRef = useRef<google.maps.Marker | null>(null)
+  const geocoderRef = useRef<google.maps.Geocoder | null>(null)
 
   useEffect(() => {
     const loader = new Loader({
@@ -39,10 +40,12 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
     loader.load().then(() => {
       initializeAutocomplete('from')
       initializeAutocomplete('to')
-      initializeMap()
+      geocoderRef.current = new google.maps.Geocoder()
     });
   }, []);
-
+  const fromAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const toAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  
   const initializeAutocomplete = (field: 'from' | 'to') => {
     const input = document.getElementById(`${field}-input`) as HTMLInputElement
     const autocomplete = new google.maps.places.Autocomplete(input, {
@@ -59,19 +62,89 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
         }))
       }
     })
-
-    if (field === 'from') fromAutocompleteRef.current = autocomplete
-    else toAutocompleteRef.current = autocomplete
   }
 
   const initializeMap = () => {
     const mapElement = document.getElementById('map')
-    if (mapElement) {
+    if (mapElement && !mapRef.current) {
+      // Default to Sudbury coordinates
+      let center = { lat: 46.4917, lng: -80.9930 };
+
+      // Try to get current location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            center = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            if (mapRef.current) {
+              mapRef.current.setCenter(center);
+            }
+          },
+          () => {
+            console.log('Unable to retrieve your location');
+          }
+        );
+      }
+
       mapRef.current = new google.maps.Map(mapElement, {
-        center: { lat: 46.4917, lng: -80.9930 }, // Sudbury coordinates
-        zoom: 12,
+        center: center,
+        zoom: 13,
+      })
+
+      mapRef.current.addListener('click', handleMapClick)
+    }
+  }
+
+  const handleMapClick = (event: google.maps.MapMouseEvent) => {
+    if (event.latLng && mapRef.current && geocoderRef.current) {
+      if (markerRef.current) {
+        markerRef.current.setMap(null)
+      }
+      markerRef.current = new google.maps.Marker({
+        position: event.latLng,
+        map: mapRef.current,
+      })
+
+      geocoderRef.current.geocode({ location: event.latLng }, (results, status) => {
+        if (status === 'OK' && results && results[0]) {
+          setSelectedAddress(results[0].formatted_address)
+        }
       })
     }
+  }
+
+  const handleShowMap = (field: 'from' | 'to') => {
+    setCurrentField(field)
+    setShowMap(true)
+    setSelectedAddress(null)
+    
+    // Reset the map and marker references
+    mapRef.current = null
+    if (markerRef.current) {
+      markerRef.current.setMap(null)
+      markerRef.current = null
+    }
+
+    // Use requestAnimationFrame to ensure the map div is rendered before initializing
+    requestAnimationFrame(() => {
+      initializeMap()
+    })
+  }
+
+  const handleCloseMap = () => {
+    setShowMap(false)
+    if (markerRef.current) {
+      markerRef.current.setMap(null)
+    }
+  }
+
+  const handleConfirmLocation = () => {
+    if (currentField && selectedAddress) {
+      setRideDetails(prev => ({ ...prev, [currentField]: selectedAddress }))
+    }
+    handleCloseMap()
   }
 
   const handleAddressSelect = (address: string, field: 'from' | 'to') => {
@@ -92,19 +165,6 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
               position: place.geometry.location,
             })
           }
-        }
-      })
-    }
-  }
-
-  const handleMapClick = (event: google.maps.MapMouseEvent) => {
-    if (event.latLng && currentField) {
-      const geocoder = new google.maps.Geocoder()
-      geocoder.geocode({ location: event.latLng }, (results, status) => {
-        if (status === 'OK' && results && results[0]) {
-          setRideDetails(prev => ({ ...prev, [currentField]: results[0].formatted_address }))
-          const input = document.getElementById(`${currentField}-input`) as HTMLInputElement
-          input.value = results[0].formatted_address || ''
         }
       })
     }
@@ -136,7 +196,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
   const checkboxClassName = "rounded border-gray-600 text-[rgb(255,183,77)] bg-gray-700 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-offset-0 focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl mx-auto bg-[rgb(54,89,108)] p-8 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className=" max-w-2xl mx-auto bg-[rgb(54,89,108)] p-8 rounded-lg shadow-md">
       {/* Ride Details Section */}
       <section>
         <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['rideDetails']}</h2>
@@ -144,7 +204,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
           {['from', 'to'].map((field) => (
             <div key={field}>
               <label htmlFor={`${field}-input`} className="block text-sm font-medium text-gray-200">
-                {translations[field]}
+               * {translations[field]}
               </label>
               <input
                 type="text"
@@ -155,12 +215,11 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                 required
                 className={inputClassName}
                 placeholder={`Enter ${field} address`}
-                onFocus={() => setCurrentField(field as 'from' | 'to')}
               />
               <div className="mt-2">
                 <button
                   type="button"
-                  onClick={() => setShowMap(true)}
+                  onClick={() => handleShowMap(field as 'from' | 'to')}
                   className="text-sm text-[rgb(255,183,77)] hover:text-[rgb(255,163,57)]"
                 >
                   Select on map
@@ -184,7 +243,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             </div>
           ))}
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-200">{translations['date']}</label>
+            <label htmlFor="date" className="block text-sm font-medium text-gray-200">* {translations['date']}</label>
             <input
               type="date"
               id="date"
@@ -196,7 +255,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             />
           </div>
           <div>
-            <label htmlFor="time" className="block text-sm font-medium text-gray-200">{translations['time']}</label>
+            <label htmlFor="time" className="block text-sm font-medium text-gray-200">* {translations['time']}</label>
             <input
               type="time"
               id="time"
@@ -215,7 +274,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
               name="estimatedTravelTime"
               value={rideDetails.estimatedTravelTime}
               onChange={handleRideDetailsChange}
-              required
+              
               className={inputClassName}
             />
           </div>
@@ -239,7 +298,6 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
               name="seats"
               value={rideDetails.seats}
               onChange={handleRideDetailsChange}
-              required
               min="1"
               className={inputClassName}
             />
@@ -301,19 +359,32 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg w-full max-w-3xl">
             <div id="map" style={{ height: '400px', width: '100%' }}></div>
-            <button
-              type="button"
-              onClick={() => setShowMap(false)}
-              className="mt-4 bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-2 px-4 rounded"
-            >
-              Close Map
-            </button>
+            {selectedAddress && (
+              <p className="mt-2 text-sm text-gray-600">Selected: {selectedAddress}</p>
+            )}
+            <div className="mt-4 flex justify-between">
+              <button
+                type="button"
+                onClick={handleCloseMap}
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmLocation}
+                className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-2 px-4 rounded"
+                disabled={!selectedAddress}
+              >
+                Confirm Location
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Ride Preferences Section */}
-      <section>
+      <section className='mt-8'>
         <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['ridePreferences']}</h2>
         <div className="space-y-4">
           <div>
@@ -370,7 +441,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
         </div>
       </section>
 
-      <button type="submit" className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-3 px-6 rounded-full transition-colors">
+      <button type="submit" className="mt-8 w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-3 px-6 rounded-full transition-colors">
         {translations['submit']}
       </button>
     </form>

@@ -19,7 +19,7 @@ export default async function RequestRide({ params: { lang } }: { params: { lang
 
   return (
     <div className="container mx-auto px-4 py-8 bg-[rgb(250,252,255)] relative">
-      <BackButton lang={lang} />
+      <BackButton url={`/${lang}/rideshare`} />
       <h1 className="text-4xl font-bold mb-8 text-[rgb(54,89,108)] text-center">{translations['requestRide']}</h1>
       <RideRequestForm translations={translations} />
     </div>

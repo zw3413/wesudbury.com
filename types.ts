@@ -44,6 +44,7 @@ export type FormData = {
 }
 
 export interface RideOfferFormProps {
+    lang:string;
   translations: { [key: string]: string };
   isLoggedIn: boolean;
   driverInfo?: DriverInfo;
