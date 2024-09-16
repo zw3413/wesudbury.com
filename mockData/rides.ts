@@ -14,6 +14,7 @@ export const mockRides: Ride[] = [
       make: 'Toyota',
       model: 'Corolla',
       color: 'Silver',
+      picture: null,
     },
     ridePreferences: {
       smoking: false,
@@ -35,6 +36,7 @@ export const mockRides: Ride[] = [
       make: 'Honda',
       model: 'Civic',
       color: 'Blue',
+      picture: null,
     },
     ridePreferences: {
       smoking: false,
@@ -56,6 +58,7 @@ export const mockRides: Ride[] = [
       make: 'Ford',
       model: 'Escape',
       color: 'Red',
+      picture: null,
     },
     ridePreferences: {
       smoking: false,
@@ -77,6 +80,7 @@ export const mockRides: Ride[] = [
       make: 'Chevrolet',
       model: 'Malibu',
       color: 'Black',
+      picture: null,
     },
     ridePreferences: {
       smoking: false,
@@ -98,6 +102,7 @@ export const mockRides: Ride[] = [
       make: 'Nissan',
       model: 'Rogue',
       color: 'White',
+      picture: null,
     },
     ridePreferences: {
       smoking: true,
