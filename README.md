@@ -45,3 +45,9 @@ This color palette provides a clean, professional look while maintaining a conne
 ## License
 
 (Specify the license under which this project is released)
+
+
+1. 将offer a ride中的userEmail 改成driverEmail, 这样司机自己也可以操作book
+2. book ride
+3. 国际化
+

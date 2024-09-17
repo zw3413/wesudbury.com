@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import BackButton from '@/components/BackButton'
 import ShareButton from '@/components/ShareButton'
 import BookButton from '@/components/BookButton'
-import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars } from 'react-icons/fa'
+import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars, FaMapMarkerAlt } from 'react-icons/fa'
 import { QRCodeSVG } from 'qrcode.react';
 
 const supabase = createClient(
@@ -68,16 +68,15 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                             </div>
                         </div>
                         <div className="p-6 space-y-6">
-                            <div className="grid grid-cols-2 gap-4">
-                                <DetailItem icon={<FaCalendarAlt />} label={t('rideshare.form.date')} value={rideDetails.date} />
-                                <DetailItem icon={<FaClock />} label={t('rideshare.form.time')} value={rideDetails.time} />
-                                
-                                {rideDetails.seats >0 && (<DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />)}
-                                
-                                {rideDetails.price && (
-                                    <DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />
-                                )}
-
+                            <div className="grid grid-cols-1 gap-4">
+                                <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.from')} value={`${rideDetails.from_city}, ${rideDetails.from_address? rideDetails.from_address : ''}`} />
+                                <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.to')} value={`${rideDetails.to_city}, ${rideDetails.to_address? rideDetails.to_address : ''}`} />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <DetailItem icon={<FaCalendarAlt />} label={t('rideshare.form.date')} value={rideDetails.date} />
+                                    <DetailItem icon={<FaClock />} label={t('rideshare.form.time')} value={rideDetails.time} />
+                                    {rideDetails.seats > 0 && (<DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />)}
+                                    {rideDetails.price && (<DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />)}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -37,7 +37,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
 
   useEffect(() => {
     // Check if we have a saved email in localStorage
-    const savedEmail = localStorage.getItem('userEmail')
+    const savedEmail = localStorage.getItem('driverEmail')
     if (savedEmail) {
       // If we have a saved email, fetch the driver's info from the API
       fetchDriverInfo(savedEmail)
@@ -70,7 +70,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       })
 
       if (response.ok) {
-        localStorage.setItem('userEmail', driverInfo.email)
+        localStorage.setItem('driverEmail', driverInfo.email)
         onSubmit(driverInfo, vehicleInfo)
       } else {
         throw new Error('Failed to save driver info')

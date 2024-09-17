@@ -58,18 +58,18 @@ export default function RideOfferForm({ lang,translations, isLoggedIn, driverInf
   }
 
   const handleRideDetailsSubmit = async (rideDetails: RideDetails, ridePreferences: RidePreferences) => {
-    const userEmail = localStorage.getItem('userEmail')
-    if (!userEmail) {
+    const driverEmail = localStorage.getItem('driverEmail')
+    if (!driverEmail) {
       console.error('User email not found in localStorage')
       // You might want to handle this error, perhaps by redirecting to a login page
       return
     }
 
-    const rideKey = `${userEmail}_${rideDetails.date}_${rideDetails.time.replace(':', '')}`
+    const rideKey = `${driverEmail}_wesudbury_${rideDetails.date}_${rideDetails.time.replace(':', '')}`
 
     const rideData = {
       key: rideKey,
-      userEmail,
+      driver_email:driverEmail,
       ...rideDetails,
       ...ridePreferences,
       createdAt: new Date().toISOString(),
