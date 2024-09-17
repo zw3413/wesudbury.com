@@ -8,6 +8,14 @@
     "housing": "Housing Information"
   },
   "rideshare": {
+    "bookRide": "Book This Ride",
+    "passengerName": "Your Name",
+    "passengerEmail": "Your Email",
+    "passengerPhone": "Your Phone Number",
+    "bookNow": "Book Now",
+    "bookingConfirmation": "We have sent an email with your contact info to the driver. You can also call or text the driver to confirm the travel.",
+    "callDriver": "Call Driver",
+    "textDriver": "Text Driver",
     "title": "Ride Share",
     "description": "Share rides, save money, and reduce traffic. Join our ridesharing community today!",
     "offer": "Offer a Ride",

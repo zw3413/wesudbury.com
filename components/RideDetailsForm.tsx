@@ -269,190 +269,246 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
         }))
     }
 
-    const inputClassName = "mt-1 block w-full rounded-md border-gray-600  shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
-    const selectClassName = "mt-1 block w-full rounded-md border-gray-600   shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
-    const checkboxClassName = "rounded border-gray-600  shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-offset-0 focus:ring-[rgb(255,183,77)] focus:ring-opacity-50"
+    const inputClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 bg-gray-700 text-white"
+    const selectClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 bg-gray-700 text-white"
+    const checkboxClassName = "rounded border-gray-300 text-[rgb(255,183,77)] shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-offset-0 focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 bg-gray-700"
+    const labelClassName = "block text-sm font-medium text-gray-200"
 
     return (
-        <form onSubmit={handleSubmit} className=" max-w-2xl mx-auto  p-8 rounded-lg shadow-md">
-            {/* Ride Details Section */}
-            <section>
-                <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['rideDetails']}</h2>
-                <div className="space-y-4">
-                    {['from', 'to'].map((field) => (
-                        <div key={field}>
-                            <div className="flex items-center justify-between">
-                                <label htmlFor={`${field}-input`} className="min-w-[100px] text-sm font-medium text-gray-300 inline">
-                                    * {translations[field]}
-                                </label>
-                                <select className="px-2 text-center grow inline rounded-md border-gray-600  shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 cursor-pointer" value={rideDetails[(field + "_city" as keyof RideDetails)] as string} onChange={handleRideDetailsChange} required name={`${field}_city`} >
-                                    {Object.keys(cityList).map((city) => (
-                                        <option key={city} value={city}>{translations[city]}</option>
-                                    ))}
-
-                                </select></div>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    id={`${field}-input`}
-                                    name={`${field}_address`}
-                                    value={rideDetails[(field + "_address" as keyof RideDetails)] as string}
-                                    onChange={handleRideDetailsChange}
-                                    
-                                    className={`${inputClassName} pr-10`}
-                                    placeholder={`Enter ${field} address`}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => handleShowMap(field as 'from' | 'to')}
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[rgb(255,183,77)] hover:text-[rgb(255,163,57)]"
-                                >
-                                    <FaMapMarkerAlt size={20} />
-                                </button>
+        <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gray-800">
+            <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Ride Details Section */}
+                <section>
+                    <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['rideDetails']}</h2>
+                    <div className="space-y-4">
+                        {['from', 'to'].map((field) => (
+                            <div key={field}>
+                                <div className="flex items-center justify-between">
+                                    <label htmlFor={`${field}-input`} className={`${labelClassName} min-w-[100px] inline`}>
+                                        * {translations[field]}
+                                    </label>
+                                    <select 
+                                        className={`${selectClassName} px-2 text-center grow inline cursor-pointer`} 
+                                        value={rideDetails[(field + "_city" as keyof RideDetails)] as string} 
+                                        onChange={handleRideDetailsChange} 
+                                        required 
+                                        name={`${field}_city`}
+                                    >
+                                        {Object.keys(cityList).map((city) => (
+                                            <option key={city} value={city}>{translations[city]}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="relative mt-1">
+                                    <input
+                                        type="text"
+                                        id={`${field}-input`}
+                                        name={`${field}_address`}
+                                        value={rideDetails[(field + "_address" as keyof RideDetails)] as string}
+                                        onChange={handleRideDetailsChange}
+                                        className={`${inputClassName} pr-10`}
+                                        placeholder={`Enter ${field} address`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleShowMap(field as 'from' | 'to')}
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[rgb(255,183,77)] hover:text-[rgb(255,163,57)]"
+                                    >
+                                        <FaMapMarkerAlt size={20} />
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
 
-                    <div>
-                        <label htmlFor="routine" className="block text-sm font-medium text-gray-300">* {translations['routine']}</label>
-                        <select
-                            id="routine"
-                            name="routine"
-                            value={rideDetails.routine}
-                            onChange={handleRideDetailsChange}
-                            required
-                            className={selectClassName}
-                        >
-                            <option value="oneTime">{translations['oneTime']}</option>
-                            <option value="recurring">{translations['recurring']}</option>
-                        </select>
-                    </div>
-                    {rideDetails.routine === 'recurring' ? (
                         <div>
-                            <label htmlFor="daysOfWeek" className="block text-sm font-medium text-gray-300">{translations['every']}</label>
-                            <CustomMultiSelect
-                                options={[
-                                    { value: 'Sunday', label: translations['Sunday'] },
-                                    { value: 'Monday', label: translations['Monday'] },
-                                    { value: 'Tuesday', label: translations['Tuesday'] },
-                                    { value: 'Wednesday', label: translations['Wednesday'] },
-                                    { value: 'Thursday', label: translations['Thursday'] },
-                                    { value: 'Friday', label: translations['Friday'] },
-                                    { value: 'Saturday', label: translations['Saturday'] },
-                                ]}
-                                selectedValues={rideDetails.daysOfWeek || []}
-                                onChange={(selected) => setRideDetails(prev => ({ ...prev, daysOfWeek: selected }))}
-
-                            />
+                            <label htmlFor="routine" className={labelClassName}>* {translations['routine']}</label>
+                            <select
+                                id="routine"
+                                name="routine"
+                                value={rideDetails.routine}
+                                onChange={handleRideDetailsChange}
+                                required
+                                className={selectClassName}
+                            >
+                                <option value="oneTime">{translations['oneTime']}</option>
+                                <option value="recurring">{translations['recurring']}</option>
+                            </select>
                         </div>
-                    ) : (
+                        {rideDetails.routine === 'recurring' ? (
+                            <div>
+                                <label htmlFor="daysOfWeek" className={labelClassName}>{translations['every']}</label>
+                                <CustomMultiSelect
+                                    options={[
+                                        { value: 'Sunday', label: translations['Sunday'] },
+                                        { value: 'Monday', label: translations['Monday'] },
+                                        { value: 'Tuesday', label: translations['Tuesday'] },
+                                        { value: 'Wednesday', label: translations['Wednesday'] },
+                                        { value: 'Thursday', label: translations['Thursday'] },
+                                        { value: 'Friday', label: translations['Friday'] },
+                                        { value: 'Saturday', label: translations['Saturday'] },
+                                    ]}
+                                    selectedValues={rideDetails.daysOfWeek || []}
+                                    onChange={(selected) => setRideDetails(prev => ({ ...prev, daysOfWeek: selected }))}
+                                />
+                            </div>
+                        ) : (
+                            <div>
+                                <label htmlFor="date" className={labelClassName}>* {translations['date']}</label>
+                                <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    value={rideDetails.date}
+                                    onChange={handleRideDetailsChange}
+                                    required
+                                    className={inputClassName}
+                                />
+                            </div>
+                        )}
                         <div>
-                            <label htmlFor="date" className="block text-sm font-medium text-gray-200">* {translations['date']}</label>
+                            <label htmlFor="time" className={labelClassName}>* {translations['time']}</label>
                             <input
-                                type="date"
-                                id="date"
-                                name="date"
-                                value={rideDetails.date}
+                                type="time"
+                                id="time"
+                                name="time"
+                                value={rideDetails.time}
                                 onChange={handleRideDetailsChange}
                                 required
                                 className={inputClassName}
                             />
                         </div>
-                    )}
-                    <div>
-                        <label htmlFor="time" className="block text-sm font-medium text-gray-300">* {translations['time']}</label>
-                        <input
-                            type="time"
-                            id="time"
-                            name="time"
-                            value={rideDetails.time}
-                            onChange={handleRideDetailsChange}
-                            required
-                            className={inputClassName}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="estimatedTravelTime" className="block text-sm font-medium text-gray-300">{translations['estimatedTravelTime']}</label>
-                        <input
-                            type="text"
-                            id="estimatedTravelTime"
-                            name="estimatedTravelTime"
-                            value={rideDetails.estimatedTravelTime}
-                            onChange={handleRideDetailsChange}
+                        <div>
+                            <label htmlFor="estimatedTravelTime" className={labelClassName}>{translations['estimatedTravelTime']}</label>
+                            <input
+                                type="text"
+                                id="estimatedTravelTime"
+                                name="estimatedTravelTime"
+                                value={rideDetails.estimatedTravelTime}
+                                onChange={handleRideDetailsChange}
+                                className={inputClassName}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="seats" className={labelClassName}>{translations['seats']}</label>
+                            <input
+                                type="number"
+                                id="seats"
+                                name="seats"
+                                value={rideDetails.seats}
+                                onChange={handleRideDetailsChange}
+                                min="0"
+                                className={inputClassName}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="price" className={labelClassName}>{translations['price']}</label>
+                            <input
+                                type="text"
+                                id="price"
+                                name="price"
+                                value={rideDetails.price}
+                                onChange={handleRideDetailsChange}
+                                className={inputClassName}
+                            />
+                        </div>
 
-                            className={inputClassName}
-                        />
+                        <div>
+                            <label htmlFor="notes" className={labelClassName}>{translations['notes']}</label>
+                            <textarea
+                                id="notes"
+                                name="notes"
+                                value={rideDetails.notes}
+                                onChange={handleRideDetailsChange}
+                                className={inputClassName}
+                                rows={3}
+                            ></textarea>
+                        </div>
                     </div>
-                    {/* <div>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                name="flexibleDeparture"
-                checked={rideDetails.flexibleDeparture}
-                onChange={handleRideDetailsChange}
-                className={checkboxClassName}
-              />
-              <span className="ml-2 text-sm text-gray-200">{translations['flexibleDeparture']}</span>
-            </label>
-          </div> */}
-                    <div>
-                        <label htmlFor="seats" className="block text-sm font-medium text-gray-300">{translations['seats']}</label>
-                        <input
-                            type="number"
-                            id="seats"
-                            name="seats"
-                            value={rideDetails.seats}
-                            onChange={handleRideDetailsChange}
-                            min="0"
-                            className={inputClassName}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="price" className="block text-sm font-medium text-gray-300">{translations['price']}</label>
-                        <input
-                            type="text"
-                            id="price"
-                            name="price"
-                            value={rideDetails.price}
-                            onChange={handleRideDetailsChange}
+                </section>
 
-                            className={inputClassName}
-                        />
+                {/* Ride Preferences Section */}
+                <section>
+                    <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['ridePreferences']}</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    name="smoking"
+                                    checked={ridePreferences.smoking}
+                                    onChange={handleRidePreferencesChange}
+                                    className={checkboxClassName}
+                                />
+                                <span className="ml-2 text-sm text-gray-200">{translations['smokingAllowed']}</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    name="petFriendly"
+                                    checked={ridePreferences.petFriendly}
+                                    onChange={handleRidePreferencesChange}
+                                    className={checkboxClassName}
+                                />
+                                <span className="ml-2 text-sm text-gray-200">{translations['petFriendly']}</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label htmlFor="preferredPassengerGender" className={labelClassName}>{translations['preferredPassengerGender']}</label>
+                            <select
+                                id="preferredPassengerGender"
+                                name="preferredPassengerGender"
+                                value={ridePreferences.preferredPassengerGender}
+                                onChange={handleRidePreferencesChange}
+                                className={selectClassName}
+                            >
+                                <option value="any">{translations['genderAny']}</option>
+                                <option value="male">{translations['genderMale']}</option>
+                                <option value="female">{translations['genderFemale']}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="maxDetourDistance" className={labelClassName}>{translations['maxDetourDistance']}</label>
+                            <input
+                                type="number"
+                                id="maxDetourDistance"
+                                name="maxDetourDistance"
+                                value={ridePreferences.maxDetourDistance}
+                                onChange={handleRidePreferencesChange}
+                                min="0"
+                                step="0.1"
+                                className={inputClassName}
+                            />
+                        </div>
                     </div>
+                </section>
 
-                    <div>
-                        <label htmlFor="notes" className="block text-sm font-medium text-gray-300">{translations['notes']}</label>
-                        <textarea
-                            id="notes"
-                            name="notes"
-                            value={rideDetails.notes}
-                            onChange={handleRideDetailsChange}
-                            className={inputClassName}
-                            rows={3}
-                        ></textarea>
-                    </div>
-                </div>
-            </section>
+                <button type="submit" className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-3 px-6 rounded-full transition-colors">
+                    {translations['submit']}
+                </button>
+            </form>
 
+            {/* Map Modal */}
             {showMap && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-4 rounded-lg w-full max-w-3xl">
+                    <div className="bg-gray-800 p-4 rounded-lg w-full max-w-3xl">
                         <div id="map" style={{ height: '400px', width: '100%' }}></div>
                         {selectedAddress && (
-                            <p className="mt-2 text-sm text-gray-600">Selected: {selectedAddress}</p>
+                            <p className="mt-2 text-sm text-gray-300">Selected: {selectedAddress}</p>
                         )}
                         <div className="mt-4 flex justify-between">
                             <button
                                 type="button"
                                 onClick={handleCloseMap}
-                                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="button"
                                 onClick={handleConfirmLocation}
-                                className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-2 px-4 rounded"
+                                className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-2 px-4 rounded"
                                 disabled={!selectedAddress}
                             >
                                 Confirm Location
@@ -461,68 +517,6 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                     </div>
                 </div>
             )}
-
-            {/* Ride Preferences Section */}
-            <section className='mt-8'>
-                <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['ridePreferences']}</h2>
-                <div className="space-y-4">
-                    <div>
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
-                                name="smoking"
-                                checked={ridePreferences.smoking}
-                                onChange={handleRidePreferencesChange}
-                                className={checkboxClassName}
-                            />
-                            <span className="ml-2 text-sm text-gray-200">{translations['smokingAllowed']}</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
-                                name="petFriendly"
-                                checked={ridePreferences.petFriendly}
-                                onChange={handleRidePreferencesChange}
-                                className={checkboxClassName}
-                            />
-                            <span className="ml-2 text-sm text-gray-200">{translations['petFriendly']}</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label htmlFor="preferredPassengerGender" className="block text-sm font-medium text-gray-200">{translations['preferredPassengerGender']}</label>
-                        <select
-                            id="preferredPassengerGender"
-                            name="preferredPassengerGender"
-                            value={ridePreferences.preferredPassengerGender}
-                            onChange={handleRidePreferencesChange}
-                            className={selectClassName}
-                        >
-                            <option value="any">{translations['genderAny']}</option>
-                            <option value="male">{translations['genderMale']}</option>
-                            <option value="female">{translations['genderFemale']}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="maxDetourDistance" className="block text-sm font-medium text-gray-200">{translations['maxDetourDistance']}</label>
-                        <input
-                            type="number"
-                            id="maxDetourDistance"
-                            name="maxDetourDistance"
-                            value={ridePreferences.maxDetourDistance}
-                            onChange={handleRidePreferencesChange}
-                            min="0"
-                            step="0.1"
-                            className={inputClassName}
-                        />
-                    </div>
-                </div>
-            </section>
-
-            <button type="submit" className="mt-8 w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-3 px-6 rounded-full transition-colors">
-                {translations['submit']}
-            </button>
-        </form>
+        </div>
     )
 }

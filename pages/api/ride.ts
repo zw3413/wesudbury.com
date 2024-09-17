@@ -63,12 +63,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (typeof key !== 'string') {
             return res.status(400).json({ error: 'Invalid ride key' })
         }
-
+        //decodeur
+        const decodedKey = decodeURIComponent(key);
         try {
             const { data, error } = await supabase
                 .from('rides')
                 .select('*')
-                .eq('key', key)
+                .eq('key', decodedKey)
                 .single()
 
             if (error) {
