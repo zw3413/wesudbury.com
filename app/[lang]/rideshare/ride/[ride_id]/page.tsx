@@ -92,6 +92,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                         src={vehiclePictureUrl}
                                         alt="Vehicle"
                                         fill
+                                        unoptimized 
                                         sizes="100vw"
                                         style={{ objectFit: 'cover' }}
                                         className="opacity-40"
