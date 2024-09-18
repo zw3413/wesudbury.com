@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import Modal from './Modal';
 import Image from 'next/image';
 
-export default function ShareButton({ rideDetails, lang }: { rideDetails: any, lang: string }) {
+export default function ShareButton({ rideDetails, lang }: { rideDetails: Record<string, unknown>, lang: string }) {
   const [isShared, setIsShared] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
@@ -127,7 +127,7 @@ export default function ShareButton({ rideDetails, lang }: { rideDetails: any, l
         )}
         {previewImage && (
           <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Preview</h3>
+            {/* <h3 className="text-lg font-semibold mb-2">Preview</h3> */}
             <Image src={previewImage} alt="Preview" width={500} height={300} className="max-w-full h-auto" />
           </div>
         )}
