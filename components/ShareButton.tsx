@@ -39,8 +39,14 @@ export default function ShareButton() {
         useCORS: true, // Try to load images from other domains
         allowTaint: true, // Allow loading of tainted images
       });
-      const imageDataUrl = canvas.toDataURL('image/png');
-      setPreviewImage(imageDataUrl);
+      
+      const imageBlob = await new Promise<Blob>((resolve) =>
+        canvas.toBlob((blob) => resolve(blob!), 'image/png')
+      );
+      
+      const imageUrl = URL.createObjectURL(imageBlob);
+      setPreviewImage(imageUrl);
+      setError(null);
     } catch (err) {
       console.error('Error generating preview:', err);
       setError('Failed to generate preview. Please try another option.');
