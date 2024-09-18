@@ -1,4 +1,10 @@
 {
+  "driver": {
+    "dashboard": "Driver Dashboard",
+    "offeredRides": "Your Offered Rides",
+    "noOfferedRides": "You haven't offered any rides yet.",
+    "noMoreRides": "No more rides to load."
+  },
   "welcome": "Welcome to WeSudbury",
   "description": "Your comprehensive guide to life in Sudbury",
   "lifestyle": {
@@ -8,6 +14,7 @@
     "housing": "Housing Information"
   },
   "rideshare": {
+    "cta": "Explore",
     "bookRide": "Book This Ride",
     "passengerName": "Your Name",
     "passengerEmail": "Your Email",
@@ -16,7 +23,7 @@
     "bookingConfirmation": "We have sent an email with your contact info to the driver. You can also call or text the driver to confirm the travel.",
     "callDriver": "Call Driver",
     "textDriver": "Text Driver",
-    "title": "Ride Share",
+    "title": "Find a Ride",
     "description": "Share rides, save money, and reduce traffic. Join our ridesharing community today!",
     "offer": "Offer a Ride",
     "request": "Request a Ride",

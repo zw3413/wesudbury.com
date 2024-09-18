@@ -107,6 +107,7 @@ export default function RideOfferForm({ lang,translations, isLoggedIn, driverInf
         initialVehicleInfo={formData.vehicleInfo}
         onSubmit={handleDriverVehicleInfoSubmit}
         translations={translations}
+        lang={lang}
       />
     )
   }

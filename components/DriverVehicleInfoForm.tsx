@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 import { DriverInfo, VehicleInfo } from '../types'
-
+import OfferedRides from './OfferedRides'
 const commonVehicleColors = [
   'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Brown', 'Green', 
   'Beige', 'Orange', 'Gold', 'Yellow', 'Purple', 'Pink'
@@ -15,6 +15,7 @@ interface Props {
   translations: {
     [key: string]: string;
   };
+  lang: string;
 }
 
 const carMakes = ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan', 'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Hyundai'];
@@ -32,20 +33,21 @@ const carModels: { [key: string]: string[] } = {
 };
 
 
-export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicleInfo, onSubmit, translations }: Props) {
+export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicleInfo, onSubmit, translations, lang }: Props) {
   const [driverInfo, setDriverInfo] = useState(initialDriverInfo)
   const [vehicleInfo, setVehicleInfo] = useState(initialVehicleInfo)
   const [emailError, setEmailError] = useState('')
   const [vehiclePicture, setVehiclePicture] = useState<File | null>(null)
   const [vehiclePicturePreview, setVehiclePicturePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
+  const [driver_email, setDriver_email] = useState<string | null>(null)
   useEffect(() => {
     // Check if we have a saved email in localStorage
     const savedEmail = localStorage.getItem('driverEmail')
     if (savedEmail) {
       // If we have a saved email, fetch the driver's info from the API
       fetchDriverInfo(savedEmail)
+      setDriver_email(savedEmail)
     }
   }, [])
 
@@ -55,6 +57,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       if (response.ok) {
         const data = await response.json()
         setDriverInfo(data.driver_info)
+        setDriver_email(data.driver_info.email)
         setVehicleInfo(data.vehicle_info)
         //if the vehicle_info.pictureUrl is not null, set the vehiclePicturePreview to the vehicle_info.pictureUrl
         if (data.vehicle_info?.pictureUrl) {
@@ -148,8 +151,8 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
   const selectClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 bg-gray-700 text-white"
   const labelClassName = "block text-sm font-medium text-gray-200"
 
-  return (
-    <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gray-800">
+  return (<>
+    <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gradient-to-br from-[rgba(54,89,108,1)] to-[rgba(54,89,108,0.6)]">
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Driver Information Section */}
         <section>
@@ -302,5 +305,8 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         </button>
       </form>
     </div>
+
+{driver_email && <OfferedRides  translations={translations} lang={lang} driverEmail={driver_email} />}
+    </>
   )
 }

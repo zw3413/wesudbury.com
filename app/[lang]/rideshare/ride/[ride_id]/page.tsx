@@ -92,7 +92,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                         src={vehiclePictureUrl}
                                         alt="Vehicle"
                                         fill
-                                        unoptimized 
+                                         
                                         sizes="100vw"
                                         style={{ objectFit: 'cover' }}
                                         className="opacity-40"
@@ -139,7 +139,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                     <div className="flex items-center space-x-4 sm:space-x-6 text-base sm:text-lg text-white">
                                         <div className="flex items-center">
                                             <FaCalendarAlt className="mr-1 sm:mr-2 text-yellow-300" />
-                                            {rideDetails.date}
+                                         {rideDetails.date}
                                         </div>
                                         <div className="flex items-center">
                                             <FaClock className="mr-1 sm:mr-2 text-yellow-300" />

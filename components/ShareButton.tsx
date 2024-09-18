@@ -12,7 +12,6 @@ export default function ShareButton({ rideId, lang }: { rideId: string, lang: st
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
   const [previewImage, setPreviewImage] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [imageLink, setImageLink] = useState<string>('');
 
   const cardOptions = [
     { id: 'ride-details-card-mini', label: 'Mini' },
@@ -27,26 +26,20 @@ export default function ShareButton({ rideId, lang }: { rideId: string, lang: st
       setError('Card element not found');
       return;
     }
-
     try {
       const canvas = await html2canvas(cardElement, {
         logging: true, // Enable logging for debugging
         useCORS: true, // Try to load images from other domains
         allowTaint: true, // Allow loading of tainted images
       });
-
       const imageBlob = await new Promise<Blob>((resolve) =>
         canvas.toBlob((blob) => resolve(blob!), 'image/png')
       );
-
       const imageUrl = URL.createObjectURL(imageBlob);
-      setImageLink(imageUrl);
       setPreviewImage(imageUrl);
       setError(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-
-      setImageLink(errorMessage);
+      alert('error');
       console.error('Error generating preview:', err);
       setError('Failed to generate preview. Please try another option.');
     }
@@ -132,9 +125,7 @@ export default function ShareButton({ rideId, lang }: { rideId: string, lang: st
           </div>
         )}
         <div className="flex justify-end space-x-2">
-        {imageLink && (
-            <div className="mb-2 text-sm text-gray-600 break-all">{imageLink}</div>
-          )}
+      
           <button
             onClick={() => setIsModalOpen(false)}
             className="px-4 py-2 bg-gray-300 rounded"
