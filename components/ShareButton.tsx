@@ -1,29 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaShare } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
-import Modal from './Modal'; // Assume you have a Modal component
+import Modal from './Modal';
 import Image from 'next/image';
 
-export default function ShareButton() {
-  const cardOptions = [
-    { id: 'ride-details-card-mini', label: 'Mini' },
-    { id: 'ride-details-card-standard', label: 'Standard' },
-    { id: 'ride-details-card-large', label: 'Large' }
-  ];
-
+export default function ShareButton({ rideDetails, lang }: { rideDetails: any, lang: string }) {
   const [isShared, setIsShared] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
   const [previewImage, setPreviewImage] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [imageLink, setImageLink] = useState<string>('');
 
-  useEffect(() => {
-    if (isModalOpen) {
-      generatePreview(selectedCardId);
-    }
-  }, [isModalOpen, selectedCardId]);
+  const cardOptions = [
+    { id: 'ride-details-card-mini', label: 'Mini' },
+    { id: 'ride-details-card-standard', label: 'Standard' },
+    { id: 'ride-details-card-large', label: 'Large' }
+  ];
 
   const generatePreview = async (cardId: string) => {
     const cardElement = document.getElementById(cardId);
@@ -39,15 +34,19 @@ export default function ShareButton() {
         useCORS: true, // Try to load images from other domains
         allowTaint: true, // Allow loading of tainted images
       });
-      
+
       const imageBlob = await new Promise<Blob>((resolve) =>
         canvas.toBlob((blob) => resolve(blob!), 'image/png')
       );
-      
+
       const imageUrl = URL.createObjectURL(imageBlob);
+      setImageLink(imageUrl);
       setPreviewImage(imageUrl);
       setError(null);
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+
+      setImageLink(errorMessage);
       console.error('Error generating preview:', err);
       setError('Failed to generate preview. Please try another option.');
     }
@@ -65,28 +64,31 @@ export default function ShareButton() {
     }
 
     try {
-      if (previewImage) {
-        const imageBlob = await fetch(previewImage).then(res => res.blob());
-        const filesArray = [
-          new File([imageBlob], 'ride_details.png', { type: 'image/png' })
-        ];
+      const cardElement = document.getElementById(selectedCardId);
+      if (!cardElement) {
+        throw new Error('Card element not found');
+      }
 
-        if (navigator.share && navigator.canShare({ files: filesArray })) {
-          await navigator.share({
-            files: filesArray,
-          });
-        } else {
-          // Fallback for browsers that don't support sharing files
-          const imageUrl = URL.createObjectURL(imageBlob);
-          window.open(imageUrl, '_blank');
-        }
+      const canvas = await html2canvas(cardElement);
+      const imageBlob = await new Promise<Blob>((resolve) =>
+        canvas.toBlob((blob) => resolve(blob!), 'image/png')
+      );
+
+      const filesArray = [
+        new File([imageBlob], 'ride_details.png', { type: 'image/png' })
+      ];
+
+      if (navigator.share && navigator.canShare({ files: filesArray })) {
+        await navigator.share({
+          files: filesArray,
+          title: 'Ride Details',
+          text: `Check out this ride from ${rideDetails.from_city} to ${rideDetails.to_city}`,
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${rideDetails.key}`,
+        });
       } else {
-        // Fallback if preview image is not available
-        const cardElement = document.getElementById(selectedCardId);
-        if (cardElement) {
-          const text = cardElement.innerText;
-          await navigator.share({ text });
-        }
+        // Fallback for browsers that don't support sharing files
+        const imageUrl = URL.createObjectURL(imageBlob);
+        window.open(imageUrl, '_blank');
       }
       setIsShared(true);
       setTimeout(() => setIsShared(false), 2000);
@@ -100,7 +102,7 @@ export default function ShareButton() {
   return (
     <div className="w-full">
       <button
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => { setIsModalOpen(true); generatePreview(selectedCardId); }}
         className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
       >
         <FaShare className="mr-2" />
@@ -108,6 +110,7 @@ export default function ShareButton() {
       </button>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+ 
         <div className="mb-4 flex justify-around">
           {cardOptions.map((option) => (
             <button
@@ -129,6 +132,9 @@ export default function ShareButton() {
           </div>
         )}
         <div className="flex justify-end space-x-2">
+        {imageLink && (
+            <div className="mb-2 text-sm text-gray-600 break-all">{imageLink}</div>
+          )}
           <button
             onClick={() => setIsModalOpen(false)}
             className="px-4 py-2 bg-gray-300 rounded"

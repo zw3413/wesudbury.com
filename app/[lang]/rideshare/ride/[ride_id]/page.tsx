@@ -190,7 +190,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                         <BookButton rideId={ride_id} translations={translations} lang={lang} />
                     </div>
                     <div className="w-1/2 flex justify-end">
-                        <ShareButton />
+                        <ShareButton rideDetails={rideDetails} lang={lang} />
                     </div>
                 </div>
             </div>
