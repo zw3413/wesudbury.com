@@ -10,9 +10,7 @@ export default function ShareButton() {
   const cardOptions = [
     { id: 'ride-details-card-mini', label: 'Mini' },
     { id: 'ride-details-card-standard', label: 'Standard' },
-    { id: 'ride-details-card-large', label: 'Large' },
-
-
+    { id: 'ride-details-card-large', label: 'Large' }
   ];
 
   const [isShared, setIsShared] = useState(false);
@@ -76,7 +74,7 @@ export default function ShareButton() {
   return (
     <div className="w-full">
       <button
-        onClick={() => {setIsModalOpen(true);  generatePreview(selectedCardId);}}
+        onClick={() => { setIsModalOpen(true); generatePreview(selectedCardId); }}
         className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
       >
         <FaShare className="mr-2" />
@@ -84,7 +82,7 @@ export default function ShareButton() {
       </button>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2 className="text-xl font-bold mb-4">Select a card to share</h2>
+     
         <div className=" mb-4 flex justify-around">
           {cardOptions.map((option) => (
             <button
