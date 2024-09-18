@@ -93,3 +93,14 @@ export type Ride = {
   preferred_passenger_gender: string;
   created_at: string;
 }
+
+export type DriverExtendInfo = {
+  driver_license_number: string;
+  driver_license_type: string;
+  driver_license_expiration: string;
+  driver_license_issuing_state: string;
+  driver_license_picture: string;
+  driver_license_uploaded : boolean;
+  driver_premium:boolean;
+  driver_featured: boolean;
+}
