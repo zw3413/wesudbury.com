@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import BackButton from '@/components/BackButton'
 import ShareButton from '@/components/ShareButton'
 import BookButton from '@/components/BookButton'
+import DeleteRideButton from '@/components/DeleteRideButton'
 import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars, FaMapMarkerAlt } from 'react-icons/fa'
 import { QRCodeSVG } from 'qrcode.react'
 import Image from 'next/image';
@@ -61,6 +62,8 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
     const rideDetails = await getRideDetails(ride_id)
     const translations = {
         bookRide: t('rideshare.form.bookRide'),
+        deleteRide: t('rideshare.deleteRide'),
+        confirmDelete: t('rideshare.confirmDelete'),
     }
     if (!rideDetails) {
         return (
@@ -79,9 +82,25 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         : null;
 
     return (
-        <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
-            <div className="container mx-auto px-4 py-8">
-                <BackButton url={`/${lang}/rideshare`} />
+        <div className="min-h-screen bg-[rgb(250,252,255)] ">
+            <div className="container mx-auto px-4 py-4">
+                <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-start">
+                        <BackButton url={`/${lang}/rideshare`} />
+                    </div>
+
+                    <div className="flex justify-end">
+                        <DeleteRideButton
+                            rideKey={rideDetails.key}
+                            driverEmail={rideDetails.driver_email}
+                            lang={lang}
+                            translations={{
+                                deleteRide: translations.deleteRide,
+                                confirmDelete: translations.confirmDelete,
+                            }}
+                        /></div>
+                </div>
+
                 <div id="ride-details-card-large" className="relative max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
                     <div id="ride-details-card-standard" >
 
@@ -92,7 +111,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                         src={vehiclePictureUrl}
                                         alt="Vehicle"
                                         fill
-                                         
+
                                         sizes="100vw"
                                         style={{ objectFit: 'cover' }}
                                         className="opacity-40"
@@ -109,25 +128,25 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
 
                                         <div className="flex space-x-2">
                                             {rideDetails.driver_license_uploaded && (
-                                               <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 shadow-md">
-                                                   <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-                                                   </svg>
-                                               </span>
+                                                <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 shadow-md">
+                                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                                                    </svg>
+                                                </span>
                                             )}
                                             {rideDetails.driver_premium && (
-                                                  <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-md">
-                                                  <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                  </svg>
-                                              </span>
+                                                <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-md">
+                                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                    </svg>
+                                                </span>
                                             )}
                                             {rideDetails.driver_featured && (
-                                               <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 shadow-md">
-                                                   <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                                   </svg>
-                                               </span>
+                                                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 shadow-md">
+                                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                    </svg>
+                                                </span>
                                             )}
                                         </div>
                                     </div>
@@ -139,7 +158,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                     <div className="flex items-center space-x-4 sm:space-x-6 text-base sm:text-lg text-white">
                                         <div className="flex items-center">
                                             <FaCalendarAlt className="mr-1 sm:mr-2 text-yellow-300" />
-                                         {rideDetails.date}
+                                            {rideDetails.date}
                                         </div>
                                         <div className="flex items-center">
                                             <FaClock className="mr-1 sm:mr-2 text-yellow-300" />

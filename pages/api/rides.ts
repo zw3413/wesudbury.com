@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (driverEmail) {
                 query = query.eq('rideinfo->>driver_email', driverEmail)
+                .is('del_at', null)  //已经删除的不显示
             }
 
             if (filter === 'available') {
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const currentTime = now.toTimeString().slice(0, 5)
                 query = query.or(
                     `rideinfo->>"date".gt.${currentDate}, and(rideinfo->>"date".eq.${currentDate}, rideinfo->>"time".gt.${currentTime})`)
-
+                .is('del_at', null)  //已经删除的不显示
             }
 
             const { data, error, count } = await query

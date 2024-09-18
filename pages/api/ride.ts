@@ -7,7 +7,28 @@ const supabase = createClient(
 )
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === 'POST') {
+    if (req.method === 'DELETE') {
+        const { key } = req.query;
+        if (typeof key !== 'string') {
+            return res.status(400).json({ error: 'Invalid ride key' });
+        }
+        const decodedKey = decodeURIComponent(key);
+        try {
+            const { error } = await supabase
+            .from('rides')
+            .update({ del_at: new Date() })
+            .eq('key',decodedKey );
+
+            if (error) {
+                throw error
+            }
+
+            res.status(200).json({ message: 'Ride deleted successfully' })
+        } catch (error) {
+            console.error('Error deleting ride:', error)
+            res.status(500).json({ error: 'Failed to delete ride' })
+        }
+    } else if (req.method === 'POST') {
         const rideData = req.body
 
         // Validate the required fields
