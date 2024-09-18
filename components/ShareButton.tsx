@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaShare } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
 import Modal from './Modal'; // Assume you have a Modal component
@@ -17,27 +17,39 @@ export default function ShareButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
   const [previewImage, setPreviewImage] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      generatePreview(selectedCardId);
+    }
+  }, [isModalOpen, selectedCardId]);
 
   const generatePreview = async (cardId: string) => {
     const cardElement = document.getElementById(cardId);
     if (!cardElement) {
       console.error('Card element not found');
+      setError('Card element not found');
       return;
     }
 
     try {
-      const canvas = await html2canvas(cardElement);
+      const canvas = await html2canvas(cardElement, {
+        logging: true, // Enable logging for debugging
+        useCORS: true, // Try to load images from other domains
+        allowTaint: true, // Allow loading of tainted images
+      });
       const imageDataUrl = canvas.toDataURL('image/png');
       setPreviewImage(imageDataUrl);
     } catch (err) {
       console.error('Error generating preview:', err);
+      setError('Failed to generate preview. Please try another option.');
     }
   };
 
-  const handleCardSelect = async (cardId: string) => {
+  const handleCardSelect = (cardId: string) => {
     setSelectedCardId(cardId);
-    await generatePreview(cardId);
-    setIsModalOpen(true);
+    generatePreview(cardId);
   };
 
   const captureAndShare = async () => {
@@ -47,26 +59,34 @@ export default function ShareButton() {
     }
 
     try {
-      const imageBlob = await fetch(previewImage).then(res => res.blob());
-      const filesArray = [
-        new File([imageBlob], 'ride_details.png', { type: 'image/png' })
-      ];
+      if (previewImage) {
+        const imageBlob = await fetch(previewImage).then(res => res.blob());
+        const filesArray = [
+          new File([imageBlob], 'ride_details.png', { type: 'image/png' })
+        ];
 
-      if (navigator.share && navigator.canShare({ files: filesArray })) {
-        await navigator.share({
-          files: filesArray,
-        });
-        setIsShared(true);
-        setTimeout(() => setIsShared(false), 2000);
+        if (navigator.share && navigator.canShare({ files: filesArray })) {
+          await navigator.share({
+            files: filesArray,
+          });
+        } else {
+          // Fallback for browsers that don't support sharing files
+          const imageUrl = URL.createObjectURL(imageBlob);
+          window.open(imageUrl, '_blank');
+        }
       } else {
-        // Fallback for browsers that don't support sharing files
-        const imageUrl = URL.createObjectURL(imageBlob);
-        window.open(imageUrl, '_blank');
-        setIsShared(true);
-        setTimeout(() => setIsShared(false), 2000);
+        // Fallback if preview image is not available
+        const cardElement = document.getElementById(selectedCardId);
+        if (cardElement) {
+          const text = cardElement.innerText;
+          await navigator.share({ text });
+        }
       }
+      setIsShared(true);
+      setTimeout(() => setIsShared(false), 2000);
     } catch (err) {
       console.error('Error capturing or sharing:', err);
+      setError('Failed to share. Please try again.');
     }
     setIsModalOpen(false);
   };
@@ -74,7 +94,7 @@ export default function ShareButton() {
   return (
     <div className="w-full">
       <button
-        onClick={() => { setIsModalOpen(true); generatePreview(selectedCardId); }}
+        onClick={() => setIsModalOpen(true)}
         className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
       >
         <FaShare className="mr-2" />
@@ -82,19 +102,20 @@ export default function ShareButton() {
       </button>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-     
-        <div className=" mb-4 flex justify-around">
+        <div className="mb-4 flex justify-around">
           {cardOptions.map((option) => (
             <button
               key={option.id}
               onClick={() => handleCardSelect(option.id)}
-              className={` p-2 border rounded-3xl ${selectedCardId === option.id ? 'border-blue-500' : 'border-gray-300'
-                }`}
+              className={`p-2 border rounded-3xl ${selectedCardId === option.id ? 'border-blue-500' : 'border-gray-300'}`}
             >
               {option.label}
             </button>
           ))}
         </div>
+        {error && (
+          <div className="mb-4 text-red-500">{error}</div>
+        )}
         {previewImage && (
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Preview</h3>
