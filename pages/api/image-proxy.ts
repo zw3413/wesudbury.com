@@ -12,7 +12,7 @@ const s3Client = new S3Client({
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { key } = req.query
-
+console.log(1, key)
   if (!key || typeof key !== 'string') {
     return res.status(400).json({ error: 'Invalid key' })
   }
@@ -22,16 +22,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       Bucket: 'wesudbury',
       Key: key,
     })
-
+console.log(2, command)
     const { Body, ContentType } = await s3Client.send(command)
 
     if (!Body || !ContentType) {
       return res.status(404).json({ error: 'Image not found' })
     }
+console.log(3, Body, ContentType)
 
     res.setHeader('Content-Type', ContentType)
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
-
+console.log(4, res)
     // @ts-expect-error Body type from AWS SDK doesn't match expected stream type
     Body.pipe(res)
   } catch (error) {
