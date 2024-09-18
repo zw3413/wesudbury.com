@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaShare } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
 import Modal from './Modal'; // Assume you have a Modal component
@@ -20,12 +20,6 @@ export default function ShareButton() {
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
   const [previewImage, setPreviewImage] = useState('');
 
-  useEffect(() => {
-    if (isModalOpen) {
-      generatePreview(selectedCardId);
-    }
-  }, [isModalOpen, selectedCardId]);
-
   const generatePreview = async (cardId: string) => {
     const cardElement = document.getElementById(cardId);
     if (!cardElement) {
@@ -44,8 +38,8 @@ export default function ShareButton() {
 
   const handleCardSelect = async (cardId: string) => {
     setSelectedCardId(cardId);
-    // await generatePreview(cardId);
-    // setIsModalOpen(true);
+    await generatePreview(cardId);
+    setIsModalOpen(true);
   };
 
   const captureAndShare = async () => {
@@ -82,7 +76,7 @@ export default function ShareButton() {
   return (
     <div className="w-full">
       <button
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => {setIsModalOpen(true);  generatePreview(selectedCardId);}}
         className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
       >
         <FaShare className="mr-2" />
