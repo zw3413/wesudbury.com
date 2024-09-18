@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import Modal from './Modal';
 import Image from 'next/image';
 
-export default function ShareButton({ rideDetails, lang }: { rideDetails: Record<string, unknown>, lang: string }) {
+export default function ShareButton({ rideId, lang }: { rideId: string, lang: string }) {
   const [isShared, setIsShared] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
@@ -80,10 +80,10 @@ export default function ShareButton({ rideDetails, lang }: { rideDetails: Record
 
       if (navigator.share && navigator.canShare({ files: filesArray })) {
         await navigator.share({
-          files: filesArray,
-          title: 'Ride Details',
-          text: `Check out this ride from ${rideDetails.from_city} to ${rideDetails.to_city}`,
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${rideDetails.key}`,
+          // files: filesArray,
+          // title: 'Ride Details',
+          // text: `Check out this ride from ${rideDetails.from_city} to ${rideDetails.to_city}`,
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${rideId}`,
         });
       } else {
         // Fallback for browsers that don't support sharing files
