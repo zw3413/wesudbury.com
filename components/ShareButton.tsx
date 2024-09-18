@@ -4,16 +4,16 @@ import { useState } from 'react';
 import { FaShare } from 'react-icons/fa';
 import html2canvas from 'html2canvas';
 
-interface ShareButtonProps {
-  title: string;
-  text: string;
-  url: string;
-  cardId: string; // ID of the element to capture
-}
 
-export default function ShareButton({ title, text, url, cardId }: ShareButtonProps) {
-    console.log(title, text, url, cardId)
+
+export default function ShareButton() {
+  const largetCardId = 'ride-details-card-large'
+  const standardCardId = 'ride-details-card-standard'
+  const miniCardId = 'ride-details-card-mini'
+  
   const [isShared, setIsShared] = useState(false);
+  const [cardId, setCardId] = useState('ride-details-card');
+
   const captureAndShare = async () => {
     const cardElement = document.getElementById(cardId);
     if (!cardElement) {
@@ -23,7 +23,7 @@ export default function ShareButton({ title, text, url, cardId }: ShareButtonPro
 
     try {
       const canvas = await html2canvas(cardElement);
-      const imageBlob = await new Promise<Blob>((resolve) => 
+      const imageBlob = await new Promise<Blob>((resolve) =>
         canvas.toBlob((blob) => resolve(blob!), 'image/png')
       );
 

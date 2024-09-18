@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 
 import { DriverInfo, VehicleInfo } from '../types'
 
@@ -35,6 +36,9 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
   const [driverInfo, setDriverInfo] = useState(initialDriverInfo)
   const [vehicleInfo, setVehicleInfo] = useState(initialVehicleInfo)
   const [emailError, setEmailError] = useState('')
+  const [vehiclePicture, setVehiclePicture] = useState<File | null>(null)
+  const [vehiclePicturePreview, setVehiclePicturePreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     // Check if we have a saved email in localStorage
@@ -52,6 +56,11 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         const data = await response.json()
         setDriverInfo(data.driver_info)
         setVehicleInfo(data.vehicle_info)
+        //if the vehicle_info.pictureUrl is not null, set the vehiclePicturePreview to the vehicle_info.pictureUrl
+        if (data.vehicle_info?.pictureUrl) {
+          const vehiclePictureUrl = `/api/image-proxy?key=${encodeURIComponent(data.vehicle_info.pictureUrl)}`
+          setVehiclePicturePreview(vehiclePictureUrl)
+        }
         console.log(data)
       }
     } catch (error) {
@@ -62,12 +71,16 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const formData = new FormData()
+      formData.append('driverInfo', JSON.stringify(driverInfo))
+      formData.append('vehicleInfo', JSON.stringify(vehicleInfo))
+      if (vehiclePicture) {
+        formData.append('vehiclePicture', vehiclePicture)
+      }
+
       const response = await fetch('/api/driver', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ driverInfo, vehicleInfo }),
+        body: formData,
       })
 
       if (response.ok) {
@@ -97,15 +110,8 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
           setEmailError('')
         }
         //check if the email is already in the database
-        const response = await fetch(`/api/driver?email=${value}`)
-        if (response.ok) {
-          const data = await response.json()
-          if (data.driver_info) {
-            //fill the form with the driver's info
-            setDriverInfo(data.driver_info)
-            setVehicleInfo(data.vehicle_info)
-          }
-        }
+        fetchDriverInfo(value)
+        
       }
     } else if (name.startsWith('vehicle')) {
       const field = name.replace('vehicle', '').toLowerCase()
@@ -121,6 +127,20 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         }
         return { ...prev, [field]: value };
       })
+    }
+  }
+
+  const handlePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      setVehiclePicture(file)
+      
+      // Create a preview URL for the selected image
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setVehiclePicturePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -237,11 +257,43 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
                   name="vehicleColorOther"
                   value={vehicleInfo.colorOther || ''}
                   onChange={handleChange}
-                  
                   className={inputClassName}
                 />
               </div>
             )}
+            <div>
+              <label htmlFor="vehiclePicture" className="block text-sm font-medium text-gray-300">{translations['vehiclePicture'] || 'Vehicle Picture'}</label>
+              <input
+                type="file"
+                id="vehiclePicture"
+                name="vehiclePicture"
+                onChange={handlePictureChange}
+                accept="image/*"
+                ref={fileInputRef}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-1 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                {translations['uploadPicture'] || 'Upload Picture'}
+              </button>
+              {vehiclePicture && <p className="mt-2 text-sm text-gray-300">{vehiclePicture.name}</p>}
+              
+              {/* Image preview */}
+              {vehiclePicturePreview && (
+                <div className="mt-4">
+                  <Image
+                    src={vehiclePicturePreview}
+                    alt="Vehicle preview"
+                    width={200}
+                    height={150}
+                    className="rounded-md object-cover"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import formidable from 'formidable'
 import fs from 'fs'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 export const config = {
   api: {
@@ -14,6 +15,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+const s3Client = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.CLOUDFLARE_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.CLOUDFLARE_SECRET_ACCESS_KEY!,
+  },
+})
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const form = formidable()
@@ -22,39 +32,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(500).json({ error: 'Failed to process form data' })
       }
 
-      const driverInfo = typeof fields.driverInfo === 'string' 
-        ? JSON.parse(fields.driverInfo) 
-        : (Array.isArray(fields.driverInfo) ? fields.driverInfo[0] : fields.driverInfo) || {}
+      let driverInfo, vehicleInfo;
 
-      const vehicleInfo = typeof fields.vehicleInfo === 'string' 
-        ? JSON.parse(fields.vehicleInfo) 
-        : (Array.isArray(fields.vehicleInfo) ? fields.vehicleInfo[0] : fields.vehicleInfo) || {}
-
-      // Handle file uploads (license and vehicle picture)
-      if (files.licenseFile) {
-        const licenseFile = Array.isArray(files.licenseFile) ? files.licenseFile[0] : files.licenseFile as formidable.File
-        // Upload license file to Supabase storage
-        const { data, error } = await supabase.storage
-          .from('licenses')
-          .upload(`${driverInfo.email}/license.${licenseFile.originalFilename?.split('.').pop()}`, fs.createReadStream(licenseFile.filepath))
-        
-        if (error) {
-          return res.status(500).json({ error: 'Failed to upload license file' })
-        }
-        driverInfo.licenseFileUrl = data?.path
+      try {
+        driverInfo = JSON.parse(Array.isArray(fields.driverInfo) ? fields.driverInfo[0] : fields.driverInfo || '{}');
+        vehicleInfo = JSON.parse(Array.isArray(fields.vehicleInfo) ? fields.vehicleInfo[0] : fields.vehicleInfo || '{}');
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        return res.status(400).json({ error: 'Invalid JSON in form data' });
       }
 
+      // Handle vehicle picture upload
       if (files.vehiclePicture) {
-        const vehiclePictureFile = Array.isArray(files.vehiclePicture) ? files.vehiclePicture[0] : files.vehiclePicture
-        // Upload vehicle picture to Supabase storage
-        const { data, error } = await supabase.storage
-          .from('vehicle-pictures')
-          .upload(`${driverInfo.email}/vehicle.${vehiclePictureFile.originalFilename?.split('.').pop()}`, fs.createReadStream(vehiclePictureFile.filepath))
-        
-        if (error) {
-          return res.status(500).json({ error: 'Failed to upload vehicle picture' })
+        const vehiclePictureFile = Array.isArray(files.vehiclePicture) ? files.vehiclePicture[0] : files.vehiclePicture;
+        const fileContent = fs.readFileSync(vehiclePictureFile.filepath);
+        const fileExtension = vehiclePictureFile.originalFilename?.split('.').pop();
+        const fileName = `${driverInfo.email}/vehicle.${fileExtension}`;
+
+        const uploadParams = {
+          Bucket: 'wesudbury',
+          Key: fileName,
+          Body: fileContent,
+          ContentType: vehiclePictureFile.mimetype ?? undefined,
+        };
+
+        try {
+          await s3Client.send(new PutObjectCommand(uploadParams));
+          vehicleInfo.pictureUrl = fileName;
+        } catch (error) {
+          console.error('Error uploading to R2:', error);
+          return res.status(500).json({ error: 'Failed to upload vehicle picture' });
         }
-        vehicleInfo.pictureUrl = data?.path
       }
 
       // Save driver and vehicle info to the database
@@ -65,14 +73,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           driver_info: driverInfo,
           vehicle_info: vehicleInfo
         })
-        .select()
+        .select();
 
       if (error) {
-        return res.status(500).json({ error: 'Failed to save driver info' })
+        return res.status(500).json({ error: 'Failed to save driver info' });
       }
 
-      return res.status(200).json({ message: 'Driver info saved successfully', data })
-    })
+      return res.status(200).json({ message: 'Driver info saved successfully', data });
+    });
   } else if (req.method === 'GET') {
     const { email } = req.query
 

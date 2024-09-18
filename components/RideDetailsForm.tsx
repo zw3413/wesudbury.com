@@ -3,53 +3,8 @@ import { RideDetails, RidePreferences } from '../types'
 import { Loader } from '@googlemaps/js-api-loader'
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import CustomMultiSelect from './CustomMultiSelect';
-
+import { cityList } from '../constants';
 type CityName = keyof typeof cityList;
-const cityList = {
-    'Sudbury': {
-        center: { lat: 46.4917, lng: -80.9930 },
-    },
-    'Toronto': {
-        center: { lat: 43.65107, lng: -79.347015 },
-    },
-    'Ottawa': {
-        center: { lat: 45.4215, lng: -75.6979 },
-    },
-    "Thunder Bay": {
-        center: { lat: 48.3799, lng: -89.2444 },
-    },
-    "Kingston": {
-        center: { lat: 44.2324, lng: -76.4879 },
-    },
-    "London": {
-        center: { lat: 42.9834, lng: -81.233 },
-    },
-    "Windsor": {
-        center: { lat: 42.3001, lng: -83.018 },
-    },
-    "Sault Ste. Marie": {
-        center: { lat: 46.519, lng: -84.348 },
-    },
-    "Barrie": {
-        center: { lat: 44.3891, lng: -79.6917 },
-    },
-    "Niagara Falls": {
-        center: { lat: 43.0963, lng: -79.0378 },
-    },
-    "St. Catharines": {
-        center: { lat: 43.2203, lng: -79.1863 },
-    },
-    "Guelph": {
-        center: { lat: 43.5448, lng: -80.2486 },
-    },
-    "Waterloo": {
-        center: { lat: 43.4643, lng: -80.5204 },
-    },
-    "Cambridge": {
-        center: { lat: 43.3601, lng: -80.3165 },
-    },
-
-}
 
 interface Props {
     initialRideDetails: RideDetails;
@@ -59,14 +14,6 @@ interface Props {
         [key: string]: string;
     };
 }
-
-// const frequentlyUsedAddresses = [
-//     "Laurentian University, Sudbury, ON",
-//     "Science North, Sudbury, ON",
-//     "New Sudbury Centre, Sudbury, ON",
-//     "Health Sciences North, Sudbury, ON",
-//     "Cambrian College, Sudbury, ON"
-// ];
 
 export default function RideDetailsForm({ initialRideDetails, initialRidePreferences, onSubmit, translations }: Props) {
     const [rideDetails, setRideDetails] = useState(initialRideDetails)
@@ -145,9 +92,52 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
 
             mapRef.current = new google.maps.Map(mapElement, {
                 center: center,
-                zoom: 11,
+                zoom: 12,
+                gestureHandling: 'greedy',
+                streetViewControl: false,
             })
+            // Add custom geolocation control
+            const locationButton = document.createElement("button");
+            locationButton.textContent = "📍";
+            locationButton.classList.add("custom-map-control-button");
+            locationButton.style.cssText = `
+                background-color: #fff;
+                border: none;
+                outline: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 2px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+                cursor: pointer;
+                margin-right: 10px;
+                padding: 0;
+                font-size: 18px;
+            `;
 
+            mapRef.current.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationButton);
+            locationButton.addEventListener("click", () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position: GeolocationPosition) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
+                            mapRef.current?.setCenter(pos);
+                            new google.maps.Marker({
+                                position: pos,
+                                map: mapRef.current,
+                                title: "Your location"
+                            });
+                        },
+                        () => {
+                            console.log("Error: The Geolocation service failed.");
+                        }
+                    );
+                } else {
+                    console.log("Error: Your browser doesn't support geolocation.");
+                }
+            });
             mapRef.current.addListener('click', handleMapClick)
         }
     }
@@ -174,22 +164,22 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
         setCurrentField(field)
         // wait for the current field to be set
 
-            setShowMap(true)
+        setShowMap(true)
 
-            setSelectedAddress(null)
+        setSelectedAddress(null)
 
-            // Reset the map and marker references
-            mapRef.current = null
-            if (markerRef.current) {
-                markerRef.current.setMap(null)
-                markerRef.current = null
-            }
+        // Reset the map and marker references
+        mapRef.current = null
+        if (markerRef.current) {
+            markerRef.current.setMap(null)
+            markerRef.current = null
+        }
 
-            // Use requestAnimationFrame to ensure the map div is rendered before initializing
-            requestAnimationFrame(() => {
-                initializeMap(field)
-            })
-  
+        // Use requestAnimationFrame to ensure the map div is rendered before initializing
+        requestAnimationFrame(() => {
+            initializeMap(field)
+        })
+
     }
 
     const handleCloseMap = () => {
@@ -208,7 +198,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                         component => component.types.includes('locality')
                     );
                     const city = cityComponent ? cityComponent.long_name : '';
-    
+
                     setRideDetails(prev => ({
                         ...prev,
                         [currentField + '_address']: selectedAddress,
@@ -287,11 +277,11 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                                     <label htmlFor={`${field}-input`} className={`${labelClassName} min-w-[100px] inline`}>
                                         * {translations[field]}
                                     </label>
-                                    <select 
-                                        className={`${selectClassName} px-2 text-center grow inline cursor-pointer`} 
-                                        value={rideDetails[(field + "_city" as keyof RideDetails)] as string} 
-                                        onChange={handleRideDetailsChange} 
-                                        required 
+                                    <select
+                                        className={`${selectClassName} px-2 text-center grow inline cursor-pointer`}
+                                        value={rideDetails[(field + "_city" as keyof RideDetails)] as string}
+                                        onChange={handleRideDetailsChange}
+                                        required
                                         name={`${field}_city`}
                                     >
                                         {Object.keys(cityList).map((city) => (

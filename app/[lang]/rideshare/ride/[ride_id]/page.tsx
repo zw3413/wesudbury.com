@@ -4,7 +4,8 @@ import BackButton from '@/components/BackButton'
 import ShareButton from '@/components/ShareButton'
 import BookButton from '@/components/BookButton'
 import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars, FaMapMarkerAlt } from 'react-icons/fa'
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react'
+import Image from 'next/image';
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,11 +25,22 @@ async function getRideDetails(rideId: string) {
         return null
     }
 
-    // Combine the top-level fields with the rideinfo contents
+    // Fetch driver's vehicle info
+    const { data: driverData, error: driverError } = await supabase
+        .from('drivers')
+        .select('vehicle_info')
+        .eq('email', data.rideinfo.driver_email)
+        .single()
+
+    if (driverError) {
+        console.error('Error fetching driver details:', driverError)
+    }
+
     return {
         key: data.key,
         created_at: data.created_at,
-        ...data.rideinfo
+        ...data.rideinfo,
+        vehiclePictureUrl: driverData?.vehicle_info?.pictureUrl
     }
 }
 
@@ -48,32 +60,66 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         )
     }
 
-    const shareTitle = `${t('rideshare.shareTitle')} - ${rideDetails.from_location} to ${rideDetails.to_location}`;
-    const shareText = `${t('rideshare.shareText')} ${rideDetails.from_location} to ${rideDetails.to_location} on ${rideDetails.date} at ${rideDetails.time}`;
     const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${ride_id}`;
+
+    const vehiclePictureUrl = rideDetails.vehiclePictureUrl
+        ? `/api/image-proxy?key=${encodeURIComponent(rideDetails.vehiclePictureUrl)}`
+        : null;
 
     return (
         <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
             <div className="container mx-auto px-4 py-8">
                 <BackButton url={`/${lang}/rideshare`} />
-                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div id="ride-details-card">
-                        <div className="bg-[rgb(54,89,108)] text-white p-6 justify-around space-x-2 flex">
-                            <div className=" ">
-                                <h1 className="text-3xl font-bold mb-2">{t('rideshare.form.rideDetails')}</h1>
-                                <p className="text-xl">{rideDetails.from_city} → {rideDetails.to_city}</p>
-                            </div>
-                            <div className="flex justify-end place-content-center items-center">
-                                <QRCodeSVG value={shareUrl} size={100} />
+                <div id="ride-details-card-large" className="relative max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div id="ride-details-card-standard" >
+
+                        <div id="ride-details-card-mini" className="relative overflow-hidden rounded-lg shadow-2xl">
+                            {vehiclePictureUrl && (
+                                <div className="absolute inset-0 z-0">
+                                    <Image
+                                        src={vehiclePictureUrl}
+                                        alt="Vehicle"
+                                        fill
+                                        sizes="100vw"
+                                        style={{ objectFit: 'cover' }}
+                                        className="opacity-40"
+                                    />
+                                </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-r from-[rgba(54,89,108,0.9)] to-[rgba(54,89,108,0.7)] z-10"></div>
+                            <div className="relative z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                                <div className="flex-grow mb-4 sm:mb-0">
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 text-white drop-shadow-lg">
+                                        {t('rideshare.form.rideDetails')}
+                                    </h1>
+                                    <p className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4 drop-shadow-md">
+                                        {rideDetails.from_city} 
+                                        <span className="mx-1 sm:mx-2 text-yellow-300">→</span> 
+                                        {rideDetails.to_city}
+                                    </p>
+                                    <div className="flex items-center space-x-4 sm:space-x-6 text-base sm:text-lg text-white">
+                                        <div className="flex items-center">
+                                            <FaCalendarAlt className="mr-1 sm:mr-2 text-yellow-300" />
+                                            {rideDetails.date}
+                                        </div>
+                                        <div className="flex items-center">
+                                            <FaClock className="mr-1 sm:mr-2 text-yellow-300" />
+                                            {rideDetails.time}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex-shrink-0 mt-4 sm:mt-0 sm:ml-4">
+                                    <div className="bg-white p-2 rounded-lg shadow-lg">
+                                        <QRCodeSVG value={shareUrl} size={80} />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className="p-6 space-y-6">
                             <div className="grid grid-cols-1 gap-4">
-                                <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.from')} value={`${rideDetails.from_city}, ${rideDetails.from_address? rideDetails.from_address : ''}`} />
-                                <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.to')} value={`${rideDetails.to_city}, ${rideDetails.to_address? rideDetails.to_address : ''}`} />
+                                <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.from')} value={`${rideDetails.from_city}, ${rideDetails.from_address ? rideDetails.from_address : ''}`} />
+                                <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.to')} value={`${rideDetails.to_city}, ${rideDetails.to_address ? rideDetails.to_address : ''}`} />
                                 <div className="grid grid-cols-2 gap-4">
-                                    <DetailItem icon={<FaCalendarAlt />} label={t('rideshare.form.date')} value={rideDetails.date} />
-                                    <DetailItem icon={<FaClock />} label={t('rideshare.form.time')} value={rideDetails.time} />
                                     {rideDetails.seats > 0 && (<DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />)}
                                     {rideDetails.price && (<DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />)}
                                 </div>
@@ -95,19 +141,13 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                             <p className="text-[rgb(33,41,49)]">{rideDetails.notes}</p>
                         </div>
                     )}
-
-
                 </div>
-
                 <div className=" p-6 justify-around space-x-2 flex ">
                     <div className="w-1/2 flex flex-col space-y-2 place-content-around">
-                       <BookButton rideId={ride_id} translations={translations} lang={lang}/>
-
+                        <BookButton rideId={ride_id} translations={translations} lang={lang} />
                     </div>
                     <div className="w-1/2 flex justify-end">
-
-                        <ShareButton title={shareTitle} text={shareText} url={shareUrl} cardId="ride-details-card" />
-
+                        <ShareButton />
                     </div>
                 </div>
             </div>

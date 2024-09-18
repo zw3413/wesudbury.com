@@ -17,6 +17,9 @@ const nextConfig = {
       },
     ]
   },
+  images: {
+    domains: ['localhost', 'your-production-domain.com'], // Add your production domain here
+  },
 }
 
 module.exports = nextConfig

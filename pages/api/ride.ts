@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const rideData = req.body
 
         // Validate the required fields
-        if (!rideData.key || !rideData.driverEmail || !rideData.from_city || !rideData.to_city || !rideData.date || !rideData.time) {
+        if (!rideData.key || !rideData.driver_email || !rideData.from_city || !rideData.to_city || !rideData.date || !rideData.time) {
             return res.status(400).json({ error: 'Missing required fields' })
         }
 
