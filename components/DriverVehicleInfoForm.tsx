@@ -61,7 +61,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
         setVehicleInfo(data.vehicle_info)
         //if the vehicle_info.pictureUrl is not null, set the vehiclePicturePreview to the vehicle_info.pictureUrl
         if (data.vehicle_info?.pictureUrl) {
-          const vehiclePictureUrl = `/api/image-proxy?key=${encodeURIComponent(data.vehicle_info.pictureUrl)}`
+          const vehiclePictureUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/image-proxy?key=${encodeURIComponent(data.vehicle_info.pictureUrl)}`
           setVehiclePicturePreview(vehiclePictureUrl)
         }
         console.log(data)
