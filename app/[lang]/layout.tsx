@@ -1,4 +1,4 @@
-import Header from './Header'
+// import Header from './Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { useTranslation } from '@/lib/i18n'
 
