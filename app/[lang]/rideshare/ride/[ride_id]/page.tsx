@@ -82,7 +82,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         : null;
 
     return (
-        <div className="min-h-screen bg-[rgb(250,252,255)] ">
+        <div className="min-h-screen bg-[rgb(250,252,255)] max-w-[450px] mx-auto">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex justify-start">
