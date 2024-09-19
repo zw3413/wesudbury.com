@@ -6,7 +6,7 @@ import html2canvas from 'html2canvas';
 import Modal from './Modal';
 import Image from 'next/image';
 
-export default function ShareButton({ rideId, lang }: { rideId: string, lang: string }) {
+export default function ShareButton({  }: { rideId: string, lang: string }) {
   const [isShared, setIsShared] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState('ride-details-card-standard');
