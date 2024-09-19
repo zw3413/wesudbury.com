@@ -73,10 +73,10 @@ export default function ShareButton({ rideId, lang }: { rideId: string, lang: st
 
       if (navigator.share && navigator.canShare({ files: filesArray })) {
         await navigator.share({
-          // files: filesArray,
+           files: filesArray,
           // title: 'Ride Details',
           // text: `Check out this ride from ${rideDetails.from_city} to ${rideDetails.to_city}`,
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${rideId}`,
+          // url: `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${rideId}`,
         });
       } else {
         // Fallback for browsers that don't support sharing files
