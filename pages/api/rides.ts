@@ -26,8 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (filter === 'available') {
                 const now = new Date()
-                const currentDate = now.toISOString().split('T')[0]
-                const currentTime = now.toTimeString().slice(0, 5)
+                const options = { timeZone: 'America/Los_Angeles', hour12: false }; // UTC-8时区（美国洛杉矶）
+                const currentDate = new Date(now.toLocaleString('en-US', options)).toISOString().split('T')[0];
+                const currentTime = new Date(now.toLocaleString('en-US', options)).toTimeString().slice(0, 5);
+                
                 query = query.or(
                     `rideinfo->>"date".gt.${currentDate}, and(rideinfo->>"date".eq.${currentDate}, rideinfo->>"time".gt.${currentTime})`)
                 .is('del_at', null)  //已经删除的不显示
