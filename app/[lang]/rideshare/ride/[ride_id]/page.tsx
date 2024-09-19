@@ -82,7 +82,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         : null;
 
     return (
-        <div className="min-h-screen bg-[rgb(250,252,255)] max-w-[450px] mx-auto">
+        <div className="min-h-screen bg-[rgb(250,252,255)] ">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex justify-start">
@@ -119,8 +119,8 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                 </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-r from-[rgba(40,76,96,0.9)] to-[rgba(40,76,96,0.2)] z-10"></div>
-                            <div className="relative z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                                <div className="flex-grow mb-4 sm:mb-0 w-full">
+                            <div className="relative z-20 p-4 sm:p-6 md:p-8 flex flex-col  justify-between items-start sm:items-center">
+                                <div className="flex-grow mb-4 w-full">
                                     <div className="flex justify-between items-start w-full">
                                         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 text-white drop-shadow-lg">
                                             {t('rideshare.form.rideDetails')}
