@@ -18,8 +18,9 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ['localhost', 'your-production-domain.com'], // Add your production domain here
+    domains: ['localhost', 'r2.cloudflarestorage.com'], // Add your production domain here
   },
 }
 
 module.exports = nextConfig
+
