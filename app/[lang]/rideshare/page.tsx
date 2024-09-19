@@ -21,7 +21,7 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
   }, {} as Record<string, string>)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-[800px]">
       <BackButton url={`/${lang}/`}/>
       <h1 className="text-4xl font-bold tracking-tight text-[rgb(40,76,96)] text-center">{t('rideshare.title')}</h1>
   
