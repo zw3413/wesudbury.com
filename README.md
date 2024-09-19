@@ -4,6 +4,10 @@ WeSudbury is a comprehensive guide to life in Sudbury, Ontario, designed to help
 
 ## Project Overview
 
+The pursuing
+1. 环保效率
+2. 连接人
+
 This application was developed based on the following initial prompts and requirements:
 
 1. Create a simple, mobile-first website that supports PWA and AMP.
@@ -50,4 +54,3 @@ This color palette provides a clean, professional look while maintaining a conne
 1. 将offer a ride中的userEmail 改成driverEmail, 这样司机自己也可以操作book
 2. book ride
 3. 国际化
-

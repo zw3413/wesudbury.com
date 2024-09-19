@@ -18,7 +18,7 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ['localhost', 'r2.cloudflarestorage.com'], // Add your production domain here
+    domains: ['localhost', 'wesudbury.com'], // Add your production domain here
   },
 }
 
