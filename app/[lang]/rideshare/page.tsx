@@ -23,7 +23,7 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
   return (
     <div className="container mx-auto px-4 py-8">
       <BackButton url={`/${lang}/`}/>
-      <h1 className="text-4xl font-bold tracking-tight text-[rgb(54,89,108)] text-center">{t('rideshare.title')}</h1>
+      <h1 className="text-4xl font-bold tracking-tight text-[rgb(40,76,96)] text-center">{t('rideshare.title')}</h1>
   
       <p className="text-base mb-4 text-right tracking-tight">Or 
         
@@ -40,7 +40,7 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
         </a>
       </div> */}
 
-      <section className=" inset-0 bg-gradient-to-br from-[rgba(54,89,108,1)] to-[rgba(54,89,108,0.6)] rounded-lg shadow-md p-6">
+      <section className=" inset-0 bg-gradient-to-br from-[rgba(40,76,96,1)] to-[rgba(40,76,96,0.6)] rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-6 text-white text-center">{t('rideshare.availableRides')}</h2>
         <AvailableRides translations={translations} lang={lang} />
       </section>

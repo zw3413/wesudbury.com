@@ -18,7 +18,7 @@ const nextConfig = {
     ]
   },
   images: {
-    domains: ['localhost', 'wesudbury.com'], // Add your production domain here
+    domains: ['localhost', 'wesudbury.com','www.wesudbury.com'], // Add your production domain here
   },
 }
 

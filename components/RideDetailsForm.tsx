@@ -265,7 +265,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
     const labelClassName = "block text-sm font-medium text-gray-200"
 
     return (
-        <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gradient-to-br from-[rgba(54,89,108,1)] to-[rgba(54,89,108,0.6)]">
+        <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gradient-to-br from-[rgba(40,76,96,1)] to-[rgba(40,76,96,0.6)]">
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Ride Details Section */}
                 <section>

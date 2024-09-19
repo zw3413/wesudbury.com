@@ -118,7 +118,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                     />
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-r from-[rgba(54,89,108,0.9)] to-[rgba(54,89,108,0.2)] z-10"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-[rgba(40,76,96,0.9)] to-[rgba(40,76,96,0.2)] z-10"></div>
                             <div className="relative z-20 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                                 <div className="flex-grow mb-4 sm:mb-0 w-full">
                                     <div className="flex justify-between items-start w-full">
@@ -189,7 +189,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                         </div>
                     </div>
                     <div className="border-t pt-4 p-6">
-                        <h2 className="text-xl font-semibold mb-3 text-[rgb(54,89,108)]">{t('rideshare.form.preferences')}</h2>
+                        <h2 className="text-xl font-semibold mb-3 text-[rgb(40,76,96)]">{t('rideshare.form.preferences')}</h2>
                         <div className="grid grid-cols-2 gap-4">
                             <DetailItem icon={<FaSmoking />} label={t('rideshare.form.smokingAllowed')} value={rideDetails.smoking ? t('yes') : t('no')} />
                             <DetailItem icon={<FaDog />} label={t('rideshare.form.petFriendly')} value={rideDetails.pet_friendly ? t('yes') : t('no')} />
@@ -199,7 +199,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                     </div>
                     {rideDetails.notes && (
                         <div className="border-t pt-4 p-6">
-                            <h2 className="text-xl font-semibold mb-2 text-[rgb(54,89,108)]">{t('rideshare.form.notes')}</h2>
+                            <h2 className="text-xl font-semibold mb-2 text-[rgb(40,76,96)]">{t('rideshare.form.notes')}</h2>
                             <p className="text-[rgb(33,41,49)]">{rideDetails.notes}</p>
                         </div>
                     )}
@@ -223,7 +223,7 @@ function DetailItem({ icon, label, value }: { icon: React.ReactNode, label: stri
             <div className="text-[rgb(255,183,77)]">{icon}</div>
             <div>
                 <p className="text-sm text-[rgb(33,41,49)]">{label}</p>
-                <p className="font-semibold text-[rgb(54,89,108)]">{value}</p>
+                <p className="font-semibold text-[rgb(40,76,96)]">{value}</p>
             </div>
         </div>
     )

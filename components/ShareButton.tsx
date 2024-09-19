@@ -96,7 +96,7 @@ export default function ShareButton({ rideId, lang }: { rideId: string, lang: st
     <div className="w-full">
       <button
         onClick={() => { setIsModalOpen(true); generatePreview(selectedCardId); }}
-        className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(54,89,108)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
+        className="w-full flex items-center justify-center px-4 py-3 bg-[rgb(40,76,96)] hover:bg-[rgb(44,79,98)] text-white rounded-lg font-semibold transition duration-300"
       >
         <FaShare className="mr-2" />
         {isShared ? 'Shared!' : 'Share'}

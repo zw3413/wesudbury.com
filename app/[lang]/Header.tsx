@@ -14,7 +14,7 @@ type HeaderProps = {
 
 export default function Header({ lang, translations }: HeaderProps) {
   return (
-    <header className="bg-[rgb(54,89,108)] text-white shadow-md hidden md:block">
+    <header className="bg-[rgb(40,76,96)] text-white shadow-md hidden md:block">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <Link href={`/${lang}`} className="text-xl font-bold">WeSudbury</Link>
         <nav>

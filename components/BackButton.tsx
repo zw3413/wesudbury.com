@@ -16,7 +16,7 @@ export default function BackButton({ url }: BackButtonProps) {
   return (
     <button 
       onClick={handleBack}
-      className="absolute top-4 left-4 text-[rgb(54,89,108)] hover:text-[rgb(255,183,77)] transition-colors"
+      className="absolute top-4 left-4 text-[rgb(40,76,96)] hover:text-[rgb(255,183,77)] transition-colors"
       aria-label="Back"
     >
       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

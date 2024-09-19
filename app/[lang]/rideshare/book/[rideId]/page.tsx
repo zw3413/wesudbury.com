@@ -56,7 +56,7 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
     return (
         <div className="container mx-auto px-4 py-8">
             <BackButton url={`/${lang}/rideshare/ride/${rideId}`} />
-            <h1 className="text-3xl font-bold mb-6 text-center text-[rgb(54,89,108)]">{t('rideshare.bookRide')}</h1>
+            <h1 className="text-3xl font-bold mb-6 text-center text-[rgb(40,76,96)]">{t('rideshare.bookRide')}</h1>
 
             {!isBooked ? (
                 <form onSubmit={handleSubmit} className="max-w-md mx-auto">
@@ -106,11 +106,11 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                 <div className="max-w-md mx-auto text-center">
                     <p className="mb-4">{t('rideshare.bookingConfirmation')}</p>
                     <div className="flex justify-center space-x-4">
-                        <a href={`tel:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[rgb(54,89,108)] text-white rounded-lg">
+                        <a href={`tel:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[rgb(40,76,96)] text-white rounded-lg">
                             <FaPhone className="mr-2" />
                             {t('rideshare.callDriver')}
                         </a>
-                        <a href={`sms:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[rgb(54,89,108)] text-white rounded-lg">
+                        <a href={`sms:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[rgb(40,76,96)] text-white rounded-lg">
                             <FaEnvelope className="mr-2" />
                             {t('rideshare.textDriver')}
                         </a>
