@@ -20,7 +20,7 @@ export default async function LangLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header lang={lang} translations={navigationTranslations} />
+      {/* <Header lang={lang} translations={navigationTranslations} /> */}
       <main className="flex-grow pb-16 md:pb-0">
         {children}
       </main>

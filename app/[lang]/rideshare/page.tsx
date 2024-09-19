@@ -25,7 +25,7 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
       <BackButton url={`/${lang}/`}/>
       <h1 className="text-4xl font-bold tracking-tight text-[rgb(40,76,96)] text-center">{t('rideshare.title')}</h1>
   
-      <p className="text-base mb-4 text-right tracking-tight">Or 
+      <p className="text-base mb-4 text-center tracking-tight">Or 
         
         <a href={`/${lang}/rideshare/offer`} className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-1 px-2 mx-2 rounded-full transition-colors">{t('rideshare.offer')}</a>
      
