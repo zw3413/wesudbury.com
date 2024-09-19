@@ -78,7 +78,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
     const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${lang}/rideshare/ride/${ride_id}`;
 
     const vehiclePictureUrl = rideDetails.vehiclePictureUrl
-        ? `/api/image-proxy?key=${encodeURIComponent(rideDetails.vehiclePictureUrl)}`
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/image-proxy?key=${encodeURIComponent(rideDetails.vehiclePictureUrl)}`
         : null;
 
     return (
