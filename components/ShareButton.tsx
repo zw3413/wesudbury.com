@@ -104,7 +104,7 @@ export default function ShareButton({  }: { rideId: string, lang: string }) {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
  
-        <div className="mb-4 flex justify-around">
+        <div className="mb-8 flex justify-around">
           {cardOptions.map((option) => (
             <button
               key={option.id}

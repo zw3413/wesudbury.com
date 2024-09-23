@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-
+import Modal from './Modal'
+import NewUserForm from './NewUserForm'
+import ExistingUserForm from './ExistingUserForm'
 import { DriverInfo, VehicleInfo } from '../types'
 import OfferedRides from './OfferedRides'
 const commonVehicleColors = [
-  'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Brown', 'Green', 
+  'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Brown', 'Green',
   'Beige', 'Orange', 'Gold', 'Yellow', 'Purple', 'Pink'
 ];
 
@@ -41,13 +43,20 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
   const [vehiclePicturePreview, setVehiclePicturePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [driver_email, setDriver_email] = useState<string | null>(null)
+  // const [savedEmail, setSavedEmail] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState(false)
+  const [modalContent, setModalContent] = useState('')
+  // const [password, setPassword] = useState('')
+  // const [termsAgreed, setTermsAgreed] = useState(false)
+
   useEffect(() => {
     // Check if we have a saved email in localStorage
-    const savedEmail = localStorage.getItem('driverEmail')
-    if (savedEmail) {
+    const email = localStorage.getItem('driverEmail')
+    // setSavedEmail(email)
+    if (email) {
       // If we have a saved email, fetch the driver's info from the API
-      fetchDriverInfo(savedEmail)
-      setDriver_email(savedEmail)
+      fetchDriverInfo(email)
+      //setDriver_email(savedEmail)
     }
   }, [])
 
@@ -56,15 +65,19 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       const response = await fetch(`/api/driver?email=${email}`)
       if (response.ok) {
         const data = await response.json()
-        setDriverInfo(data.driver_info)
-        setDriver_email(data.driver_info.email)
-        setVehicleInfo(data.vehicle_info)
-        //if the vehicle_info.pictureUrl is not null, set the vehiclePicturePreview to the vehicle_info.pictureUrl
-        if (data.vehicle_info?.pictureUrl) {
-          const vehiclePictureUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/image-proxy?key=${encodeURIComponent(data.vehicle_info.pictureUrl)}`
-          setVehiclePicturePreview(vehiclePictureUrl)
+        if (data.driver_info.email) {
+          setDriverInfo(data.driver_info)
+          // if (data.driver_info.email === localStorage.getItem('driverEmail')) {
+            setDriver_email(data.driver_info.email)
+            setVehicleInfo(data.vehicle_info)
+            //if the vehicle_info.pictureUrl is not null, set the vehiclePicturePreview to the vehicle_info.pictureUrl
+            if (data.vehicle_info?.pictureUrl) {
+              const vehiclePictureUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/image-proxy?key=${encodeURIComponent(data.vehicle_info.pictureUrl)}`
+              setVehiclePicturePreview(vehiclePictureUrl)
+            }
+          //}
         }
-        console.log(data)
+
       }
     } catch (error) {
       console.error('Error fetching driver info:', error)
@@ -97,7 +110,28 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       alert('Failed to save driver information. Please try again.')
     }
   }
+  const handleEmailBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = e.target.value
 
+    if (!value) return;
+
+    try {
+      const response = await fetch(`/api/driver?email=${encodeURIComponent(value)}`)
+
+      if (response.ok) {
+        setModalContent('existingUser')
+        setShowModal(true)
+      } else if (response.status === 404) {
+        setModalContent('newUser')
+        setShowModal(true)
+      } else {
+        throw new Error('Failed to check email')
+      }
+    } catch (error) {
+      console.error('Error checking email:', error)
+      alert('An error occurred while checking your email. Please try again.')
+    }
+  }
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     if (name.startsWith('driver')) {
@@ -109,12 +143,10 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       if (field === 'email') {
         if (!value.includes('@')) {
           setEmailError(translations['invalidEmail'] || 'Please enter a valid email address')
+          return
         } else {
           setEmailError('')
         }
-        //check if the email is already in the database
-        fetchDriverInfo(value)
-        
       }
     } else if (name.startsWith('vehicle')) {
       const field = name.replace('vehicle', '').toLowerCase()
@@ -137,13 +169,49 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
       setVehiclePicture(file)
-      
+
       // Create a preview URL for the selected image
       const reader = new FileReader()
       reader.onloadend = () => {
         setVehiclePicturePreview(reader.result as string)
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  const handleNewUserSubmit = async (email: string, password: string) => {
+    try {
+      await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'setPassword', email, password, phonenumber:driverInfo.phonenumber, name:driverInfo.name }),
+      })
+      setShowModal(false)
+      setDriverInfo(prev => ({ ...prev, email }))
+    } catch (error) {
+      console.error('Error setting password:', error)
+      alert('An error occurred while setting your password. Please try again.')
+    }
+  }
+
+  const handleExistingUserSubmit = async (email: string, password: string) => {
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', email, password }),
+      })
+
+      if (response.ok) {
+        setShowModal(false)
+        setDriverInfo(prev => ({ ...prev, email }))
+        fetchDriverInfo(email)
+      } else {
+        alert('Invalid email or password. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error logging in:', error)
+      alert('An error occurred while logging in. Please try again.')
     }
   }
 
@@ -159,17 +227,16 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
           <h2 className="text-xl font-semibold mb-4 text-[rgb(255,183,77)]">{translations['driverInfo'] || 'Driver Information'}</h2>
           <div className="space-y-4">
             <div>
-              <label htmlFor="driverEmail" className={labelClassName}>* {translations['driverEmail'] || 'Email'}</label>
+              <label htmlFor="driverName" className="block text-sm font-medium text-gray-300">{translations['driverName'] || 'Name'}</label>
               <input
-                type="email"
-                id="driverEmail"
-                name="driverEmail"
-                value={driverInfo.email}
+                type="text"
+                id="driverName"
+                name="driverName"
+                value={driverInfo.name}
                 onChange={handleChange}
-                required
-                className={`${inputClassName} ${emailError ? 'border-red-500' : ''}`}
+
+                className={inputClassName}
               />
-              {emailError && <p className="mt-1 text-sm text-red-500">{emailError}</p>}
             </div>
             <div>
               <label htmlFor="driverPhoneNumber" className="block text-sm font-medium text-gray-300">* {translations['driverPhoneNumber'] || 'Phone Number'}</label>
@@ -183,18 +250,22 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
                 className={inputClassName}
               />
             </div>
-            <div>
-              <label htmlFor="driverName" className="block text-sm font-medium text-gray-300">{translations['driverName'] || 'Name'}</label>
-              <input
-                type="text"
-                id="driverName"
-                name="driverName"
-                value={driverInfo.name}
-                onChange={handleChange}
 
-                className={inputClassName}
+            <div>
+              <label htmlFor="driverEmail" className={labelClassName}>* {translations['driverEmail'] || 'Email'}</label>
+              <input
+                type="email"
+                id="driverEmail"
+                name="driverEmail"
+                value={driverInfo.email}
+                onChange={handleChange}
+                onBlur={handleEmailBlur}
+                required
+                className={`${inputClassName} ${emailError ? 'border-red-500' : ''}`}
               />
+              {emailError && <p className="mt-1 text-sm text-red-500">{emailError}</p>}
             </div>
+
           </div>
         </section>
 
@@ -209,7 +280,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
                 name="vehicleMake"
                 value={vehicleInfo.make}
                 onChange={handleChange}
-                
+
                 className={selectClassName}
               >
                 <option value="">{translations['selectMake'] || 'Select Make'}</option>
@@ -225,7 +296,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
                 name="vehicleModel"
                 value={vehicleInfo.model}
                 onChange={handleChange}
-                
+
                 className={selectClassName}
               >
                 <option value="">{translations['selectModel'] || 'Select Model'}</option>
@@ -241,7 +312,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
                 name="vehicleColor"
                 value={vehicleInfo.color}
                 onChange={handleChange}
-                
+
                 className={selectClassName}
               >
                 <option value="">{translations['selectColor'] || 'Select Color'}</option>
@@ -283,7 +354,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
                 {translations['uploadPicture'] || 'Upload Picture'}
               </button>
               {vehiclePicture && <p className="mt-2 text-sm text-gray-300">{vehiclePicture.name}</p>}
-              
+
               {/* Image preview */}
               {vehiclePicturePreview && (
                 <div className="mt-4">
@@ -306,7 +377,31 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       </form>
     </div>
 
-{driver_email && <OfferedRides  translations={translations} lang={lang} driverEmail={driver_email} />}
-    </>
+    {driver_email && <OfferedRides translations={translations} lang={lang} driverEmail={driver_email} />}
+
+    <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+      {modalContent === 'newUser' ? (
+        <NewUserForm
+          email={driverInfo.email}
+        
+          onAgree={() => { }}
+          onVerify={async (email) => {
+            console.log(email)
+            // await fetch('/api/auth', {
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify({ action: 'sendVerification', email }),
+            // })
+          }}
+          onSetPassword={(password) => handleNewUserSubmit(driverInfo.email, password)}
+        />
+      ) : (
+        <ExistingUserForm
+          email={driverInfo.email}
+          onSubmit={handleExistingUserSubmit}
+        />
+      )}
+    </Modal>
+  </>
   )
 }

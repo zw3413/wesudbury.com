@@ -8,7 +8,7 @@ import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenu
 import { QRCodeSVG } from 'qrcode.react'
 import Image from 'next/image';
 import { DriverExtendInfo } from '@/types';
-
+import { gradientPairs } from '@/constants'
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -65,6 +65,11 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
         deleteRide: t('rideshare.deleteRide'),
         confirmDelete: t('rideshare.confirmDelete'),
     }
+    if(!rideDetails.gradientIndex){
+        rideDetails.gradientIndex = Math.floor(Math.random() * gradientPairs.length)
+    }
+    const randomGradient = gradientPairs[rideDetails.gradientIndex];
+
     if (!rideDetails) {
         return (
             <div className="min-h-screen bg-[rgb(250,252,255)] flex items-center justify-center">
@@ -118,13 +123,15 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                     />
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-r from-[rgba(40,76,96,0.9)] to-[rgba(40,76,96,0.2)] z-10"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r ${randomGradient[0]} z-10"
+                                style={{
+                                    background: `linear-gradient(to right, ${randomGradient[1]}, ${randomGradient[2]})`
+                                }}
+                            ></div>
                             <div className="relative z-20 p-4 sm:p-6 md:p-8 flex flex-col  justify-between items-start sm:items-center">
                                 <div className="flex-grow mb-4 w-full">
                                     <div className="flex justify-between items-start w-full">
-                                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 text-white drop-shadow-lg">
-                                            {t('rideshare.form.rideDetails')}
-                                        </h1>
+                                      
 
                                         <div className="flex space-x-2">
                                             {rideDetails.driver_license_uploaded && (
@@ -150,11 +157,14 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                             )}
                                         </div>
                                     </div>
-                                    <p className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4 drop-shadow-md">
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 text-white drop-shadow-lg">
+                                          
+                                         
+                                    {/* <p className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4 drop-shadow-md"> */}
                                         {rideDetails.from_city}
                                         <span className="mx-1 sm:mx-2 text-yellow-300">→</span>
                                         {rideDetails.to_city}
-                                    </p>
+                                    {/* </p> */} </h1>
                                     <div className="flex items-center space-x-4 sm:space-x-6 text-base sm:text-lg text-white">
                                         <div className="flex items-center">
                                             <FaCalendarAlt className="mr-1 sm:mr-2 text-yellow-300" />

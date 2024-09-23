@@ -1,6 +1,5 @@
 import { useTranslation } from '@/lib/i18n'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export default async function Home({ params: { lang } }: { params: { lang: string } }) {
     const { t } = await useTranslation(lang, 'common')
@@ -105,7 +104,7 @@ export default async function Home({ params: { lang } }: { params: { lang: strin
                     </div>
                 </section>
 
-                <section className="bg-[rgb(245,247,250)] rounded-lg p-6 mb-12">
+                {/* <section className="bg-[rgb(245,247,250)] rounded-lg p-6 mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-center text-[rgb(40,76,96)]">{t('featuredContent.title')}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-white rounded-lg shadow-md p-4">
@@ -119,15 +118,15 @@ export default async function Home({ params: { lang } }: { params: { lang: strin
                             <p className="text-[rgb(33,41,49)]">{t('featuredContent.description2')}</p>
                         </div>
                     </div>
-                </section>
+                </section> */}
 
-                <section className="text-center">
+                {/* <section className="text-center">
                     <h2 className="text-2xl font-bold mb-4 text-[rgb(40,76,96)]">{t('cta.title')}</h2>
                     <p className="mb-6 text-[rgb(33,41,49)]">{t('cta.description')}</p>
                     <Link href={`/${lang}/signup`} className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-3 px-6 rounded-full inline-block transition-colors">
                         {t('cta.button')}
                     </Link>
-                </section>
+                </section> */}
             </main>
         </div>
     )

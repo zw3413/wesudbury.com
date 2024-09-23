@@ -22,26 +22,15 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-[800px]">
-      <BackButton url={`/${lang}/`}/>
-      <h1 className="text-4xl font-bold tracking-tight text-[rgb(40,76,96)] text-center">{t('rideshare.title')}</h1>
-  
-      <p className="text-base mb-4 text-center tracking-tight">Or 
-        
+      <BackButton url={`/${lang}/`} />
+      <h1 className="text-4xl font-bold text-[rgb(40,76,96)] text-center mb-6 py-2 px-4 shadow-lg bg-white rounded-lg ">{t('rideshare.title')}</h1>
+      {/* <h1 className="text-4xl font-bold text-[rgb(40,76,96)] text-center mb-4">{t('rideshare.title')}</h1> */}
+      <div className="text-base mb-4 mt-1 text-center">
+        <span className='text-sm ms-4'>or</span>
         <a href={`/${lang}/rideshare/offer`} className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-1 px-2 mx-2 rounded-full transition-colors">{t('rideshare.offer')}</a>
-     
-        </p>
-      
-      {/* <div className="flex justify-center space-x-4 mb-8">
-        <a href={`/${lang}/rideshare/offer`} className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-2 px-4 rounded">
-          {t('rideshare.offer')}
-        </a>
-        <a href={`/${lang}/rideshare/request`} className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-[rgb(33,41,49)] font-bold py-2 px-4 rounded">
-          {t('rideshare.request')}
-        </a>
-      </div> */}
+      </div>
 
-      <section className=" inset-0 bg-gradient-to-br from-[rgba(40,76,96,1)] to-[rgba(40,76,96,0.6)] rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-6 text-white text-center">{t('rideshare.availableRides')}</h2>
+      <section className="inset-0 rounded-lg shadow-md  p-6">
         <AvailableRides translations={translations} lang={lang} />
       </section>
     </div>

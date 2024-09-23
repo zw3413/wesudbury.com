@@ -45,6 +45,7 @@ export type RideDetails = {
   frequency?: string;
   daysOfWeek?: string[];
   notes: string;
+  gradientIndex:number;
 }
 
 export type FormData = {
@@ -92,6 +93,7 @@ export type Ride = {
   pet_friendly: boolean;
   preferred_passenger_gender: string;
   created_at: string;
+  gradientIndex:number;
 }
 
 export type DriverExtendInfo = {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 interface ModalProps {
     isOpen: boolean;
@@ -6,56 +6,22 @@ interface ModalProps {
     children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-    const modalRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen]);
-
-    useEffect(() => {
-        const handleResize = () => {
-            if (modalRef.current) {
-                const windowHeight = window.innerHeight;
-                modalRef.current.style.maxHeight = `${windowHeight - 40}px`; // 20px padding top and bottom
-            }
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize(); // Initial call
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
+export default function Modal({ isOpen, onClose, children }: ModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[9999] p-5">
-            <div
-                ref={modalRef}
-                className="bg-white  rounded-lg w-full max-w-lg overflow-y-auto"
-                style={{ maxHeight: 'calc(100vh - 40px)' }}
-            >
-
-           
-                <div className="sticky top-0 bg-white p-4 border-b flex justify-between">
-                    <h2 className="text-xl font-bold  grow">Select a card to share</h2>
-                    <button onClick={onClose} className=" text-xl">&times;</button>
-                </div>
-                <div className="p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col relative">
+                <button 
+                    onClick={onClose} 
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                >
+                    &times;
+                </button>
+                <div className="overflow-y-auto flex-grow p-6">
                     {children}
                 </div>
             </div>
         </div>
     );
-};
-
-export default Modal;
+}

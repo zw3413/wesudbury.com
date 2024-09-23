@@ -3,7 +3,8 @@ import { RideDetails, RidePreferences } from '../types'
 import { Loader } from '@googlemaps/js-api-loader'
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import CustomMultiSelect from './CustomMultiSelect';
-import { cityList } from '../constants';
+import { cityList, gradientPairs } from '../constants';
+
 type CityName = keyof typeof cityList;
 
 interface Props {
@@ -239,11 +240,12 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
+        rideDetails.gradientIndex = Math.floor(Math.random() * gradientPairs.length)
         onSubmit(rideDetails, ridePreferences)
     }
 
     const handleRideDetailsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        console.log(e.target)
+
         const { name, value, type } = e.target
         setRideDetails(prev => ({
             ...prev,

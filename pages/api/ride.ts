@@ -65,6 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         preferred_passenger_gender: rideData.preferredPassengerGender,
                         max_detour_distance: rideData.maxDetourDistance,
                         created_at: new Date().toISOString(),
+                        gradientIndex: rideData.gradientIndex
                     }
                 })
                 .select()
