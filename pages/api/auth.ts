@@ -36,6 +36,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case 'login':
         await handleLogin(email, password, res)
         break
+      case 'checkEmail':
+        await handleCheckEmail(email, res)
+        break
       default:
         res.status(400).json({ error: 'Invalid action' })
     }
@@ -128,6 +131,23 @@ async function handleLogin(email: string, password: string, res: NextApiResponse
   }
 
   res.status(200).json({ message: 'Login successful' })
+}
+
+async function handleCheckEmail(email: string, res: NextApiResponse) {
+  const {error } = await supabase
+    .from('users')
+    .select('email')
+    .eq('email', email)
+    .single()
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      return res.status(404).json({ message: 'Email not found' })
+    }
+    return res.status(500).json({ error: 'Failed to check email' })
+  }
+
+  res.status(200).json({ message: 'Email found' })
 }
 
 async function hashPassword(password: string): Promise<string> {

@@ -50,7 +50,7 @@ export default function OfferedRides({ translations, lang, driverEmail }: Offere
                 <Link href={`/${lang}/rideshare/ride/${ride.key}`} key={ride.key} className="block">
                     <div className="rounded-lg shadow-md p-5 mb-4 hover:shadow-lg transition-shadow duration-300 border border-gray-200"
                       style={{
-                        background: `linear-gradient(to right, ${gradientPairs[ride.rideinfo.gradientIndex||0][2]}, ${gradientPairs[ride.rideinfo.gradientIndex||0][1]})`
+                        background: `linear-gradient(to right, ${gradientPairs[ride.rideinfo.gradientIndex||0][1]}, ${gradientPairs[ride.rideinfo.gradientIndex||0][2]})`
                     }}>
                         <div className="flex justify-between items-center mb-3">
                             <h3 className="text-xl font-semibold text-white">

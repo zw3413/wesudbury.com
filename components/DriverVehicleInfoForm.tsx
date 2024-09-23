@@ -116,7 +116,11 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
     if (!value) return;
 
     try {
-      const response = await fetch(`/api/driver?email=${encodeURIComponent(value)}`)
+      const response =await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'checkEmail', email: encodeURIComponent(value) }),
+      })
 
       if (response.ok) {
         setModalContent('existingUser')

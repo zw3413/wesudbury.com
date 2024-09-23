@@ -85,7 +85,7 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
   }
 
   return (
-    <div>
+    <div className="pb-4">
       {step === 1 && (
         <>
           <h2 className="text-xl font-bold mb-4">Welcome New User</h2>

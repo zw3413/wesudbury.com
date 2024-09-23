@@ -19,7 +19,7 @@ export default function BottomNavigation({ lang, translations }: BottomNavigatio
   const isActive = (path: string) => pathname === `/${lang}${path}`
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[rgb(40,76,96)] text-white py-2 px-4 md:hidden z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[rgb(40,76,96)] text-white py-2 px-4 md:hidden z-40">
       <ul className="flex justify-around items-center">
         <li>
           <Link href={`/${lang}`} className={`flex flex-col items-center ${isActive('') ? 'text-[rgb(255,183,77)]' : ''}`}>
