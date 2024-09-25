@@ -30,7 +30,7 @@ This application was developed based on the following initial prompts and requir
 
 The color scheme is inspired by Sudbury's mining heritage and modern design trends:
 
-- Primary Color: rgb(54, 89, 108) - Deep blue-gray
+- Primary Color: rgb(40,76,96) - Deep blue-gray
 - Secondary Color: rgb(245, 247, 250) - Light grayish blue
 - Accent Color: rgb(255, 183, 77) - Warm orange
 - Text Color: rgb(33, 41, 49) - Dark slate

@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
-
 import BackButton from '@/components/BackButton';
-import { FaPhone, FaEnvelope } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { Ride } from '@/types';
 import Modal from '@/components/Modal';
 import NewUserForm from '@/components/NewUserForm';
 import ExistingUserForm from '@/components/ExistingUserForm';
+import { Loader } from '@googlemaps/js-api-loader';
 
 async function getRideDetails(rideId: string): Promise<Ride | null> {
     try {
@@ -17,7 +17,7 @@ async function getRideDetails(rideId: string): Promise<Ride | null> {
             throw new Error('Failed to fetch ride details');
         }
         const data = await response.json();
-        return data;
+        return data.rideinfo;
     } catch (error) {
         console.error('Error fetching ride details:', error);
         return null;
@@ -26,14 +26,38 @@ async function getRideDetails(rideId: string): Promise<Ride | null> {
 
 export default function BookRidePage({ params: { lang, rideId } }: { params: { lang: string, rideId: string } }) {
     const [t, setT] = useState<(key: string) => string>(() => (key: string) => key);
-    const [passengerInfo, setPassengerInfo] = useState({ name: '', email: '', phone: '' });
+    const [passengerInfo, setPassengerInfo] = useState({ name: '', email: '', phone_number: '', from_address: '', to_address: '', from_coordinates: '', to_coordinates: '' });
     const [rideDetails, setRideDetails] = useState<Ride | null>(null);
     const [isBooked, setIsBooked] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [modalContent, setModalContent] = useState<'newUser' | 'existingUser'>('newUser');
+    const [modalContent, setModalContent] = useState<'newUser' | 'existingUser' | 'map'>('newUser');
+    const [currentAddressField, setCurrentAddressField] = useState<'from' | 'to'>('from');
+    const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
 
+    const mapRef = useRef<google.maps.Map | null>(null);
+    const markerRef = useRef<google.maps.Marker | null>(null);
+    const geocoderRef = useRef<google.maps.Geocoder | null>(null);
+
+    const fetchPassengerInfoFromUsers = async (email: string) => {
+        const encodedKey = encodeURIComponent(email)
+        try {
+            const response = await fetch(`/api/user?email=${encodedKey}`)
+            if (response.ok) {
+                const user = await response.json()
+                if (user.email) {
+                    setPassengerInfo(user)
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching passenger info:', error)
+        }
+    }
 
     useEffect(() => {
+        const passengerEmail = localStorage.getItem('passengerEmail')
+        if (passengerEmail) {
+            fetchPassengerInfoFromUsers(passengerEmail)
+        }
         async function LoadData() {
             const { t } = await useTranslation(lang, 'common');
             setT(() => t);
@@ -41,6 +65,16 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
             setRideDetails(details);
         }
         LoadData();
+
+        const loader = new Loader({
+            apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+            version: "weekly",
+            libraries: ["places"]
+        });
+
+        loader.load().then(() => {
+            geocoderRef.current = new google.maps.Geocoder();
+        });
     }, [lang, rideId]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +84,7 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         try {
             // Check if the email exists in the users table
             const checkResponse = await fetch('/api/auth', {
@@ -82,12 +116,12 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
             await fetch('/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    action: 'setPassword', 
-                    email: passengerInfo.email, 
+                body: JSON.stringify({
+                    action: 'setPassword',
+                    email: passengerInfo.email,
                     password,
                     name: passengerInfo.name,
-                    phonenumber: passengerInfo.phone
+                    phonenumber: passengerInfo.phone_number
                 }),
             });
 
@@ -125,14 +159,40 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
             const bookResponse = await fetch('/api/book', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    rideId, 
-                    passengerInfo 
+                body: JSON.stringify({
+                    rideId,
+                    passengerInfo
                 }),
             });
 
             if (bookResponse.ok) {
                 setIsBooked(true);
+                localStorage.setItem('passengerEmail', passengerInfo.email)
+
+                if (rideDetails) {
+                    // Send email to driver to inform them to confirm the booking
+                    const notifyDriverResponse = await fetch('/api/notify-driver', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            rideId,
+                            driverEmail: rideDetails.driver_email,
+                            passengerName: passengerInfo.name,
+                            passengerEmail: passengerInfo.email,
+                            passengerPhone: passengerInfo.phone_number,
+                            fromCoordinate: JSON.stringify({lat:0,lng:0}),
+                            toCoordinate: JSON.stringify({lat:0,lng:0}),
+                        }),
+                    });
+                    if (!notifyDriverResponse.ok) {
+                        alert('Failed to send notification to driver, please contact the driver by yourself.');
+                    }
+                } else {
+                    alert("book failed, please try again later.")
+                }
+
+
+
             } else {
                 throw new Error('Failed to book ride');
             }
@@ -140,6 +200,69 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
             console.error('Error booking ride:', error);
             alert('Failed to book the ride. Please try again.');
         }
+    };
+
+    const handleShowMap = (field: 'from' | 'to') => {
+        setCurrentAddressField(field);
+        setModalContent('map');
+        setShowModal(true);
+        setSelectedAddress(null);
+
+        // Reset the map and marker references
+        mapRef.current = null;
+        if (markerRef.current) {
+            markerRef.current.setMap(null);
+            markerRef.current = null;
+        }
+
+        // Use requestAnimationFrame to ensure the map div is rendered before initializing
+        requestAnimationFrame(() => {
+            initializeMap();
+        });
+    };
+
+    const initializeMap = () => {
+        const mapElement = document.getElementById('map');
+        if (mapElement && !mapRef.current) {
+            const defaultCenter = { lat: 46.4917, lng: -80.9930 }; // Default to Sudbury
+            mapRef.current = new google.maps.Map(mapElement, {
+                center: defaultCenter,
+                zoom: 12,
+                gestureHandling: 'greedy',
+                streetViewControl: false,
+            });
+            mapRef.current.addListener('click', handleMapClick);
+        }
+    };
+
+    const handleMapClick = (event: google.maps.MapMouseEvent) => {
+        if (event.latLng && mapRef.current && geocoderRef.current) {
+            if (markerRef.current) {
+                markerRef.current.setMap(null);
+            }
+            markerRef.current = new google.maps.Marker({
+                position: event.latLng,
+                map: mapRef.current,
+            });
+
+            geocoderRef.current.geocode({ location: event.latLng }, (results, status) => {
+                if (status === 'OK' && results && results[0]) {
+                    setSelectedAddress(results[0].formatted_address);
+                }
+            });
+        }
+    };
+
+    const handleConfirmLocation = () => {
+        if (selectedAddress && markerRef.current) {
+            const coordinates = `${markerRef.current.getPosition()?.lat()},${markerRef.current.getPosition()?.lng()}`;
+            setPassengerInfo(prev => ({
+                ...prev,
+                [`${currentAddressField}_address`]: selectedAddress,
+                [`${currentAddressField}_coordinates`]: coordinates
+            }));
+        }
+        setShowModal(false);
     };
 
     if (!rideDetails) {
@@ -151,7 +274,7 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
 
     return (
         <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto  py-8">
                 <BackButton url={`/${lang}/rideshare/ride/${rideId}`} />
                 <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gradient-to-br from-[rgba(40,76,96,1)] to-[rgba(40,76,96,0.6)]">
                     <h1 className="text-3xl font-bold mb-6 text-center text-[rgb(255,183,77)]">{t('rideshare.bookRide')}</h1>
@@ -170,14 +293,14 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                                     className={inputClassName}
                                 />
                             </div>
-                   
+
                             <div>
-                                <label htmlFor="phone" className={labelClassName}>{t('rideshare.passengerPhone')}</label>
+                                <label htmlFor="phone_number" className={labelClassName}>{t('rideshare.passengerPhone')}</label>
                                 <input
                                     type="tel"
-                                    id="phone"
-                                    name="phone"
-                                    value={passengerInfo.phone}
+                                    id="phone_number"
+                                    name="phone_number"
+                                    value={passengerInfo.phone_number}
                                     onChange={handleInputChange}
                                     required
                                     className={inputClassName}
@@ -195,6 +318,39 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                                     className={inputClassName}
                                 />
                             </div>
+
+                            {['from', 'to'].map((field) => (
+                                <div key={field}>
+                                    <label htmlFor={`${field}_address`} className={labelClassName}>
+                                        {t(`rideshare.${field}Address`)}
+                                    </label>
+                                    <div className="relative mt-1">
+                                        <input
+                                            type="text"
+                                            id={`${field}_address`}
+                                            name={`${field}_address`}
+                                            value={passengerInfo[`${field}_address` as keyof typeof passengerInfo]}
+                                            onChange={handleInputChange}
+                                            className={`${inputClassName} pr-10`}
+                                            placeholder={t(`rideshare.enter${field.charAt(0).toUpperCase() + field.slice(1)}Address`)}
+                                            readOnly
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleShowMap(field as 'from' | 'to')}
+                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[rgb(255,183,77)] hover:text-[rgb(255,163,57)]"
+                                        >
+                                            <FaMapMarkerAlt size={20} />
+                                        </button>
+                                    </div>
+                                    <input
+                                        type="hidden"
+                                        name={`${field}_coordinates`}
+                                        value={passengerInfo[`${field}_coordinates` as keyof typeof passengerInfo]}
+                                    />
+                                </div>
+                            ))}
+
                             <button type="submit" className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-3 px-6 rounded-full transition-colors">
                                 {t('rideshare.bookNow')}
                             </button>
@@ -218,21 +374,46 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
             </div>
 
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                {modalContent === 'newUser' ? (
+                {modalContent === 'newUser' && (
                     <NewUserForm
                         email={passengerInfo.email}
-                        onAgree={() => {}}
+                        onAgree={() => { }}
                         onVerify={async (email) => {
-                            // You can implement email verification here if needed
                             console.log('Verifying email:', email);
                         }}
                         onSetPassword={handleNewUserSubmit}
                     />
-                ) : (
+                )}
+                {modalContent === 'existingUser' && (
                     <ExistingUserForm
                         email={passengerInfo.email}
                         onSubmit={handleExistingUserSubmit}
                     />
+                )}
+                {modalContent === 'map' && (
+                    <div className="bg-gray-800 p-4 rounded-lg w-full max-w-3xl">
+                        <div id="map" style={{ height: '400px', width: '100%' }}></div>
+                        {selectedAddress && (
+                            <p className="mt-2 text-sm text-gray-300">Selected: {selectedAddress}</p>
+                        )}
+                        <div className="mt-4 flex justify-between">
+                            <button
+                                type="button"
+                                onClick={() => setShowModal(false)}
+                                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirmLocation}
+                                className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-2 px-4 rounded"
+                                disabled={!selectedAddress}
+                            >
+                                Confirm Location
+                            </button>
+                        </div>
+                    </div>
                 )}
             </Modal>
         </div>

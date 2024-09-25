@@ -101,9 +101,10 @@ async function handleVerifyEmail(email: string, code: string, res: NextApiRespon
 }
 
 async function handleSetPassword(email: string, password:string, phonenumber:string, name: string, res: NextApiResponse) {
+  const decodedEmail = decodeURIComponent(email).toLowerCase()
   const { error } = await supabase
     .from('users')
-    .upsert({email:email, email_verified: true , password_hash: await hashPassword(password) , name:name, phone_number:phonenumber})
+    .upsert({email: decodedEmail, email_verified: true , password_hash: await hashPassword(password) , name:name, phone_number:phonenumber})
     .eq('email', email)
 
   if (error) {

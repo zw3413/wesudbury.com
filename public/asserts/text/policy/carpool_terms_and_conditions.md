@@ -49,6 +49,6 @@ Terms and Conditions for wesudbury
     These Terms shall be governed by and construed in accordance with the laws of [Your Jurisdiction].
 
 14. Contact Information
-    For any questions about these Terms, please contact us at [Your Contact Information].
+    For any questions about these Terms, please contact us at elvin@wesudbury.com.
 
 Last updated: Sept. 22nd,2024

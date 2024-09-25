@@ -39,7 +39,7 @@ export default function RideOfferForm({ lang,translations, isLoggedIn, driverInf
       time: '08:00', // Set to 8:00 AM
       estimatedTravelTime: '',
       flexibleDeparture: false,
-      seats: 0,
+      seats: 3,
       price: '',
       routine: 'oneTime',
       notes: '',

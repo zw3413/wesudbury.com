@@ -130,6 +130,14 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                                 map: mapRef.current,
                                 title: "Your location"
                             });
+                            if(geocoderRef.current){
+                                geocoderRef.current.geocode({ location: pos }, (results, status) => {
+                                    if (status === 'OK' && results && results[0]) {
+                                        setSelectedAddress(results[0].formatted_address)
+                                    }
+                                })
+                            }
+                            
                         },
                         () => {
                             console.log("Error: The Geolocation service failed.");

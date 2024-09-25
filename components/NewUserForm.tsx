@@ -5,7 +5,6 @@ interface NewUserFormProps {
   onAgree: () => void
   onVerify: (email: string) => void
   onSetPassword: (password: string) => void
- 
 }
 
 export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }: NewUserFormProps) {
@@ -16,6 +15,8 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
   const [termsAndConditions, setTermsAndConditions] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationError, setVerificationError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [generalError, setGeneralError] = useState('')
 
   useEffect(() => {
     async function fetchTermsAndConditions() {
@@ -25,10 +26,11 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
           const data = await response.json()
           setTermsAndConditions(data.content)
         } else {
-          console.error('Failed to fetch terms and conditions')
+          setGeneralError('Failed to fetch terms and conditions')
         }
       } catch (error) {
         console.error('Error fetching terms and conditions:', error)
+        setGeneralError('An error occurred while fetching terms and conditions')
       }
     }
 
@@ -67,32 +69,41 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
   }
 
   const handleSendVerification = async () => {
+    setGeneralError('')
     try {
-      await fetch('/api/auth', {
+      const response = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'sendVerification', email }),
       })
-      //alert('Verification code sent to your email.')
+      if (!response.ok) {
+        setGeneralError('Failed to send verification code. Please try again.')
+      }
     } catch (error) {
       console.error('Error sending verification code:', error)
-      //alert('Failed to send verification code. Please try again.')
+      setGeneralError('An error occurred while sending the verification code')
     }
   }
 
   const handleSetPassword = () => {
+    setPasswordError('')
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long')
+      return
+    }
     onSetPassword(password)
   }
 
   return (
-    <div className="pb-4">
+    <div className="pb-4 text-[rgb(33,41,49)]">
+      {generalError && <p className="text-red-500 mb-2">{generalError}</p>}
       {step === 1 && (
         <>
-          <h2 className="text-xl font-bold mb-4">Welcome New User</h2>
+          <h2 className="text-xl font-bold mb-4 text-[rgb(40,76,96)]">Welcome New User</h2>
           <p className="mb-4">Please read and agree to our terms and conditions.</p>
           <textarea 
             readOnly 
-            className="w-full h-40 mb-4 p-2 border rounded" 
+            className="w-full h-40 mb-4 p-2 border rounded bg-[rgb(245,247,250)]" 
             value={termsAndConditions}
           />
           <label className="flex items-center mb-4">
@@ -100,14 +111,14 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
               type="checkbox"
               checked={agreed}
               onChange={() => setAgreed(!agreed)}
-              className="mr-2"
+              className="mr-2 accent-[rgb(255,183,77)]"
             />
             I agree to the terms and conditions
           </label>
           <button
             onClick={handleAgree}
             disabled={!agreed}
-            className="w-full bg-blue-500 text-white p-2 rounded disabled:bg-gray-300"
+            className="w-full bg-[rgb(40,76,96)] text-[rgb(250,252,255)] p-2 rounded disabled:bg-[rgb(245,247,250)] disabled:text-[rgb(33,41,49)]"
           >
             Continue
           </button>
@@ -115,26 +126,26 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
       )}
       {step === 2 && (
         <>
-          <h2 className="text-xl font-bold mb-4">Verify Your Email</h2>
+          <h2 className="text-xl font-bold mb-4 text-[rgb(40,76,96)]">Verify Your Email</h2>
           <p className="mb-4">We&apos;ve sent a verification code to {email}. Please enter it below.</p>
           <input
             type="text"
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.target.value)}
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-2 mb-4 border rounded bg-[rgb(245,247,250)]"
             placeholder="Verification Code"
           />
           {verificationError && <p className="text-red-500 mb-2">{verificationError}</p>}
           <button
             onClick={handleVerify}
             disabled={isVerifying}
-            className="w-full bg-blue-500 text-white p-2 rounded mb-2"
+            className="w-full bg-[rgb(40,76,96)] text-[rgb(250,252,255)] p-2 rounded mb-2 hover:bg-[rgb(60,96,116)]"
           >
             {isVerifying ? 'Verifying...' : 'Verify'}
           </button>
           <button
             onClick={handleSendVerification}
-            className="w-full bg-gray-300 text-gray-700 p-2 rounded"
+            className="w-full bg-[rgb(245,247,250)] text-[rgb(40,76,96)] p-2 rounded hover:bg-[rgb(235,237,240)]"
           >
             Resend Verification Code
           </button>
@@ -142,17 +153,18 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
       )}
       {step === 3 && (
         <>
-          <h2 className="text-xl font-bold mb-4">Set Your Password</h2>
+          <h2 className="text-xl font-bold mb-4 text-[rgb(40,76,96)]">Set Your Password</h2>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-2 mb-4 border rounded bg-[rgb(245,247,250)]"
             placeholder="New Password"
           />
+          {passwordError && <p className="text-red-500 mb-2">{passwordError}</p>}
           <button
             onClick={handleSetPassword}
-            className="w-full bg-blue-500 text-white p-2 rounded"
+            className="w-full bg-[rgb(40,76,96)] text-[rgb(250,252,255)] p-2 rounded hover:bg-[rgb(60,96,116)]"
           >
             Set Password
           </button>

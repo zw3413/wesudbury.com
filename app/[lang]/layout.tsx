@@ -26,7 +26,7 @@ export default async function LangLayout({
       </main>
       <BottomNavigation lang={lang} translations={navigationTranslations} />
       <footer className="bg-gray-100 text-center py-4 mt-8 hidden md:block">
-        <p>&copy; 2023 WeSudbury. All rights reserved.</p>
+        <p>&copy; 2024 WeSudbury. All rights reserved.</p>
       </footer>
     </div>
   )

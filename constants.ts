@@ -1,6 +1,6 @@
 export const cityList = {
     'Sudbury': {
-        center: { lat: 46.4917, lng: -81930 },
+        center: { lat: 46.4917, lng: -80.9900 },
     },
     'Toronto': {
         center: { lat: 43.65107, lng: -79.347015 },

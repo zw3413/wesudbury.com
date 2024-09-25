@@ -4,6 +4,7 @@ import BackButton from '@/components/BackButton'
 import ShareButton from '@/components/ShareButton'
 import BookButton from '@/components/BookButton'
 import DeleteRideButton from '@/components/DeleteRideButton'
+import BookingInfo from '@/components/BookingInfo'
 import { FaCalendarAlt, FaClock, FaUsers, FaDollarSign, FaSmoking, FaDog, FaVenusMars, FaMapMarkerAlt } from 'react-icons/fa'
 import { QRCodeSVG } from 'qrcode.react'
 import Image from 'next/image';
@@ -15,11 +16,11 @@ const supabase = createClient(
 )
 
 async function getRideDetails(rideId: string) {
-    const decodedKey = decodeURIComponent(rideId);
+
     const { data, error } = await supabase
         .from('rides')
         .select('key, rideinfo, created_at')
-        .eq('key', decodedKey)
+        .eq('key', rideId)
         .single()
 
     if (error) {
@@ -57,9 +58,15 @@ async function getRideDetails(rideId: string) {
     }
 }
 
+
+
 export default async function RideDetailsPage({ params: { lang, ride_id } }: { params: { lang: string, ride_id: string } }) {
     const { t } = await useTranslation(lang, 'common')
-    const rideDetails = await getRideDetails(ride_id)
+    const decodedKey = decodeURIComponent(ride_id);
+    const rideDetails = await getRideDetails(decodedKey)
+
+
+
     const translations = {
         bookRide: t('rideshare.form.bookRide'),
         deleteRide: t('rideshare.deleteRide'),
@@ -222,6 +229,9 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                         <ShareButton rideId={rideDetails.key} lang={lang} />
                     </div>
                 </div>
+
+                {/* Add BookingInfo component */}
+                <BookingInfo rideId={ride_id} driverEmail={rideDetails.driver_email} lang={lang} />
             </div>
         </div>
     )
