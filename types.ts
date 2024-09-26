@@ -106,3 +106,21 @@ export type DriverExtendInfo = {
   driver_premium:boolean;
   driver_featured: boolean;
 }
+
+export type BookingType = {
+  id: number;
+  ride_id: string;
+  passenger_name: string;
+  passenger_email: string;
+  passenger_phone: string;
+  booking_date: string;
+  status: string;
+  reject_reason?: string;
+  rides: {
+    driver_email: string;
+    from_city: string;
+    to_city: string;
+    date: string;
+    time: string;
+  };
+};

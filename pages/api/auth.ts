@@ -135,10 +135,11 @@ async function handleLogin(email: string, password: string, res: NextApiResponse
 }
 
 async function handleCheckEmail(email: string, res: NextApiResponse) {
+  const decodedKey = decodeURIComponent(email)
   const {error } = await supabase
     .from('users')
     .select('email')
-    .eq('email', email)
+    .eq('email', decodedKey)
     .single()
 
   if (error) {

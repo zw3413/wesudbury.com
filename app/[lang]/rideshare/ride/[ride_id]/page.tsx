@@ -65,14 +65,12 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
     const decodedKey = decodeURIComponent(ride_id);
     const rideDetails = await getRideDetails(decodedKey)
 
-
-
     const translations = {
         bookRide: t('rideshare.form.bookRide'),
         deleteRide: t('rideshare.deleteRide'),
         confirmDelete: t('rideshare.confirmDelete'),
     }
-    if(!rideDetails.gradientIndex){
+    if (!rideDetails.gradientIndex) {
         rideDetails.gradientIndex = Math.floor(Math.random() * gradientPairs.length)
     }
     const randomGradient = gradientPairs[rideDetails.gradientIndex];
@@ -113,7 +111,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                         /></div>
                 </div>
 
-                <div id="ride-details-card-large" className="relative max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div id="ride-details-card-large" className="relative max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mt-10">
                     <div id="ride-details-card-standard" >
 
                         <div id="ride-details-card-mini" className="relative overflow-hidden rounded-lg shadow-2xl">
@@ -138,7 +136,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                             <div className="relative z-20 p-4 sm:p-6 md:p-8 flex flex-col  justify-between items-start sm:items-center">
                                 <div className="flex-grow mb-4 w-full">
                                     <div className="flex justify-between items-start w-full">
-                                      
+
 
                                         <div className="flex space-x-2">
                                             {rideDetails.driver_license_uploaded && (
@@ -165,13 +163,13 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                         </div>
                                     </div>
                                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 text-white drop-shadow-lg">
-                                          
-                                         
-                                    {/* <p className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4 drop-shadow-md"> */}
+
+
+                                        {/* <p className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-4 drop-shadow-md"> */}
                                         {rideDetails.from_city}
                                         <span className="mx-1 sm:mx-2 text-yellow-300">→</span>
                                         {rideDetails.to_city}
-                                    {/* </p> */} </h1>
+                                        {/* </p> */} </h1>
                                     <div className="flex items-center space-x-4 sm:space-x-6 text-base sm:text-lg text-white">
                                         <div className="flex items-center">
                                             <FaCalendarAlt className="mr-1 sm:mr-2 text-yellow-300" />
@@ -231,7 +229,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                 </div>
 
                 {/* Add BookingInfo component */}
-                <BookingInfo rideId={ride_id} driverEmail={rideDetails.driver_email} lang={lang} />
+                <BookingInfo rideId={ride_id} driverEmail={rideDetails.driver_email} lang={lang} rideDetails = {rideDetails} />
             </div>
         </div>
     )

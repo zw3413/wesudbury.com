@@ -66,6 +66,7 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       if (response.ok) {
         const data = await response.json()
         if (data.driver_info.email) {
+          localStorage.setItem("driverEmail",email)
           setDriverInfo(data.driver_info)
           // if (data.driver_info.email === localStorage.getItem('driverEmail')) {
             setDriver_email(data.driver_info.email)
@@ -100,7 +101,6 @@ export default function DriverVehicleInfoForm({ initialDriverInfo, initialVehicl
       })
 
       if (response.ok) {
-        localStorage.setItem('driverEmail', driverInfo.email)
         onSubmit(driverInfo, vehicleInfo)
       } else {
         throw new Error('Failed to save driver info')

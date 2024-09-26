@@ -19,7 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: driverEmail,
-        subject: 'New Ride Booking Confirmation Required',
+        cc: passengerEmail,
+        subject: '[NO-REPLY]New Ride Booking Confirmation Required',
         text: `
           A new booking has been made for your ride:
           
@@ -30,7 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           Email: ${passengerEmail}
           Phone: ${passengerPhone}
           
-          Please log in to your account to confirm or reject this booking.
+          Please log in to your account to confirm or reject this booking. 
+          If you need any help. please contact to elvin@wesudbury.com
         `,
         html: `
           <h1>New Ride Booking Confirmation Required</h1>
@@ -45,6 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             <li><strong>Phone:</strong> ${passengerPhone}</li>
           </ul>
           <p>Please navigate to the ride page to confirm or reject this booking.</p>
+          <p>If you need any help. please contact to elvin@wesudbury.com</p>
         `,
       })
 

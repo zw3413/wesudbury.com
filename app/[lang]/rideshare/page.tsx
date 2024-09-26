@@ -28,6 +28,7 @@ export default async function Rideshare({ params: { lang } }: { params: { lang: 
       <div className="text-base mb-4 mt-1 text-center">
         <span className='text-sm ms-4'>or</span>
         <a href={`/${lang}/rideshare/offer`} className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-1 px-2 mx-2 rounded-full transition-colors">{t('rideshare.offer')}</a>
+
       </div>
 
       <section className="inset-0 rounded-lg shadow-md  p-6">
