@@ -221,6 +221,48 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
         });
     };
 
+    const handleGeolocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position: GeolocationPosition) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    if (mapRef.current) {
+                        mapRef.current.setCenter(pos);
+                        if (markerRef.current) {
+                            markerRef.current.setMap(null);
+                        }
+                        markerRef.current = new google.maps.Marker({
+                            position: pos,
+                            map: mapRef.current,
+                            title: "Your location"
+                        });
+                    }
+                    if(geocoderRef.current){
+                        geocoderRef.current.geocode({ location: pos }, (results, status) => {
+                            if (status === 'OK' && results && results[0]) {
+                                setSelectedAddress(results[0].formatted_address);
+                            }
+                        });
+                    }
+                },
+                (error) => {
+                    console.error("Error: The Geolocation service failed.", error);
+                    alert(t('geolocationFailed') || "Unable to get your location. Please check your device settings and try again.");
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            alert(t('geolocationNotSupported') || "Your browser doesn't support geolocation.");
+        }
+    };
+
     const initializeMap = () => {
         const mapElement = document.getElementById('map');
         if (mapElement && !mapRef.current) {
@@ -231,6 +273,28 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                 gestureHandling: 'greedy',
                 streetViewControl: false,
             });
+
+            // Add custom geolocation control
+            const locationButton = document.createElement("button");
+            locationButton.textContent = "📍"; // Using an emoji instead of Font Awesome icon
+            locationButton.classList.add("custom-map-control-button");
+            locationButton.style.cssText = `
+                background-color: #fff;
+                border: none;
+                outline: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 2px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+                cursor: pointer;
+                margin-right: 10px;
+                padding: 0;
+                font-size: 18px;
+            `;
+
+            mapRef.current.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationButton);
+            locationButton.addEventListener("click", handleGeolocation);
+
             mapRef.current.addListener('click', handleMapClick);
         }
     };
@@ -402,15 +466,23 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                                 onClick={() => setShowModal(false)}
                                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                             >
-                                Cancel
+                                {t('cancel') || "Cancel"}
                             </button>
+                            {/* <button
+                                type="button"
+                                onClick={handleGeolocation}
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center"
+                            >
+                                <FaLocationArrow className="mr-2" />
+                                {t('useCurrentLocation') || "Use Current Location"}
+                            </button> */}
                             <button
                                 type="button"
                                 onClick={handleConfirmLocation}
                                 className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-2 px-4 rounded"
                                 disabled={!selectedAddress}
                             >
-                                Confirm Location
+                                {t('confirmLocation') || "Confirm Location"}
                             </button>
                         </div>
                     </div>

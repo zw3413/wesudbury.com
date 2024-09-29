@@ -40,7 +40,7 @@ export default function OfferedRides({ translations, lang, driverEmail }: Offere
 
     useEffect(() => {
         fetchRides()
-    }, [driverEmail])
+    }, [driverEmail,fetchRides])
 
 
     return (<>

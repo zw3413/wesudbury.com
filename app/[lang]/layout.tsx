@@ -1,6 +1,7 @@
 // import Header from './Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { useTranslation } from '@/lib/i18n'
+import ClientExecute from './clientExecute'
 
 export default async function LangLayout({
   children,
@@ -20,6 +21,7 @@ export default async function LangLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ClientExecute></ClientExecute>
       {/* <Header lang={lang} translations={navigationTranslations} /> */}
       <main className="flex-grow pb-16 md:pb-0">
         {children}

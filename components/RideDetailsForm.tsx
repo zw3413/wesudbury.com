@@ -65,6 +65,45 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
         })
     }
 
+    const handleGeolocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position: GeolocationPosition) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    if (mapRef.current) {
+                        mapRef.current.setCenter(pos);
+                        new google.maps.Marker({
+                            position: pos,
+                            map: mapRef.current,
+                            title: "Your location"
+                        });
+                    }
+                    if(geocoderRef.current){
+                        geocoderRef.current.geocode({ location: pos }, (results, status) => {
+                            if (status === 'OK' && results && results[0]) {
+                                setSelectedAddress(results[0].formatted_address)
+                            }
+                        })
+                    }
+                },
+                (error) => {
+                    console.error("Error: The Geolocation service failed.", error);
+                    alert(translations['geolocationFailed'] || "Unable to get your location. Please check your device settings and try again.");
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            alert(translations['geolocationNotSupported'] || "Your browser doesn't support geolocation.");
+        }
+    };
+
     const initializeMap = (field = "from" as 'from' | 'to') => {
         const mapElement = document.getElementById('map')
 
@@ -116,37 +155,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
             `;
 
             mapRef.current.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationButton);
-            locationButton.addEventListener("click", () => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position: GeolocationPosition) => {
-                            const pos = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude,
-                            };
-                            mapRef.current?.setCenter(pos);
-                            new google.maps.Marker({
-                                position: pos,
-                                map: mapRef.current,
-                                title: "Your location"
-                            });
-                            if(geocoderRef.current){
-                                geocoderRef.current.geocode({ location: pos }, (results, status) => {
-                                    if (status === 'OK' && results && results[0]) {
-                                        setSelectedAddress(results[0].formatted_address)
-                                    }
-                                })
-                            }
-                            
-                        },
-                        () => {
-                            console.log("Error: The Geolocation service failed.");
-                        }
-                    );
-                } else {
-                    console.log("Error: Your browser doesn't support geolocation.");
-                }
-            });
+            locationButton.addEventListener("click", handleGeolocation);
             mapRef.current.addListener('click', handleMapClick)
         }
     }
@@ -503,7 +512,14 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                                 onClick={handleCloseMap}
                                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                             >
-                                Cancel
+                                {translations['cancel'] || "Cancel"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleGeolocation}
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                            >
+                                {translations['useCurrentLocation'] || "Use Current Location"}
                             </button>
                             <button
                                 type="button"
@@ -511,7 +527,7 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                                 className="bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-2 px-4 rounded"
                                 disabled={!selectedAddress}
                             >
-                                Confirm Location
+                                {translations['confirmLocation'] || "Confirm Location"}
                             </button>
                         </div>
                     </div>

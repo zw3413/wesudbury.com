@@ -25,6 +25,10 @@ This application was developed based on the following initial prompts and requir
 - Interactive map (planned)
 - Multilingual support
 - Mobile-responsive design
+- Progressive Web App (PWA) functionality
+  - Installable on devices
+  - Offline access
+  - App-like experience
 
 ## Color Scheme
 
