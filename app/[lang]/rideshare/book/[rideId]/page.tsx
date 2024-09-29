@@ -329,11 +329,33 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
         setShowModal(false);
     };
 
+    // Add this new component for displaying ride info
+    const RideInfoDisplay = ({ ride }: { ride: Ride | null }) => {
+        if (!ride) return null;
+        return (
+            <div className="bg-gray-100 p-4 rounded-lg mb-6">
+                <h2 className="text-xl font-semibold mb-2">{t('rideshare.rideDetails')}</h2>
+                <div className="grid grid-cols-2 gap-2">
+                    <div>
+                        <p><strong>{t('rideshare.form.from')}:</strong> {ride.from_city}</p>
+                        <p><strong>{t('rideshare.form.to')}:</strong> {ride.to_city}</p>
+                        <p><strong>{t('rideshare.form.date')}:</strong> {ride.date}</p>
+                    </div>
+                    <div>
+                        <p><strong>{t('rideshare.form.time')}:</strong> {ride.time}</p>
+                        <p><strong>{t('rideshare.form.seats')}:</strong> {ride.seats}</p>
+                        <p><strong>{t('rideshare.form.price')}:</strong> {ride.price}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     if (!rideDetails) {
         return <div>Loading...</div>;
     }
 
-    const inputClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FFB74D] focus:ring focus:ring-[#FFB74D] focus:ring-opacity-50 bg-white text-gray-900";
+    const inputClassName = "mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#FFB74D] focus:ring focus:ring-[#FFB74D] focus:ring-opacity-50 bg-white text-gray-900";
     const labelClassName = "block text-sm font-medium text-gray-700";
 
     return (
@@ -344,9 +366,17 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                     <div className="px-6 py-8">
                         <h1 className="text-3xl font-bold mb-6 text-center text-gray-900">{t('rideshare.bookRide')}</h1>
 
+                        {/* Add the RideInfoDisplay component here */}
+                        <RideInfoDisplay ride={rideDetails} />
+
                         {!isBooked ? (
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+
+                                    {/* show the ride info on the top of the booking form */}
+
+
+
                                     <div>
                                         <label htmlFor="name" className={labelClassName}>{t('rideshare.passengerName')}</label>
                                         <input
@@ -400,7 +430,7 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                                                 value={passengerInfo[`${field}_address` as keyof typeof passengerInfo]}
                                                 onChange={handleInputChange}
                                                 className={`${inputClassName} pr-10`}
-                                                placeholder={t(`rideshare.enter${field.charAt(0).toUpperCase() + field.slice(1)}Address`)}
+                                                placeholder={t('rideshare.selectAddress')}
                                                 readOnly
                                             />
                                             <button

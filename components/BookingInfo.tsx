@@ -73,7 +73,7 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
     const [isDriver, setIsDriver] = useState(false);
     const [isPassenger, setIsPassenger] = useState(false);
     const [passengerEmail, setPassengerEmail] = useState("")
-    const [confirmedBookingsNumber, setConfirmedBookingsNumber] = useState<number | null>(null)
+    const [confirmedBookingsNumber, setConfirmedBookingsNumber] = useState<number>(0)
 
     useEffect(() => {
         async function LoadData() {
@@ -113,9 +113,9 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
         ? bookings
         : bookings.filter(booking => booking.passenger_email === passengerEmail)
 
-    if (filteredBookings.length === 0) {
-        return <></>
-    }
+    // if (filteredBookings.length === 0) {
+    //     return <></>
+    // }
 
     const handlePassengerClick = async (bookingId: number) => {
         try {
@@ -211,15 +211,13 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
     };
 
     return (<>
-     
-            <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-semibold mb-6 text-[rgb(40,76,96)] border-b pb-2">{t('rideshare.bookings.BookedSeats')}</h2>
-                <div className="space-y-6">
-                    {confirmedBookingsNumber}
 
-
-                </div>
+        <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-semibold mb-6 text-[rgb(40,76,96)] border-b pb-2">{t('rideshare.bookings.BookedSeats')}</h2>
+            <div className="space-y-6">
+                {confirmedBookingsNumber}
             </div>
+        </div>
         <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold mb-6 text-[rgb(40,76,96)] border-b pb-2">{t('rideshare.bookings.bookings')}</h2>
             <div className="space-y-6">

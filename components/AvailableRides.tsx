@@ -80,7 +80,7 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
                             </p>
                             <p className="flex items-center">
                                 <FaUserFriends className="mr-2 text-white" />
-                                {ride.rideinfo.seats} {translations['availableSeats']}
+                                {ride.rideinfo.seats} {translations['seats']}
                             </p>
                         </div>
                     </div>

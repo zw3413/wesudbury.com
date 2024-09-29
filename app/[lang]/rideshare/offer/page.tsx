@@ -75,7 +75,7 @@ export default async function OfferRide({ params: { lang } }: { params: { lang: 
 
                     <h1 className="text-4xl font-bold tracking-tight text-[rgb(40,76,96)] text-center">{translations['offerRide']}</h1>
 
-                    <div className="p-6 space-y-6">
+                    <div className="p-2 space-y-6">
                         <RideOfferForm lang={lang} translations={translations} isLoggedIn={false} />
                     </div>
                 </div>

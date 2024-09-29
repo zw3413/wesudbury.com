@@ -26,10 +26,15 @@ const s3Client = new S3Client({
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const form = formidable()
+    const form = formidable({
+      maxFileSize: 5 * 1024 * 1024, // 5MB limit
+      allowEmptyFiles: false,
+    });
+
     form.parse(req, async (err, fields, files) => {
       if (err) {
-        return res.status(500).json({ error: 'Failed to process form data' })
+        console.error('Error parsing form:', err);
+        return res.status(500).json({ error: 'Failed to process form data' });
       }
 
       let driverInfo, vehicleInfo;
@@ -45,15 +50,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Handle vehicle picture upload
       if (files.vehiclePicture) {
         const vehiclePictureFile = Array.isArray(files.vehiclePicture) ? files.vehiclePicture[0] : files.vehiclePicture;
-        const fileContent = fs.readFileSync(vehiclePictureFile.filepath);
-        const fileExtension = vehiclePictureFile.originalFilename?.split('.').pop();
+        
+        if (!vehiclePictureFile.filepath || typeof vehiclePictureFile.filepath !== 'string') {
+          return res.status(400).json({ error: 'Invalid file upload' });
+        }
+
+        let fileContent;
+        try {
+          fileContent = await fs.promises.readFile(vehiclePictureFile.filepath);
+        } catch (error) {
+          console.error('Error reading file:', error);
+          return res.status(500).json({ error: 'Failed to read uploaded file' });
+        }
+
+        const fileExtension = vehiclePictureFile.originalFilename?.split('.').pop() || 'jpg';
         const fileName = `${driverInfo.email}/vehicle.${fileExtension}`;
 
         const uploadParams = {
           Bucket: 'wesudbury',
           Key: fileName,
           Body: fileContent,
-          ContentType: vehiclePictureFile.mimetype ?? undefined,
+          ContentType: vehiclePictureFile.mimetype || 'application/octet-stream',
         };
 
         try {
