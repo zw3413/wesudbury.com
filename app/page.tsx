@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
+import { getLanguage } from '@/lib/i18n'
 
 export default function Home() {
-  redirect('/en')
+  const detectedLang = getLanguage()
+  redirect(`/${detectedLang}`)
 }

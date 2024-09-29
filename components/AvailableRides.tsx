@@ -42,7 +42,7 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
 
     useEffect(() => {
         fetchRides()
-    }, [])
+    }, [fetchRides])
 
     return (<>
         <InfiniteScroll
@@ -53,7 +53,7 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
         >
             {rides.map((ride) => (
                 <Link href={`/${lang}/rideshare/ride/${ride.key}`} key={ride.key} className="block">
-                    <div className=" rounded-lg shadow-md p-5 mb-4 hover:shadow-lg transition-shadow duration-300 border border-gray-200"
+                    <div className="bg-white rounded-lg shadow-md p-5 mb-4 hover:shadow-lg transition-shadow duration-300 border border-gray-200"
                      style={{
                         background: `linear-gradient(to right, ${gradientPairs[ride.rideinfo.gradientIndex||0][1]}, ${gradientPairs[ride.rideinfo.gradientIndex||0][2]})`
                     }}
@@ -87,6 +87,6 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
                 </Link>
             ))}
         </InfiniteScroll>
-        {(!hasMore) && (<p>No more rides to load.</p>)}       </>
-    )
+        {(!hasMore) && (<p>No more rides to load.</p>)}
+    </>)
 }

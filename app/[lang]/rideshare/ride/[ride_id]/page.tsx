@@ -10,6 +10,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import Image from 'next/image';
 import { DriverExtendInfo } from '@/types';
 import { gradientPairs } from '@/constants'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -98,7 +99,7 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                     <div className="flex justify-start">
                         <BackButton url={`/${lang}/rideshare`} />
                     </div>
-
+                    <LanguageSwitcher />
                     <div className="flex justify-end">
                         <DeleteRideButton
                             rideKey={rideDetails.key}
@@ -116,19 +117,19 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
 
                         <div id="ride-details-card-mini" className="relative overflow-hidden rounded-lg shadow-2xl">
                             {vehiclePictureUrl && (
-                                <div className="absolute inset-0 z-0">
+                                <div className="absolute inset-0 z-10">
                                     <Image
                                         src={vehiclePictureUrl}
                                         alt="Vehicle"
                                         fill
-
                                         sizes="100vw"
                                         style={{ objectFit: 'cover' }}
                                         className="opacity-40"
+                                        
                                     />
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-r ${randomGradient[0]} z-10"
+                            <div className="absolute inset-0 bg-gradient-to-r ${randomGradient[0]}"
                                 style={{
                                     background: `linear-gradient(to right, ${randomGradient[1]}, ${randomGradient[2]})`
                                 }}

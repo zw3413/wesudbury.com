@@ -211,7 +211,7 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
     };
 
     return (<>
-        {confirmedBookingsNumber &&
+     
             <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
                 <h2 className="text-2xl font-semibold mb-6 text-[rgb(40,76,96)] border-b pb-2">{t('rideshare.bookings.BookedSeats')}</h2>
                 <div className="space-y-6">
@@ -219,7 +219,7 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
 
 
                 </div>
-            </div>}
+            </div>
         <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold mb-6 text-[rgb(40,76,96)] border-b pb-2">{t('rideshare.bookings.bookings')}</h2>
             <div className="space-y-6">

@@ -1,4 +1,3 @@
-// import Header from './Header'
 import BottomNavigation from '@/components/BottomNavigation'
 import { useTranslation } from '@/lib/i18n'
 import ClientExecute from './clientExecute'
@@ -16,7 +15,7 @@ export default async function LangLayout({
     home: t('nav.home'),
     lifestyle: t('nav.lifestyle'),
     map: t('nav.map'),
-    rideshare: t('nav.rideshare')
+    carpool: t('nav.carpool')
   }
 
   return (

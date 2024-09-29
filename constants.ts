@@ -44,18 +44,26 @@ export const cityList = {
 
 }
 
-
 export const gradientPairs = [
-    ['from-blue-400 to-blue-600', 'rgba(96, 165, 250, 1)', 'rgba(37, 99, 235, 0.1)'],
-    ['from-green-400 to-green-600', 'rgba(74, 222, 128, 1)', 'rgba(22, 163, 74, 0.1)'],
-    ['from-purple-400 to-purple-600', 'rgba(192, 132, 252, 1)', 'rgba(147, 51, 234, 0.1)'],
-    ['from-red-400 to-red-600', 'rgba(248, 113, 113, 1)', 'rgba(220, 38, 38, 0.1)'],
-    ['from-yellow-400 to-yellow-600', 'rgba(250, 204, 21, 1)', 'rgba(202, 138, 4, 0.1)'],
-    ['from-pink-400 to-pink-600', 'rgba(244, 114, 182, 1)', 'rgba(219, 39, 119, 0.1)'],
-    ['from-indigo-400 to-indigo-600', 'rgba(129, 140, 248, 1)', 'rgba(79, 70, 229, 0.1)'],
-    ['from-teal-400 to-teal-600', 'rgba(45, 212, 191, 1)', 'rgba(13, 148, 136, 0.1)'],
-    ['from-orange-400 to-orange-600', 'rgba(251, 146, 60, 1)', 'rgba(234, 88, 12, 0.1)'],
-    ['from-cyan-400 to-cyan-600', 'rgba(34, 211, 238, 1)', 'rgba(8, 145, 178, 0.1)'],
-    ['from-lime-400 to-lime-600', 'rgba(163, 230, 53, 1)', 'rgba(101, 163, 13, 0.1)'],
-    ['from-fuchsia-400 to-fuchsia-600', 'rgba(232, 121, 249, 1)', 'rgba(192, 38, 211, 0.1)'],
+    ['from-blue-500 to-blue-700', 'rgb(33, 150, 243)', 'rgb(25, 118, 210)'],   // Blue
+    ['from-purple-500 to-purple-700', 'rgb(156, 39, 176)', 'rgb(123, 31, 162)'], // Purple
+    ['from-teal-500 to-teal-700', 'rgb(0, 150, 136)', 'rgb(0, 121, 107)'],     // Teal
+    ['from-pink-500 to-pink-700', 'rgb(233, 30, 99)', 'rgb(194, 24, 91)'],     // Pink
+    ['from-indigo-500 to-indigo-700', 'rgb(63, 81, 181)', 'rgb(48, 63, 159)'], // Indigo
+    ['from-orange-500 to-orange-700', 'rgb(255, 152, 0)', 'rgb(245, 124, 0)'], // Orange
+    ['from-green-500 to-green-700', 'rgb(76, 175, 80)', 'rgb(56, 142, 60)'],   // Green
+    ['from-red-500 to-red-700', 'rgb(244, 67, 54)', 'rgb(211, 47, 47)'],       // Red
+    ['from-cyan-500 to-cyan-700', 'rgb(0, 188, 212)', 'rgb(0, 151, 167)'],     // Cyan
+    ['from-amber-500 to-amber-700', 'rgb(255, 193, 7)', 'rgb(255, 160, 0)'],   // Amber
+    ['from-lightBlue-500 to-lightBlue-700', 'rgb(3, 169, 244)', 'rgb(2, 136, 209)'], // Light Blue
+    ['from-deepPurple-500 to-deepPurple-700', 'rgb(103, 58, 183)', 'rgb(81, 45, 168)'], // Deep Purple
+];
+
+// You might want to add the new border colors here for consistency
+export const borderColors = [
+    'border-blue-500',
+    'border-purple-500',
+    'border-teal-500',
+    'border-pink-500',
+    'border-indigo-500'
 ];

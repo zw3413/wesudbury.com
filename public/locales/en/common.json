@@ -6,6 +6,7 @@
     "noMoreRides": "No more rides to load."
   },
   "welcome": "Welcome to WeSudbury",
+  "featuredServices":"Featured Services",
   "description": "Your comprehensive guide to life in Sudbury",
   "lifestyle": {
     "title": "Lifestyle",
@@ -154,6 +155,10 @@
   },
   "usefulLinks": {
     "title": "Useful Links",
+    "cityServices": "City Services",
+    "healthWellness": "Health & Wellness",
+    "communityCulture": "Community & Culture",
+    "newsMedia": "News & Media",
     "cityWebsite": {
       "title": "City of Sudbury Official Website",
       "url": "https://www.greatersudbury.ca/"
@@ -177,13 +182,55 @@
     "emergencyServices": {
       "title": "Emergency Services",
       "url": "https://www.greatersudbury.ca/live/emergency-services/"
+    },
+    "sudburychineselife": {
+      "title": "Sudbury Chinese Lifestyle",
+      "url": "http://sudburylife.ca/"
+    },
+    "education": {
+      "title": "Education",
+      "laurentianUniversity": {
+        "title": "Laurentian University",
+        "url": "https://laurentian.ca/"
+      },
+      "cambrianCollege": {
+        "title": "Cambrian College",
+        "url": "https://cambriancollege.ca/"
+      },
+      "collegeBoreal": {
+        "title": "Collège Boréal",
+        "url": "https://www.collegeboreal.ca/"
+      },
+      "rainbowSchools": {
+        "title": "Rainbow District School Board",
+        "url": "https://www.rainbowschools.ca/"
+      }
+    },
+    "businessEmployment": {
+      "title": "Business & Employment",
+      "chamberOfCommerce": {
+        "title": "Greater Sudbury Chamber of Commerce",
+        "url": "https://sudburychamber.ca/"
+      },
+      "regionalBusinessCentre": {
+        "title": "Regional Business Centre",
+        "url": "https://www.greatersudbury.ca/do-business/regional-business-centre/"
+      },
+      "samssa": {
+        "title": "Sudbury Area Mining Supply and Service Association",
+        "url": "https://www.samssa.ca/"
+      },
+      "employmentOntario": {
+        "title": "Employment Ontario",
+        "url": "https://www.ontario.ca/page/employment-ontario"
+      }
     }
   },
   "nav": {
     "home": "Home",
     "lifestyle": "Lifestyle",
     "map": "Map",
-    "rideshare": "Rideshare"
+    "carpool": "Carpool"
   },
   "yes": "Yes",
   "no": "No"

@@ -6,5 +6,78 @@
     "lifestyle": "Mode de vie",
     "map": "Carte",
     "rideshare": "Covoiturage"
+  },
+  "usefulLinks": {
+    "title": "Liens Utiles",
+    "cityServices": "Services Municipaux",
+    "healthWellness": "Santé et Bien-être",
+    "communityCulture": "Communauté et Culture",
+    "newsMedia": "Actualités et Médias",
+    "education": {
+      "title": "Éducation",
+      "laurentianUniversity": {
+        "title": "Université Laurentienne",
+        "url": "https://laurentian.ca/"
+      },
+      "cambrianCollege": {
+        "title": "Collège Cambrian",
+        "url": "https://cambriancollege.ca/"
+      },
+      "collegeBoreal": {
+        "title": "Collège Boréal",
+        "url": "https://www.collegeboreal.ca/"
+      },
+      "rainbowSchools": {
+        "title": "Conseil scolaire du district Rainbow",
+        "url": "https://www.rainbowschools.ca/"
+      }
+    },
+    "businessEmployment": {
+      "title": "Affaires et Emploi",
+      "chamberOfCommerce": {
+        "title": "Chambre de commerce du Grand Sudbury",
+        "url": "https://sudburychamber.ca/"
+      },
+      "regionalBusinessCentre": {
+        "title": "Centre régional des affaires",
+        "url": "https://www.greatersudbury.ca/do-business/regional-business-centre/"
+      },
+      "samssa": {
+        "title": "Association des fournisseurs de services miniers de Sudbury",
+        "url": "https://www.samssa.ca/"
+      },
+      "employmentOntario": {
+        "title": "Emploi Ontario",
+        "url": "https://www.ontario.ca/fr/page/emploi-ontario"
+      }
+    },
+    "cityWebsite": {
+      "title": "Site Officiel de la Ville de Sudbury",
+      "url": "https://www.greatersudbury.ca/"
+    },
+    "publicTransport": {
+      "title": "Transport en Commun de Sudbury",
+      "url": "https://www.greatersudbury.ca/live/transit/"
+    },
+    "healthServices": {
+      "title": "Sciences de la Santé Nord",
+      "url": "https://hsnsudbury.ca/"
+    },
+    "localNews": {
+      "title": "Sudbury.com",
+      "url": "https://www.sudbury.com/"
+    },
+    "events": {
+      "title": "Événements à Sudbury",
+      "url": "https://www.sudburyevents.ca/"
+    },
+    "emergencyServices": {
+      "title": "Services d'Urgence",
+      "url": "https://www.greatersudbury.ca/live/emergency-services/"
+    },
+    "sudburychineselife": {
+      "title": "Mode de Vie Chinois à Sudbury",
+      "url": "http://sudburylife.ca/"
+    }
   }
 }

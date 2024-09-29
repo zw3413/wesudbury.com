@@ -485,8 +485,8 @@ export default function RideDetailsForm({ initialRideDetails, initialRidePrefere
                                 name="maxDetourDistance"
                                 value={ridePreferences.maxDetourDistance}
                                 onChange={handleRidePreferencesChange}
-                                min="0"
-                                step="0.1"
+                                min="1"
+                                step="1"
                                 className={inputClassName}
                             />
                         </div>

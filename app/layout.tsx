@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Head from 'next/head';
@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "WeSudbury",
   description: "Your comprehensive guide to life in Sudbury",
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
   themeColor: "#284C60",
 };
 

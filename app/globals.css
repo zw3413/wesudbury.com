@@ -14,7 +14,14 @@
     --foreground: #0a0a0a;
   }
 }
+@keyframes max-height {
+  from { max-height: 0; }
+  to { max-height: 500px; }
+}
 
+.transition-max-height {
+  transition: max-height 0.3s ease-out;
+}
 body {
   color: var(--foreground);
   background: var(--background);

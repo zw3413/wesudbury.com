@@ -30,7 +30,7 @@ export default function RideOfferForm({ lang,translations, isLoggedIn, driverInf
       smoking: false,
       petFriendly: false,
       preferredPassengerGender: 'any',
-      maxDetourDistance: 0,
+      maxDetourDistance: 10,
     } as RidePreferences,
     rideDetails: {
       from_city: 'Sudbury',
