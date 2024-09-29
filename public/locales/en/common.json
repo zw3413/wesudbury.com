@@ -44,8 +44,8 @@
       "rejectButton":"Reject",
       "confirmButton":"Confirm"
     },
-
-    "enterFromAddress": "Please select your departure location.",
+    "offerDescription": "Share your journey and help others travel",
+    "requestDescription": "Find a ride that suits your needs",
     "enterToAddress": "Please select your destination.",
     "view_my_booking": "View My Bookings",
     "fromAddress": "From",
@@ -66,6 +66,7 @@
     "offer": "Offer a Ride",
     "request": "Request a Ride",
     "availableRides": "Available Rides",
+    "availableCarpool": "Available Carpool",
     "noRideFound": "No ride found",
     "offerRide": "Offer a Ride",
     "form": {

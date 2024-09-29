@@ -333,107 +333,114 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
         return <div>Loading...</div>;
     }
 
-    const inputClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[rgb(255,183,77)] focus:ring focus:ring-[rgb(255,183,77)] focus:ring-opacity-50 bg-gray-700 text-white";
-    const labelClassName = "block text-sm font-medium text-gray-200";
+    const inputClassName = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#FFB74D] focus:ring focus:ring-[#FFB74D] focus:ring-opacity-50 bg-white text-gray-900";
+    const labelClassName = "block text-sm font-medium text-gray-700";
 
     return (
-        <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
-            <div className="container mx-auto  py-8">
+        <div className="min-h-screen bg-gray-100 py-12">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <BackButton url={`/${lang}/rideshare/ride/${rideId}`} />
-                <div className="max-w-2xl mx-auto p-8 rounded-lg shadow-lg bg-gradient-to-br from-[rgba(40,76,96,1)] to-[rgba(40,76,96,0.6)]">
-                    <h1 className="text-3xl font-bold mb-6 text-center text-[rgb(255,183,77)]">{t('rideshare.bookRide')}</h1>
+                <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+                    <div className="px-6 py-8">
+                        <h1 className="text-3xl font-bold mb-6 text-center text-gray-900">{t('rideshare.bookRide')}</h1>
 
-                    {!isBooked ? (
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div>
-                                <label htmlFor="name" className={labelClassName}>{t('rideshare.passengerName')}</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={passengerInfo.name}
-                                    onChange={handleInputChange}
-                                    required
-                                    className={inputClassName}
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="phone_number" className={labelClassName}>{t('rideshare.passengerPhone')}</label>
-                                <input
-                                    type="tel"
-                                    id="phone_number"
-                                    name="phone_number"
-                                    value={passengerInfo.phone_number}
-                                    onChange={handleInputChange}
-                                    required
-                                    className={inputClassName}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="email" className={labelClassName}>{t('rideshare.passengerEmail')}</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={passengerInfo.email}
-                                    onChange={handleInputChange}
-                                    required
-                                    className={inputClassName}
-                                />
-                            </div>
-
-                            {['from', 'to'].map((field) => (
-                                <div key={field}>
-                                    <label htmlFor={`${field}_address`} className={labelClassName}>
-                                        {t(`rideshare.${field}Address`)}
-                                    </label>
-                                    <div className="relative mt-1">
+                        {!isBooked ? (
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <div>
+                                        <label htmlFor="name" className={labelClassName}>{t('rideshare.passengerName')}</label>
                                         <input
                                             type="text"
-                                            id={`${field}_address`}
-                                            name={`${field}_address`}
-                                            value={passengerInfo[`${field}_address` as keyof typeof passengerInfo]}
+                                            id="name"
+                                            name="name"
+                                            value={passengerInfo.name}
                                             onChange={handleInputChange}
-                                            className={`${inputClassName} pr-10`}
-                                            placeholder={t(`rideshare.enter${field.charAt(0).toUpperCase() + field.slice(1)}Address`)}
-                                            readOnly
+                                            required
+                                            className={inputClassName}
                                         />
-                                        <button
-                                            type="button"
-                                            onClick={() => handleShowMap(field as 'from' | 'to')}
-                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[rgb(255,183,77)] hover:text-[rgb(255,163,57)]"
-                                        >
-                                            <FaMapMarkerAlt size={20} />
-                                        </button>
                                     </div>
+
+                                    <div>
+                                        <label htmlFor="phone_number" className={labelClassName}>{t('rideshare.passengerPhone')}</label>
+                                        <input
+                                            type="tel"
+                                            id="phone_number"
+                                            name="phone_number"
+                                            value={passengerInfo.phone_number}
+                                            onChange={handleInputChange}
+                                            required
+                                            className={inputClassName}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="email" className={labelClassName}>{t('rideshare.passengerEmail')}</label>
                                     <input
-                                        type="hidden"
-                                        name={`${field}_coordinates`}
-                                        value={passengerInfo[`${field}_coordinates` as keyof typeof passengerInfo]}
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={passengerInfo.email}
+                                        onChange={handleInputChange}
+                                        required
+                                        className={inputClassName}
                                     />
                                 </div>
-                            ))}
 
-                            <button type="submit" className="w-full bg-[rgb(255,183,77)] hover:bg-[rgb(255,163,57)] text-gray-900 font-bold py-3 px-6 rounded-full transition-colors">
-                                {t('rideshare.bookNow')}
-                            </button>
-                        </form>
-                    ) : (
-                        <div className="text-center text-white">
-                            <p className="mb-6">{t('rideshare.bookingConfirmation')}</p>
-                            <div className="flex justify-center space-x-4">
-                                <a href={`tel:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[rgb(255,183,77)] text-gray-900 rounded-lg font-bold">
-                                    <FaPhone className="mr-2" />
-                                    {t('rideshare.callDriver')}
-                                </a>
-                                <a href={`sms:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[rgb(255,183,77)] text-gray-900 rounded-lg font-bold">
-                                    <FaEnvelope className="mr-2" />
-                                    {t('rideshare.textDriver')}
-                                </a>
+                                {['from', 'to'].map((field) => (
+                                    <div key={field}>
+                                        <label htmlFor={`${field}_address`} className={labelClassName}>
+                                            {t(`rideshare.${field}Address`)}
+                                        </label>
+                                        <div className="relative mt-1">
+                                            <input
+                                                type="text"
+                                                id={`${field}_address`}
+                                                name={`${field}_address`}
+                                                value={passengerInfo[`${field}_address` as keyof typeof passengerInfo]}
+                                                onChange={handleInputChange}
+                                                className={`${inputClassName} pr-10`}
+                                                placeholder={t(`rideshare.enter${field.charAt(0).toUpperCase() + field.slice(1)}Address`)}
+                                                readOnly
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => handleShowMap(field as 'from' | 'to')}
+                                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                            >
+                                                <FaMapMarkerAlt size={20} />
+                                            </button>
+                                        </div>
+                                        <input
+                                            type="hidden"
+                                            name={`${field}_coordinates`}
+                                            value={passengerInfo[`${field}_coordinates` as keyof typeof passengerInfo]}
+                                        />
+                                    </div>
+                                ))}
+
+                                <div className="mt-8">
+                                    <button type="submit" className="w-full bg-[#FFB74D] hover:bg-[#FFA726] text-white font-bold py-3 px-6 rounded-md transition-colors duration-200">
+                                        {t('rideshare.bookNow')}
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="text-center">
+                                <p className="mb-6 text-lg text-gray-700">{t('rideshare.bookingConfirmation')}</p>
+                                <div className="flex justify-center space-x-4">
+                                    <a href={`tel:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[#FFB74D] text-white rounded-md font-bold hover:bg-[#FFA726] transition-colors duration-200">
+                                        <FaPhone className="mr-2" />
+                                        {t('rideshare.callDriver')}
+                                    </a>
+                                    <a href={`sms:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[#FFB74D] text-white rounded-md font-bold hover:bg-[#FFA726] transition-colors duration-200">
+                                        <FaEnvelope className="mr-2" />
+                                        {t('rideshare.textDriver')}
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
 

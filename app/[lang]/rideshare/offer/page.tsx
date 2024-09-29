@@ -68,10 +68,10 @@ export default async function OfferRide({ params: { lang } }: { params: { lang: 
     }
 
     return (
-        <div className="min-h-screen bg-[rgb(250,252,255)] pt-8">
-            <div className="container mx-auto px-4 py-8">
+        <div className="min-h-screen bg-[rgb(250,252,255)]">
+            <div className="container mx-auto p-2">
                 <BackButton url={`/${lang}/rideshare`} />
-                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="max-w-2xl pt-4 mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
 
                     <h1 className="text-4xl font-bold tracking-tight text-[rgb(40,76,96)] text-center">{translations['offerRide']}</h1>
 

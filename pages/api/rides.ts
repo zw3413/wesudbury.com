@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             let query = supabase
                 .from('rides')
                 .select('*', { count: 'exact' })
+                
 
             if (driverEmail) {
                 query = query.eq('rideinfo->>driver_email', driverEmail)
@@ -35,9 +36,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 .is('del_at', null)  //已经删除的不显示
             }
 
-            const { data, error, count } = await query
-                .order('created_at', { ascending: false })
-                .range(offset, offset + limitNumber - 1)
+            query = query.order('created_at', { ascending: false })
+
+            if(limitNumber && limitNumber>0){
+                query = query.range(offset, offset + limitNumber - 1)
+            }
+
+            const { data, error, count } = await query.select()
 
             if (error) {
                 throw error

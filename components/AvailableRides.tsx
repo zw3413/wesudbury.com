@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Ride } from '@/types'
-import InfiniteScroll from 'react-infinite-scroll-component'
+//import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaDollarSign, FaUserFriends } from 'react-icons/fa';
 import { gradientPairs } from '@/constants';
@@ -15,7 +15,7 @@ interface AvailableRidesProps {
 export default function AvailableRides({ translations, lang }: AvailableRidesProps) {
     const [rides, setRides] = useState<{ rideinfo: Ride, key: string }[]>([])
     const [page, setPage] = useState(1)
-    const [hasMore, setHasMore] = useState(true)
+   
     const fetchedPages = useRef(new Set<number>())
 
     const fetchRides = useCallback(async () => {
@@ -24,10 +24,10 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
         }
         fetchedPages.current.add(page)
         try {
-            const response = await fetch(`/api/rides?filter=available&page=${page}&limit=10`)
+            const response = await fetch(`/api/rides?filter=available`)
             const data = await response.json()
             if (!data || !data.rides || data.rides.length === 0) {
-                setHasMore(false)
+       
                 return
             }
 
@@ -35,22 +35,22 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
             setPage(prevPage => prevPage + 1)
 
         } catch (error) {
-            setHasMore(false)
+   
             console.log('Error fetching rides:', error)
         }
     }, [page])
 
     useEffect(() => {
         fetchRides()
-    }, [fetchRides])
+    }, [])
 
     return (<>
-        <InfiniteScroll
+        {/* <InfiniteScroll
             dataLength={rides.length}
             next={fetchRides}
             hasMore={hasMore}
             loader={<h4>Loading...</h4>}
-        >
+        > */}
             {rides.map((ride) => (
                 <Link href={`/${lang}/rideshare/ride/${ride.key}`} key={ride.key} className="block">
                     <div className="bg-white rounded-lg shadow-md p-5 mb-4 hover:shadow-lg transition-shadow duration-300 border border-gray-200"
@@ -86,7 +86,7 @@ export default function AvailableRides({ translations, lang }: AvailableRidesPro
                     </div>
                 </Link>
             ))}
-        </InfiniteScroll>
-        {(!hasMore) && (<p>No more rides to load.</p>)}
+        {/* </InfiniteScroll> */}
+        {/* {(!hasMore) && (<p>No more rides to load.</p>)} */}
     </>)
 }
