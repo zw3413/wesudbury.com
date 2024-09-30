@@ -335,17 +335,17 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
         return (
             <div className="bg-gray-100 p-4 rounded-lg mb-6">
                 <h2 className="text-xl font-semibold mb-2">{t('rideshare.rideDetails')}</h2>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1">
                     <div>
                         <p><strong>{t('rideshare.form.from')}:</strong> {ride.from_city}</p>
                         <p><strong>{t('rideshare.form.to')}:</strong> {ride.to_city}</p>
                         <p><strong>{t('rideshare.form.date')}:</strong> {ride.date}</p>
-                    </div>
-                    <div>
                         <p><strong>{t('rideshare.form.time')}:</strong> {ride.time}</p>
                         <p><strong>{t('rideshare.form.seats')}:</strong> {ride.seats}</p>
                         <p><strong>{t('rideshare.form.price')}:</strong> {ride.price}</p>
+                        <p><strong>{t('rideshare.driverName')}:</strong> {ride.driver_name}</p>
                     </div>
+
                 </div>
             </div>
         );
@@ -459,11 +459,11 @@ export default function BookRidePage({ params: { lang, rideId } }: { params: { l
                             <div className="text-center">
                                 <p className="mb-6 text-lg text-gray-700">{t('rideshare.bookingConfirmation')}</p>
                                 <div className="flex justify-center space-x-4">
-                                    <a href={`tel:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[#FFB74D] text-white rounded-md font-bold hover:bg-[#FFA726] transition-colors duration-200">
+                                    <a href={`tel:${rideDetails.driver_phonenumber}`} className="flex items-center justify-center px-4 py-2 bg-[#FFB74D] text-white rounded-md font-bold hover:bg-[#FFA726] transition-colors duration-200">
                                         <FaPhone className="mr-2" />
                                         {t('rideshare.callDriver')}
                                     </a>
-                                    <a href={`sms:${rideDetails.driver_email}`} className="flex items-center justify-center px-4 py-2 bg-[#FFB74D] text-white rounded-md font-bold hover:bg-[#FFA726] transition-colors duration-200">
+                                    <a href={`sms:${rideDetails.driver_phonenumber}`} className="flex items-center justify-center px-4 py-2 bg-[#FFB74D] text-white rounded-md font-bold hover:bg-[#FFA726] transition-colors duration-200">
                                         <FaEnvelope className="mr-2" />
                                         {t('rideshare.textDriver')}
                                     </a>

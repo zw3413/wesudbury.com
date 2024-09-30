@@ -13,6 +13,7 @@ export default async function OfferRide({ params: { lang } }: { params: { lang: 
         'time': t('rideshare.form.time'),
         'vehicleType': t('rideshare.form.vehicleType'),
         'seats': t('rideshare.form.seats'),
+        'availableSeats':t('availableSeats'),
         'price': t('rideshare.form.price'),
         'routine': t('rideshare.form.routine'),
         'frequency': t('rideshare.form.frequency'),

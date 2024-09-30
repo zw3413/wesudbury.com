@@ -33,7 +33,7 @@ export default function ExistingUserForm({ email, onSubmit }: ExistingUserFormPr
   }
 
   return (
-    <form onSubmit={handleSubmit} className="pb-4 text-[rgb(33,41,49)]">
+    <form onSubmit={handleSubmit} className="p-4 text-[rgb(33,41,49)]">
       <h2 className="text-xl font-bold mb-4 text-[rgb(40,76,96)]">Welcome Back</h2>
       <p className="mb-4">Please enter your password to continue.</p>
       <input

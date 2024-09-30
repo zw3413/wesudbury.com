@@ -44,6 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     key: rideData.key,
                     rideinfo: {
                         driver_email: rideData.driver_email,
+                        driver_phonenumber : rideData.driver_phonenumber,
+                        driver_name: rideData.driver_name,
                         from_city: rideData.from_city,
                         to_city: rideData.to_city,
                         from_address: rideData.from_address,
@@ -66,7 +68,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         max_detour_distance: rideData.maxDetourDistance,
                         created_at: new Date().toISOString(),
                         gradientIndex: rideData.gradientIndex
-                    }
+                    },
+                    available_seats:rideData.seats,
                 })
                 .select()
 

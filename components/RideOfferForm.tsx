@@ -66,10 +66,12 @@ export default function RideOfferForm({ lang,translations, isLoggedIn, driverInf
     }
 
     const rideKey = `${driverEmail}_wesudbury_${rideDetails.date}_${rideDetails.time.replace(':', '')}`
-
+    const driverInfo =  formData['driverInfo'] as DriverInfo
     const rideData = {
       key: rideKey,
       driver_email:driverEmail,
+      driver_phonenumber:driverInfo.phonenumber,
+      driver_name:driverInfo.name,
       ...rideDetails,
       ...ridePreferences,
       createdAt: new Date().toISOString(),

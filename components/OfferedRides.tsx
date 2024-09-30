@@ -12,7 +12,7 @@ interface OfferedRidesProps {
 }
 
 export default function OfferedRides({ translations, lang, driverEmail }: OfferedRidesProps) {
-    const [rides, setRides] = useState<{ rideinfo: Ride, key: string }[]>([])
+    const [rides, setRides] = useState<{ rideinfo: Ride, key: string, available_seats: number }[]>([])
     const [page, setPage] = useState(1)
     const fetchedPages = useRef(new Set<number>())
 
@@ -41,17 +41,17 @@ export default function OfferedRides({ translations, lang, driverEmail }: Offere
     useEffect(() => {
         fetchRides()
     }, [])
-
+    const options = { timeZone: 'Etc/GMT+8', hour12: false };
 
     return (<>
         {rides.length > 0 && (<>
             <h2 className="text-xl text-center font-semibold mb-4 text-[rgb(255,183,77)]">Rides You&apos;ve Offered</h2>
             {rides.map((ride) => (
                 <Link href={`/${lang}/rideshare/ride/${ride.key}`} key={ride.key} className="block">
-                    <div className={`${new Date(ride.rideinfo.date) < new Date() ? "text-gray-500":"text-white" }  rounded-lg shadow-md p-5 mb-4 hover:shadow-lg transition-shadow duration-300 border border-gray-200`}
-                      style={{
-                        background: `linear-gradient(to right, ${gradientPairs[ride.rideinfo.gradientIndex||0][1]}, ${gradientPairs[ride.rideinfo.gradientIndex||0][2]})`
-                    }}>
+                    <div className={`${new Date(ride.rideinfo.date) < new Date(new Date().toLocaleDateString('en-US', options)) ? "text-gray-300" : "text-white"}  rounded-lg shadow-md p-5 mb-4 hover:shadow-lg transition-shadow duration-300 border border-gray-200`}
+                        style={{
+                            background: `linear-gradient(to right, ${gradientPairs[ride.rideinfo.gradientIndex || 0][1]}, ${gradientPairs[ride.rideinfo.gradientIndex || 0][2]})`
+                        }}>
                         <div className="flex justify-between items-center mb-3">
                             <h3 className="text-xl font-semibold ">
                                 <FaMapMarkerAlt className="inline-block mr-2 text-[rgb(255,183,77)]" />
@@ -73,7 +73,11 @@ export default function OfferedRides({ translations, lang, driverEmail }: Offere
                             </p>
                             <p className="flex items-center">
                                 <FaUserFriends className="mr-2 " />
-                                {ride.rideinfo.seats} {translations['availableSeats']}
+                                {ride.rideinfo.seats} {translations['seats']}
+                            </p>
+                            <p className="flex items-center">
+                                <FaUserFriends className="mr-2 " />
+                                {ride.available_seats} {translations['availableSeats']}
                             </p>
                         </div>
                     </div>

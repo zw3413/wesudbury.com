@@ -273,25 +273,25 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
     )
 
     function renderActionButtons(booking: BookingType) {
-        if (isDriver && booking.status == '1') {
-            return (
-                <div className="mt-4 flex justify-end space-x-2">
-                    <ActionButton
-                        onClick={() => handleDriverClick(booking.id, 'reject')}
-                        className="bg-red-500 hover:bg-red-600"
-                        icon={<FaTimesCircle />}
-                        label={t('rideshare.bookings.rejectButton')}
-                    />
-                    <ActionButton
-                        onClick={() => handleDriverClick(booking.id, 'confirm')}
-                        className="bg-green-500 hover:bg-green-600"
-                        icon={<FaCheckCircle />}
-                        label={t('rideshare.bookings.confirmButton')}
-                    />
-                </div>
-            );
-        } else if (isPassenger && booking.status == '1') {
-            return (
+        return <> {(isDriver && booking.status == '1') &&
+
+            <div className="mt-4 flex justify-end space-x-2">
+                <ActionButton
+                    onClick={() => handleDriverClick(booking.id, 'reject')}
+                    className="bg-red-500 hover:bg-red-600"
+                    icon={<FaTimesCircle />}
+                    label={t('rideshare.bookings.rejectButton')}
+                />
+                <ActionButton
+                    onClick={() => handleDriverClick(booking.id, 'confirm')}
+                    className="bg-green-500 hover:bg-green-600"
+                    icon={<FaCheckCircle />}
+                    label={t('rideshare.bookings.confirmButton')}
+                />
+            </div>}{
+
+                (isPassenger && booking.status == '1') &&
+
                 <div className="mt-4 flex justify-end">
                     <ActionButton
                         onClick={() => handlePassengerClick(booking.id)}
@@ -299,10 +299,9 @@ export default function BookingInfo({ rideId, driverEmail, lang, rideDetails }: 
                         icon={<FaTimesCircle />}
                         label={t('rideshare.bookings.cancelButton')}
                     />
-                </div>
-            );
-        }
-        return null;
+                </div>}
+        </>
+
     }
 }
 

@@ -20,7 +20,7 @@ async function getRideDetails(rideId: string) {
 
     const { data, error } = await supabase
         .from('rides')
-        .select('key, rideinfo, created_at')
+        .select('key, rideinfo, created_at, available_seats')
         .eq('key', rideId)
         .single()
 
@@ -54,6 +54,7 @@ async function getRideDetails(rideId: string) {
         key: data.key,
         created_at: data.created_at,
         ...data.rideinfo,
+        available_seats:data.available_seats,
         ...driverExtendInfo,
         vehiclePictureUrl: driverData?.vehicle_info?.pictureUrl
     }
@@ -198,7 +199,12 @@ export default async function RideDetailsPage({ params: { lang, ride_id } }: { p
                                 <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.from')} value={`${rideDetails.from_city}, ${rideDetails.from_address ? rideDetails.from_address : ''}`} />
                                 <DetailItem icon={<FaMapMarkerAlt />} label={t('rideshare.form.to')} value={`${rideDetails.to_city}, ${rideDetails.to_address ? rideDetails.to_address : ''}`} />
                                 <div className="grid grid-cols-2 gap-4">
-                                    {rideDetails.seats > 0 && (<DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats.toString()} />)}
+                               
+                                    {rideDetails.available_seats ? (<DetailItem icon={<FaUsers />} 
+                                    label={t('rideshare.form.availableSeats')} 
+                                    value={rideDetails.available_seats} />) :
+                                    rideDetails.seats > 0 && (<DetailItem icon={<FaUsers />} label={t('rideshare.form.seats')} value={rideDetails.seats} />)
+                                    }
                                     {rideDetails.price && (<DetailItem icon={<FaDollarSign />} label={t('rideshare.form.price')} value={`$${rideDetails.price}`} />)}
                                 </div>
                             </div>

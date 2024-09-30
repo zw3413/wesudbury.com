@@ -71,6 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         updateData.reject_reason = rejectReason;
       }
 
+
       const { data, error } = await supabase
         .from('bookings')
         .update(updateData)
@@ -80,6 +81,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (error) throw error
 
+      //状态为2时，刷新一下rides表的available_seats字段
+      if(status == '2' ){
+        await supabase.rpc('p_update_available_seats',{i_key: data.ride_id})
+      }
       // Send email notifications
       await sendStatusChangeNotification(data)
 

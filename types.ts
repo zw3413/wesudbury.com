@@ -85,6 +85,8 @@ export type Ride = {
   max_detour_distance: number;
   seats: number;
   driver_email: string;
+  driver_name:string;
+  driver_phonenumber:string;
   price: string;
   routine: string;
   frequency: string;

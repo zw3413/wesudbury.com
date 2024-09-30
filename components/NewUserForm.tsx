@@ -95,7 +95,7 @@ export default function NewUserForm({ email, onAgree, onVerify, onSetPassword }:
   }
 
   return (
-    <div className="pb-4 text-[rgb(33,41,49)]">
+    <div className="p-4 text-[rgb(33,41,49)]">
       {generalError && <p className="text-red-500 mb-2">{generalError}</p>}
       {step === 1 && (
         <>
